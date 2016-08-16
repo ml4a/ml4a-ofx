@@ -89,30 +89,32 @@ def VGG_16(weights_path):
     return model
 
 def main(vgg_path, images_path, tsne_path, tsne_dimensions, tsne_perplexity):
-    model = VGG_16(vgg_path) # load model
-    sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-    model.compile(optimizer=sgd, loss='categorical_crossentropy')
-    # get images
-    images = [f for f in os.listdir(images_path) if isfile(join(images_path, f))]
-    # analyze images and grab activations
-    activations = []
-    for idx,image_path in enumerate(images):
-        file_path = join(images_path,image_path)
-        image = get_image(file_path);
-        if image is not None:
-            print "getting activations for %s %d/%d" % (image_path,idx,len(images))
-            acts = model.predict(image)[0]
-            activations.append(acts)
-    # run t-SNE
-    X = np.array(activations)
-    tsne = TSNE(n_components=tsne_dimensions, perplexity=tsne_perplexity, verbose=2).fit_transform(X)
-    # save data to json
-    data = []
-    for i,f in enumerate(images):
-        point = [ (tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k])) for k in range(tsne_dimensions) ]
-        data.append({"path":os.path.abspath(join(images_path,images[i])), "point":point})
-    with open(tsne_path, 'w') as outfile:
-        json.dump(data, outfile)
+	model = VGG_16(vgg_path) # load model
+	sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
+	model.compile(optimizer=sgd, loss='categorical_crossentropy')
+	# get images
+	candidate_images = [f for f in os.listdir(images_path) if isfile(join(images_path, f))]
+	# analyze images and grab activations
+	activations = []
+	images = []
+	for idx,image_path in enumerate(candidate_images):
+		file_path = join(images_path,image_path)
+		image = get_image(file_path);
+		if image is not None:
+			print "getting activations for %s %d/%d" % (image_path,idx,len(candidate_images))
+			acts = model.predict(image)[0]
+			activations.append(acts)
+			images.append(image_path)
+	# run t-SNE
+	X = np.array(activations)
+	tsne = TSNE(n_components=tsne_dimensions, perplexity=tsne_perplexity, verbose=2).fit_transform(X)
+	# save data to json
+	data = []
+	for i,f in enumerate(images):
+		point = [ (tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k])) for k in range(tsne_dimensions) ]
+		data.append({"path":os.path.abspath(join(images_path,images[i])), "point":point})
+	with open(tsne_path, 'w') as outfile:
+		json.dump(data, outfile)
 
 
 if __name__ == '__main__':
