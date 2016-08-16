@@ -6,7 +6,7 @@ void ofApp::setup(){
     thumbHeight = ofGetHeight() * 0.25;
     margin = 5;
     zoom = 1.25;
-    string file = "lookup2.json";
+    string file = "lookup.json";
 
     fullWidth = 0;
     ofxJSONElement result;
