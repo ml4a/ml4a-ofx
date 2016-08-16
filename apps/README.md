@@ -21,3 +21,7 @@ Send the fc7 activations of a trained convnet over OSC.
 #### ConvnetViewer (TBD)
 
 View the activations of a trained convnet. In the future, this may be merged with ConvnetOSC as a single application which enables viewing, encoding, sending OSC, and importing image sets.
+
+#### ReverseImageSearch
+
+Search for most similar images in an image collection, given a query image. Analyze it first, then save the results for real-time browsing.

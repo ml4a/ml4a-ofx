@@ -21,7 +21,6 @@ def process_arguments(args):
     parser.add_argument('--num_dimensions', action='store', default=2, help='dimensionality of t-SNE points (default 2)')
     parser.add_argument('--perplexity', action='store', default=30, help='perplexity of t-SNE (default 30)')
     params = vars(parser.parse_args(args))
-    # do check here instead
     return params
 
 def get_image(path):
