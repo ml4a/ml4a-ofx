@@ -10,7 +10,7 @@ Some of these applications are coupled with python scripts which do some analysi
 
 ### Datasets
 
-Some of the applications work on image/audio/text datasets. Example datasets are provided and can be downloaded with the provided scripts. Additionally, some require pre-trained models which can also be downloaded... instructions + download scripts tbd.
+Some of the applications work on image/audio/text datasets. Example datasets are provided and can be downloaded with the provided scripts (see `download_images.py` for image example). Additionally, some require pre-trained models which can also be downloaded. For the ones which require VGG weights, you can download that [here](https://drive.google.com/file/d/0Bz7KyqmuGsilT0J5dmRCM0ROVHc/view?usp=sharing).
 
 ### Applications
 
