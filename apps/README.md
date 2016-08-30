@@ -18,7 +18,7 @@ View a collection of audio samples organized via t-SNE on extracted audio featur
 
 Send the fc7 activations of a trained convnet over OSC.
 
-#### ConvnetViewer (TBD)
+#### ConvnetViewer
 
 View the activations of a trained convnet. In the future, this may be merged with ConvnetOSC as a single application which enables viewing, encoding, sending OSC, and importing image sets.
 
