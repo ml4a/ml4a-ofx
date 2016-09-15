@@ -1,0 +1,35 @@
+# hide project files -- source only
+*.cbp
+*.sln
+*.vcx*
+*.workspace*
+config.make
+Makefile
+*.xcodeproj
+*.plist
+*.xcconfig
+*.suo
+*.depend
+*.layout
+*.mode*v3
+*.pbxuser
+*.app*
+*.DS_*
+*.xcworkspacedata
+xcuserdata/
+project.xcworkspace
+*.opensdf
+*.sdf
+*.suo
+*.ipch
+
+.svn/
+obj/
+bin/
+build/
+!data/
+
+# data
+datasets/animals
+datasets/vgg16_weights.h5
+*.sqlite3
