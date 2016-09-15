@@ -107,7 +107,7 @@ def main(vgg_path, images_path, tsne_path, tsne_dimensions, tsne_perplexity):
 			images.append(image_path)
 	# run t-SNE
 	X = np.array(activations)
-	tsne = TSNE(n_components=tsne_dimensions, perplexity=tsne_perplexity, verbose=2).fit_transform(X)
+	tsne = TSNE(n_components=tsne_dimensions, learning_rate=200, perplexity=tsne_perplexity, verbose=2).fit_transform(X)
 	# save data to json
 	data = []
 	for i,f in enumerate(images):
