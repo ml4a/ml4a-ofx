@@ -1,0 +1,5 @@
+<ConvnetOSC>
+	<ip>127.0.0.1</ip>
+	<port>6448</port>
+	<address>/wek/inputs</address>
+</ConvnetOSC>

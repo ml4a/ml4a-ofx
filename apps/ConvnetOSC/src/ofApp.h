@@ -3,6 +3,9 @@
 #include "ofxCcv.h"
 #include "ofxOsc.h"
 
+#define OSC_DESTINATION_DEFAULT "localhost"
+#define OSC_ADDRESS_ROOT_DEFAULT "/wek/inputs"
+#define OSC_PORT_DEFAULT 6448
 
 class ofApp : public ofBaseApp {
 public:
@@ -24,7 +27,7 @@ public:
     vector<float> classifierEncoding;
     vector<float> featureEncoding;
     
-    string oscHost, oscAddress;
+    string oscDestination, oscAddressRoot;
     int oscPort;
     
     bool sending;
