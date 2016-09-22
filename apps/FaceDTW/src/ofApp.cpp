@@ -64,15 +64,12 @@ pipeline.addPostProcessingModule( ClassLabelTimeoutFilter(timeOutFilter,ClassLab
     drawVideo = false;
     
     
-    //FaceTracker2 setup
-    ofSetDataPathRoot(ofFile(__BASE_FILE__).getEnclosingDirectory()+"../../model/");
-    
     // Setup grabber
     grabber.setup(1280,720);
     //grabber.setup(960,540);
     
     // Setup tracker
-    tracker.setup();
+    tracker.setup("../../../../models/shape_predictor_68_face_landmarks.dat");
     
 }
 

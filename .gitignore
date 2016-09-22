@@ -33,3 +33,8 @@ build/
 datasets/animals
 datasets/vgg16_weights.h5
 *.sqlite3
+
+# models
+models/image-net-2012.words
+models/image-net-2012.sqlite3
+models/shape_predictor_68_face_landmarks.dat

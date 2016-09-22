@@ -30,7 +30,7 @@ void ofApp::setup() {
     setClassifier( SVM_LINEAR );
     
     
-    ccv.setup("image-net-2012.sqlite3");
+    ccv.setup("../../../../models/image-net-2012.sqlite3");
     if (!ccv.isLoaded()) return;
     
 }
