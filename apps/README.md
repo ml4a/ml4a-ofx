@@ -42,7 +42,7 @@ Perform facial gestures over time and classify them using Dynamic Time Warping w
 
 Train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
 
-##SimpleRegression
+###SimpleRegression
 
 Boiled down example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) with mouse position as the input.
 
