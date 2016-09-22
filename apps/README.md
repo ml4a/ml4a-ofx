@@ -25,3 +25,24 @@ View the activations of a trained convnet. In the future, this may be merged wit
 #### ReverseImageSearch
 
 Search for most similar images in an image collection, given a query image. Analyze it first, then save the results for real-time browsing.
+
+#### ConvnetClassifier
+
+Use the fc7 activations of a trained convnet to make your own classifier using [ofxGrt](https://github.com/nickgillian/ofxGrt).
+
+#### FaceClassifier
+
+Train a model and do real time classification with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
+
+#### FaceDTW
+
+Perform facial gestures over time and classify them using Dynamic Time Warping with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
+
+#### FaceRegressor
+
+Train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
+
+##SimpleRegression
+
+Boiled down example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) with mouse position as the input.
+
