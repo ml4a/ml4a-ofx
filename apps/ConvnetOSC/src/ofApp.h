@@ -20,9 +20,7 @@ public:
     ofxOscMessage msg;
     
     ofVideoGrabber cam;
-    
     ofxCcv ccv;
-    ofVideoPlayer video;
     
     vector<float> classifierEncoding;
     vector<float> featureEncoding;
