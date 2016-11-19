@@ -1,0 +1,688 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>FaceRegressor</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxCv\libs\ofxCv\include;..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD;..\..\..\..\..\addons\ofxCv\src;..\..\..\..\..\addons\ofxFaceTracker2\libs\dlib\include;..\..\..\..\..\addons\ofxFaceTracker2\src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt;..\..\..\..\..\addons\ofxOpenCv\libs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\photo;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\superres;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\emscripten;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\license;..\..\..\..\..\addons\ofxOpenCv\src</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>-O2</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies);opencv_calib3d249d.lib;opencv_contrib249d.lib;opencv_core249d.lib;opencv_features2d249d.lib;opencv_flann249d.lib;opencv_gpu249d.lib;opencv_highgui249d.lib;opencv_imgproc249d.lib;opencv_legacy249d.lib;opencv_ml249d.lib;opencv_nonfree249d.lib;opencv_objdetect249d.lib;opencv_photo249d.lib;opencv_stitching249d.lib;opencv_superres249d.lib;opencv_ts249d.lib;opencv_video249d.lib;opencv_videostab249d.lib;zlibd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Debug</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxCv\libs\ofxCv\include;..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD;..\..\..\..\..\addons\ofxCv\src;..\..\..\..\..\addons\ofxFaceTracker2\libs\dlib\include;..\..\..\..\..\addons\ofxFaceTracker2\src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt;..\..\..\..\..\addons\ofxOpenCv\libs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\photo;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\superres;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\emscripten;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\license;..\..\..\..\..\addons\ofxOpenCv\src</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-O2</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies);opencv_calib3d249d.lib;opencv_contrib249d.lib;opencv_core249d.lib;opencv_features2d249d.lib;opencv_flann249d.lib;opencv_gpu249d.lib;opencv_highgui249d.lib;opencv_imgproc249d.lib;opencv_legacy249d.lib;opencv_ml249d.lib;opencv_nonfree249d.lib;opencv_objdetect249d.lib;opencv_photo249d.lib;opencv_stitching249d.lib;opencv_superres249d.lib;opencv_ts249d.lib;opencv_video249d.lib;opencv_videostab249d.lib;zlibd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Debug</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxCv\libs\ofxCv\include;..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD;..\..\..\..\..\addons\ofxCv\src;..\..\..\..\..\addons\ofxFaceTracker2\libs\dlib\include;..\..\..\..\..\addons\ofxFaceTracker2\src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt;..\..\..\..\..\addons\ofxOpenCv\libs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\photo;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\superres;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\emscripten;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\license;..\..\..\..\..\addons\ofxOpenCv\src</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-O2</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies);opencv_calib3d249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_features2d249.lib;opencv_flann249.lib;opencv_gpu249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_legacy249.lib;opencv_ml249.lib;opencv_nonfree249.lib;opencv_objdetect249.lib;opencv_photo249.lib;opencv_stitching249.lib;opencv_superres249.lib;opencv_ts249.lib;opencv_video249.lib;opencv_videostab249.lib;zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Release</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxCv\libs\ofxCv\include;..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD;..\..\..\..\..\addons\ofxCv\src;..\..\..\..\..\addons\ofxFaceTracker2\libs\dlib\include;..\..\..\..\..\addons\ofxFaceTracker2\src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt;..\..\..\..\..\addons\ofxOpenCv\libs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\photo;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\superres;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\emscripten;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\Win32\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Debug;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Release;..\..\..\..\..\addons\ofxOpenCv\libs\opencv\license;..\..\..\..\..\addons\ofxOpenCv\src</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>-O2</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies);opencv_calib3d249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_features2d249.lib;opencv_flann249.lib;opencv_gpu249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_legacy249.lib;opencv_ml249.lib;opencv_nonfree249.lib;opencv_objdetect249.lib;opencv_photo249.lib;opencv_stitching249.lib;opencv_superres249.lib;opencv_ts249.lib;opencv_video249.lib;opencv_videostab249.lib;zlib.lib;dlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs\x64\Release;..\..\..\..\..\addons\ofxFaceTracker2\libs\dlib\lib\win\Release</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\CLD\src\ETF.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\CLD\src\fdog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Calibration.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\ContourFinder.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Distance.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Flow.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Helpers.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Kalman.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\ObjectFinder.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\RunningBackground.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Tracker.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Utilities.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\src\Wrappers.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2Instance.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2Landmarks.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtBarPlot.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtMatrixPlot.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtSettings.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtTimeseriesPlot.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\AdaBoost.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\DecisionStump.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\RadialBasisFunction.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\WeakClassifier.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC_Model.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\BAG\BAG.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTree.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeClusterNode.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeNode.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeThresholdNode.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeTripleFeatureNode.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DTW\DTW.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FiniteStateMachine.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\GMM\GMM.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\ContinuousHiddenMarkovModel.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\DiscreteHiddenMarkovModel.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\HMM.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\KNN\KNN.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\LDA\LDA.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDist.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDistModel.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ParticleClassifier\ParticleClassifier.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\RandomForests\RandomForests.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\Softmax\Softmax.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\LIBSVM\libsvm.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\SVM.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SwipeDetector\SwipeDetector.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\ClusterTree\ClusterTree.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\GaussianMixtureModels\GaussianMixtureModels.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\HierarchicalClustering\HierarchicalClustering.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\KMeans\KMeans.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\SelfOrganizingMap\SelfOrganizingMap.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ContextModules\Gate.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\BernoulliRBM\BernoulliRBM.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\MovementDetector\MovementDetector.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\PrincipalComponentAnalysis\PrincipalComponentAnalysis.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Node.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Tree.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Classifier.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Clusterer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Context.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\FeatureExtraction.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GestureRecognitionPipeline.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GRTBase.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\MLBase.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PostProcessing.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PreProcessing.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Regressifier.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationData.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationDataStream.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationSample.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\MatrixFloat.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionData.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionSample.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationData.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationSample.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\UnlabelledData.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\VectorFloat.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\EnvelopeExtractor\EnvelopeExtractor.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FastFourierTransform.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFT.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFTFeatures.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansFeatures\KMeansFeatures.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansQuantizer\KMeansQuantizer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementIndex\MovementIndex.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementTrajectoryFeatures\MovementTrajectoryFeatures.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\RBMQuantizer\RBMQuantizer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\SOMQuantizer\SOMQuantizer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeDomainFeatures\TimeDomainFeatures.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeseriesBuffer\TimeseriesBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\ZeroCrossingCounter\ZeroCrossingCounter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelChangeFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelTimeoutFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DeadZone.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\Derivative.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DoubleMovingAverageFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\FIRFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\HighPassFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LeakyIntegrator.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LowPassFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MedianFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MovingAverageFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\RMSFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\SavitzkyGolayFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\WeightedAverageFilter.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\MLP.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\Neuron.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LinearRegression\LinearRegression.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LogisticRegression\LogisticRegression.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\MultidimensionalRegression\MultidimensionalRegression.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\RegressionTree\RegressionTree.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Cholesky.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DebugLog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\EigenvalueDecomposition.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ErrorLog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\InfoLog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\LUDecomposition.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\PeakDetection.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\RangeTracker.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\SVD.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestingLog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThreadPool.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThresholdCrossingDetector.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TimeSeriesClassificationSampleTrimmer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingDataRecordingTimer.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingLog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Util.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\WarningLog.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvContourFinder.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvFloatImage.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvGrayscaleImage.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvHaarFinder.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvImage.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\src\ofxCv.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD\ETF.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD\fdog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD\imatrix.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\CLD\include\CLD\myvec.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Calibration.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\ContourFinder.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Distance.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Flow.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Helpers.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Kalman.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\ObjectFinder.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\RunningBackground.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Tracker.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Utilities.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Wrappers.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2InputInfo.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2Instance.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxFaceTracker2\src\ofxFaceTracker2Landmarks.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrt.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtBarPlot.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtMatrixPlot.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtSettings.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtTimeseriesPlot.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\AdaBoost.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\AdaBoostClassModel.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\DecisionStump.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\RadialBasisFunction.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\WeakClassifier.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC_Model.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\BAG\BAG.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTree.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeClusterNode.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeNode.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeThresholdNode.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeTripleFeatureNode.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DTW\DTW.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FiniteStateMachine.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FSMParticle.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FSMParticleFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\GMM\GMM.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\GMM\MixtureModel.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\ContinuousHiddenMarkovModel.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\DiscreteHiddenMarkovModel.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\HMM.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\HMMEnums.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\KNN\KNN.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\LDA\LDA.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDist.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDistModel.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ParticleClassifier\ParticleClassifier.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ParticleClassifier\ParticleClassifierParticleFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\RandomForests\RandomForests.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\Softmax\Softmax.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\Softmax\SoftmaxModel.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\LIBSVM\libsvm.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\SVM.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SwipeDetector\SwipeDetector.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\ClusterTree\ClusterTree.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\ClusterTree\ClusterTreeNode.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\GaussianMixtureModels\GaussianMixtureModels.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\HierarchicalClustering\HierarchicalClustering.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\KMeans\KMeans.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\SelfOrganizingMap\SelfOrganizingMap.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ContextModules\Gate.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\BernoulliRBM\BernoulliRBM.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\EvolutionaryAlgorithm\EvolutionaryAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\EvolutionaryAlgorithm\Individual.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\GridSearch\GridSearch.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\LeastSquares\LinearLeastSquares.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\MeanShift\MeanShift.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\MovementDetector\MovementDetector.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleFilter\Particle.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleFilter\ParticleFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleSwarmOptimization\ParticleSwarmOptimization.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleSwarmOptimization\PSOParticle.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\PrincipalComponentAnalysis\PrincipalComponentAnalysis.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Node.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Tree.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Classifier.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Clusterer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Context.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\FeatureExtraction.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GestureRecognitionPipeline.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GRTBase.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\MLBase.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PostProcessing.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PreProcessing.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Regressifier.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationData.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationDataStream.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationSample.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\Matrix.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\MatrixFloat.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionData.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionSample.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationData.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationSample.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesPositionTracker.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\UnlabelledData.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\Vector.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\VectorFloat.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\EnvelopeExtractor\EnvelopeExtractor.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FastFourierTransform.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFT.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFTFeatures.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansFeatures\KMeansFeatures.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansQuantizer\KMeansQuantizer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementIndex\MovementIndex.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementTrajectoryFeatures\MovementTrajectoryFeatures.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\RBMQuantizer\RBMQuantizer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\SOMQuantizer\SOMQuantizer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeDomainFeatures\TimeDomainFeatures.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeseriesBuffer\TimeseriesBuffer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\ZeroCrossingCounter\ZeroCrossingCounter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\GRT.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelChangeFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelTimeoutFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DeadZone.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\Derivative.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DoubleMovingAverageFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\FIRFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\HighPassFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LeakyIntegrator.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LowPassFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MedianFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MovingAverageFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\RMSFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\SavitzkyGolayFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\WeightedAverageFilter.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\MLP.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\Neuron.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LinearRegression\LinearRegression.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LogisticRegression\LogisticRegression.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\MultidimensionalRegression\MultidimensionalRegression.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\RegressionTree\RegressionTree.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\RegressionTree\RegressionTreeNode.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Cholesky.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\CircularBuffer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ClassificationResult.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ClassTracker.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\CommandLineParser.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DataType.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DebugLog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Dict.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DynamicType.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\EigenvalueDecomposition.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ErrorLog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\FileParser.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTCommon.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTException.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTTypedefs.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTVersionInfo.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\IndexedDouble.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\InfoLog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Log.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\LUDecomposition.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\MinMax.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Observer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ObserverManager.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\PeakDetection.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Random.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\RangeTracker.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\SVD.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestingLog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestInstanceResult.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestResult.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThreadPool.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThresholdCrossingDetector.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Timer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TimeSeriesClassificationSampleTrimmer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TimeStamp.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingDataRecordingTimer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingLog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingResult.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Util.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\WarningLog.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvConstants.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvContourFinder.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvFloatImage.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvGrayscaleImage.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvHaarFinder.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvImage.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxCvShortImage.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\src\ofxOpenCv.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cv.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cv.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cvaux.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cvaux.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cvwimage.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cxcore.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cxcore.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cxeigen.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\cxmisc.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\highgui.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv\ml.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d\calib3d.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib\contrib.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib\detection_based_tracker.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib\hybridtracker.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib\openfabmap.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib\retina.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\affine.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\core.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\core_c.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\cuda_devptrs.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\devmem2d.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\eigen.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\gpumat.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\internal.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\mat.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\opengl_interop.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\opengl_interop_deprecated.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\operations.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\types_c.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\version.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core\wimage.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d\features2d.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\allocator.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\all_indices.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\any.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\autotuned_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\composite_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\config.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\defines.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\dist.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\dummy.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\dynamic_bitset.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\flann.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\flann_base.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\general.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\ground_truth.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\hdf5.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\heap.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\hierarchical_clustering_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\index_testing.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\kdtree_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\kdtree_single_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\kmeans_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\linear_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\logger.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\lsh_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\lsh_table.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\matrix.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\miniflann.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\nn_index.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\object_factory.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\params.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\random.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\result_set.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\sampling.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\saving.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\simplex_downhill.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\timer.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\block.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\border_interpolate.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\color.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\common.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\datamov_utils.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail\color_detail.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail\reduce.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail\reduce_key_val.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail\transform_detail.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail\type_traits_detail.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\detail\vec_distance_detail.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\dynamic_smem.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\emulation.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\filters.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\funcattrib.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\functional.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\limits.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\reduce.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\saturate_cast.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\scan.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\simd_functions.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\static_check.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\transform.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\type_traits.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\utility.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\vec_distance.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\vec_math.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\vec_traits.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\warp.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\warp_reduce.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\device\warp_shuffle.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\devmem2d.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\gpu.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\gpumat.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu\stream_accessor.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui\cap_ios.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui\highgui.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui\highgui_c.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui\ios.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc\imgproc.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc\imgproc_c.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc\types_c.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy\blobtrack.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy\compat.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy\legacy.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy\streams.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml\ml.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree\features2d.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree\gpu.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree\nonfree.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\nonfree\ocl.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect\objdetect.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\opencv.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\opencv_modules.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\photo\photo.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\photo\photo_c.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\autocalib.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\blenders.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\camera.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\exposure_compensate.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\matchers.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\motion_estimators.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\seam_finders.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\util.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\util_inl.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\warpers.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\detail\warpers_inl.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\stitcher.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\stitching\warpers.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\superres\optical_flow.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\superres\superres.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts\gpu_perf.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts\gpu_test.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts\ts.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts\ts_gtest.h" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts\ts_perf.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video\background_segm.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video\tracking.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video\video.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\deblurring.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\fast_marching.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\fast_marching_inl.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\frame_source.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\global_motion.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\inpainting.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\log.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\motion_stabilizing.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\optical_flow.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\stabilizer.hpp" />
+    <ClInclude Include="..\..\..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\videostab\videostab.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+      <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(OF_ROOT)\libs\openFrameworksCompiled\project\vs</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="icon.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
