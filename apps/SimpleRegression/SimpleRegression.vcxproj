@@ -1,0 +1,472 @@
+<?xml version="1.0"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup Label="ProjectConfigurations">
+		<ProjectConfiguration Include="Debug|Win32">
+			<Configuration>Debug</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Debug|x64">
+			<Configuration>Debug</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Release|Win32">
+			<Configuration>Release</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Release|x64">
+			<Configuration>Release</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+	</ItemGroup>
+	<PropertyGroup Label="Globals">
+		<ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+		<Keyword>Win32Proj</Keyword>
+		<RootNamespace>SimpleRegression</RootNamespace>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+		<ConfigurationType>Application</ConfigurationType>
+		<CharacterSet>Unicode</CharacterSet>
+		<PlatformToolset>v140</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+		<ConfigurationType>Application</ConfigurationType>
+		<CharacterSet>Unicode</CharacterSet>
+		<PlatformToolset>v140</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+		<ConfigurationType>Application</ConfigurationType>
+		<CharacterSet>Unicode</CharacterSet>
+		<WholeProgramOptimization>true</WholeProgramOptimization>
+		<PlatformToolset>v140</PlatformToolset>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+		<ConfigurationType>Application</ConfigurationType>
+		<CharacterSet>Unicode</CharacterSet>
+		<WholeProgramOptimization>true</WholeProgramOptimization>
+		<PlatformToolset>v140</PlatformToolset>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+		<Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+	</ImportGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+		<Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+	</ImportGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+		<Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+	</ImportGroup>
+	<ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+		<Import Project="../../../../../libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+	</ImportGroup>
+	<PropertyGroup Label="UserMacros" />
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+		<OutDir>bin\</OutDir>
+		<IntDir>obj\$(Configuration)\</IntDir>
+		<TargetName>$(ProjectName)_debug</TargetName>
+		<LinkIncremental>true</LinkIncremental>
+		<GenerateManifest>true</GenerateManifest>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<OutDir>bin\</OutDir>
+		<IntDir>obj\$(Configuration)\</IntDir>
+		<TargetName>$(ProjectName)_debug</TargetName>
+		<LinkIncremental>true</LinkIncremental>
+		<GenerateManifest>true</GenerateManifest>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+		<OutDir>bin\</OutDir>
+		<IntDir>obj\$(Configuration)\</IntDir>
+		<LinkIncremental>false</LinkIncremental>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<OutDir>bin\</OutDir>
+		<IntDir>obj\$(Configuration)\</IntDir>
+		<LinkIncremental>false</LinkIncremental>
+	</PropertyGroup>
+	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+		<ClCompile>
+			<Optimization>Disabled</Optimization>
+			<BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+			<WarningLevel>Level3</WarningLevel>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt</AdditionalIncludeDirectories>
+			<CompileAs>CompileAsCpp</CompileAs>
+		</ClCompile>
+		<Link>
+			<GenerateDebugInformation>true</GenerateDebugInformation>
+			<SubSystem>Console</SubSystem>
+			<RandomizedBaseAddress>false</RandomizedBaseAddress>
+			<AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+		<PostBuildEvent />
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<ClCompile>
+			<Optimization>Disabled</Optimization>
+			<BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+			<WarningLevel>Level3</WarningLevel>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt</AdditionalIncludeDirectories>
+			<CompileAs>CompileAsCpp</CompileAs>
+			<MultiProcessorCompilation>true</MultiProcessorCompilation>
+		</ClCompile>
+		<Link>
+			<GenerateDebugInformation>true</GenerateDebugInformation>
+			<SubSystem>Console</SubSystem>
+			<RandomizedBaseAddress>false</RandomizedBaseAddress>
+			<AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+		<PostBuildEvent />
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+		<ClCompile>
+			<WholeProgramOptimization>false</WholeProgramOptimization>
+			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+			<WarningLevel>Level3</WarningLevel>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt</AdditionalIncludeDirectories>
+			<CompileAs>CompileAsCpp</CompileAs>
+			<MultiProcessorCompilation>true</MultiProcessorCompilation>
+		</ClCompile>
+		<Link>
+			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+			<GenerateDebugInformation>false</GenerateDebugInformation>
+			<SubSystem>Console</SubSystem>
+			<OptimizeReferences>true</OptimizeReferences>
+			<EnableCOMDATFolding>true</EnableCOMDATFolding>
+			<RandomizedBaseAddress>false</RandomizedBaseAddress>
+			<AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+		<PostBuildEvent />
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<ClCompile>
+			<WholeProgramOptimization>false</WholeProgramOptimization>
+			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+			<WarningLevel>Level3</WarningLevel>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\..\..\addons\ofxGrt\src;..\..\..\..\..\addons\ofxGrt\libs\grt</AdditionalIncludeDirectories>
+			<CompileAs>CompileAsCpp</CompileAs>
+		</ClCompile>
+		<Link>
+			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+			<GenerateDebugInformation>false</GenerateDebugInformation>
+			<SubSystem>Console</SubSystem>
+			<OptimizeReferences>true</OptimizeReferences>
+			<EnableCOMDATFolding>true</EnableCOMDATFolding>
+			<RandomizedBaseAddress>false</RandomizedBaseAddress>
+			<AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+		<PostBuildEvent />
+	</ItemDefinitionGroup>
+	<ItemGroup>
+		<ClCompile Include="src\main.cpp" />
+		<ClCompile Include="src\ofApp.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtBarPlot.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtMatrixPlot.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtSettings.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtTimeseriesPlot.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\AdaBoost.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\DecisionStump.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\RadialBasisFunction.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\WeakClassifier.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC_Model.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\BAG\BAG.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTree.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeClusterNode.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeNode.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeThresholdNode.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeTripleFeatureNode.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DTW\DTW.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FiniteStateMachine.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\GMM\GMM.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\ContinuousHiddenMarkovModel.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\DiscreteHiddenMarkovModel.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\HMM.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\KNN\KNN.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\LDA\LDA.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDist.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDistModel.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ParticleClassifier\ParticleClassifier.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\RandomForests\RandomForests.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\Softmax\Softmax.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\LIBSVM\libsvm.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\SVM.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SwipeDetector\SwipeDetector.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\ClusterTree\ClusterTree.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\GaussianMixtureModels\GaussianMixtureModels.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\HierarchicalClustering\HierarchicalClustering.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\KMeans\KMeans.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\SelfOrganizingMap\SelfOrganizingMap.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ContextModules\Gate.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\BernoulliRBM\BernoulliRBM.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\MovementDetector\MovementDetector.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\PrincipalComponentAnalysis\PrincipalComponentAnalysis.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Node.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Tree.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Classifier.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Clusterer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Context.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\FeatureExtraction.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GestureRecognitionPipeline.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GRTBase.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\MLBase.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PostProcessing.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PreProcessing.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Regressifier.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationData.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationDataStream.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationSample.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\MatrixFloat.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionData.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionSample.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationData.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationSample.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\UnlabelledData.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\VectorFloat.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\EnvelopeExtractor\EnvelopeExtractor.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FastFourierTransform.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFT.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFTFeatures.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansFeatures\KMeansFeatures.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansQuantizer\KMeansQuantizer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementIndex\MovementIndex.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementTrajectoryFeatures\MovementTrajectoryFeatures.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\RBMQuantizer\RBMQuantizer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\SOMQuantizer\SOMQuantizer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeDomainFeatures\TimeDomainFeatures.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeseriesBuffer\TimeseriesBuffer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\ZeroCrossingCounter\ZeroCrossingCounter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelChangeFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelTimeoutFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DeadZone.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\Derivative.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DoubleMovingAverageFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\FIRFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\HighPassFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LeakyIntegrator.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LowPassFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MedianFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MovingAverageFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\RMSFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\SavitzkyGolayFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\WeightedAverageFilter.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\MLP.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\Neuron.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LinearRegression\LinearRegression.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LogisticRegression\LogisticRegression.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\MultidimensionalRegression\MultidimensionalRegression.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\RegressionTree\RegressionTree.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Cholesky.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DebugLog.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\EigenvalueDecomposition.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ErrorLog.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\InfoLog.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\LUDecomposition.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\PeakDetection.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\RangeTracker.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\SVD.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestingLog.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThreadPool.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThresholdCrossingDetector.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TimeSeriesClassificationSampleTrimmer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingDataRecordingTimer.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingLog.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Util.cpp" />
+		<ClCompile Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\WarningLog.cpp" />
+	</ItemGroup>
+	<ItemGroup>
+		<ClInclude Include="src\ofApp.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrt.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtBarPlot.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtMatrixPlot.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtSettings.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\src\ofxGrtTimeseriesPlot.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\AdaBoost.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\AdaBoostClassModel.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\DecisionStump.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\RadialBasisFunction.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\AdaBoost\WeakClassifiers\WeakClassifier.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ANBC\ANBC_Model.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\BAG\BAG.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTree.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeClusterNode.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeNode.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeThresholdNode.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DecisionTree\DecisionTreeTripleFeatureNode.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\DTW\DTW.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FiniteStateMachine.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FSMParticle.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\FiniteStateMachine\FSMParticleFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\GMM\GMM.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\GMM\MixtureModel.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\ContinuousHiddenMarkovModel.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\DiscreteHiddenMarkovModel.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\HMM.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\HMM\HMMEnums.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\KNN\KNN.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\LDA\LDA.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDist.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\MinDist\MinDistModel.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ParticleClassifier\ParticleClassifier.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\ParticleClassifier\ParticleClassifierParticleFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\RandomForests\RandomForests.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\Softmax\Softmax.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\Softmax\SoftmaxModel.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\LIBSVM\libsvm.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SVM\SVM.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClassificationModules\SwipeDetector\SwipeDetector.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\ClusterTree\ClusterTree.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\ClusterTree\ClusterTreeNode.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\GaussianMixtureModels\GaussianMixtureModels.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\HierarchicalClustering\HierarchicalClustering.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\KMeans\KMeans.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ClusteringModules\SelfOrganizingMap\SelfOrganizingMap.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\ContextModules\Gate.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\BernoulliRBM\BernoulliRBM.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\EvolutionaryAlgorithm\EvolutionaryAlgorithm.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\EvolutionaryAlgorithm\Individual.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\GridSearch\GridSearch.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\LeastSquares\LinearLeastSquares.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\MeanShift\MeanShift.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\MovementDetector\MovementDetector.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleFilter\Particle.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleFilter\ParticleFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleSwarmOptimization\ParticleSwarmOptimization.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\ParticleSwarmOptimization\PSOParticle.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\PrincipalComponentAnalysis\PrincipalComponentAnalysis.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Node.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreAlgorithms\Tree\Tree.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Classifier.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Clusterer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Context.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\FeatureExtraction.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GestureRecognitionPipeline.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\GRTBase.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\MLBase.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PostProcessing.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\PreProcessing.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\CoreModules\Regressifier.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationData.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationDataStream.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\ClassificationSample.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\Matrix.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\MatrixFloat.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionData.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\RegressionSample.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationData.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesClassificationSample.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\TimeSeriesPositionTracker.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\UnlabelledData.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\Vector.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\DataStructures\VectorFloat.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\EnvelopeExtractor\EnvelopeExtractor.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FastFourierTransform.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFT.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\FFT\FFTFeatures.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansFeatures\KMeansFeatures.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\KMeansQuantizer\KMeansQuantizer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementIndex\MovementIndex.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\MovementTrajectoryFeatures\MovementTrajectoryFeatures.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\RBMQuantizer\RBMQuantizer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\SOMQuantizer\SOMQuantizer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeDomainFeatures\TimeDomainFeatures.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\TimeseriesBuffer\TimeseriesBuffer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\FeatureExtractionModules\ZeroCrossingCounter\ZeroCrossingCounter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\GRT.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelChangeFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PostProcessingModules\ClassLabelTimeoutFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DeadZone.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\Derivative.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\DoubleMovingAverageFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\FIRFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\HighPassFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LeakyIntegrator.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\LowPassFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MedianFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\MovingAverageFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\RMSFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\SavitzkyGolayFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\PreProcessingModules\WeightedAverageFilter.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\MLP.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\ArtificialNeuralNetworks\MLP\Neuron.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LinearRegression\LinearRegression.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\LogisticRegression\LogisticRegression.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\MultidimensionalRegression\MultidimensionalRegression.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\RegressionTree\RegressionTree.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\RegressionModules\RegressionTree\RegressionTreeNode.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Cholesky.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\CircularBuffer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ClassificationResult.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ClassTracker.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\CommandLineParser.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DataType.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DebugLog.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Dict.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\DynamicType.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\EigenvalueDecomposition.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ErrorLog.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\FileParser.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTCommon.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTException.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTTypedefs.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\GRTVersionInfo.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\IndexedDouble.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\InfoLog.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Log.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\LUDecomposition.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\MinMax.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Observer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ObserverManager.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\PeakDetection.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Random.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\RangeTracker.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\SVD.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestingLog.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestInstanceResult.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TestResult.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThreadPool.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\ThresholdCrossingDetector.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Timer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TimeSeriesClassificationSampleTrimmer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TimeStamp.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingDataRecordingTimer.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingLog.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\TrainingResult.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\Util.h" />
+		<ClInclude Include="..\..\..\..\..\addons\ofxGrt\libs\grt\GRT\Util\WarningLog.h" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+			<Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ResourceCompile Include="icon.rc">
+			<AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+			<AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+			<AdditionalIncludeDirectories>$(OF_ROOT)\libs\openFrameworksCompiled\project\vs</AdditionalIncludeDirectories>
+		</ResourceCompile>
+	</ItemGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties RESOURCE_FILE="icon.rc" />
+		</VisualStudio>
+	</ProjectExtensions>
+</Project>
