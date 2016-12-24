@@ -4,4 +4,4 @@ An interface for classifying doodles/drawings. The app lets you define a series 
 
 A tutorial video can be found [here](https://vimeo.com/196944929/). 
 
-To change the OSC host, port, and address, edit the `osc_settings.xml` file in the data folder. By default, it is set to localhost, port 5000, address "/classification".
+The settings file `settings_doodleclassifier.xml` contains settings which you may wish to modify.  You may edit or add to the defined classes inside the `<classes>` tag. The settings file also contains the OSC info. By default, OSC is set to send to localhost, through port 5000, to address "/classification".
