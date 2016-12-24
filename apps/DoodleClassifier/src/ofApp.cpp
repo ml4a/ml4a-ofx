@@ -4,9 +4,7 @@
 void FoundSquare::draw() {
     img.draw(0, 0);
     string labelStr = "no class";
-    if (label > -1) {
-        labelStr = (isPrediction ? "predicted: ":"assigned: ")+classNames[label];
-    }
+    labelStr = (isPrediction?"predicted: ":"assigned: ")+label;
     ofDrawBitmapStringHighlight(labelStr, 4, img.getHeight()-22);
     ofDrawBitmapStringHighlight("{"+ofToString(rect.x)+","+ofToString(rect.y)+","+ofToString(rect.width)+","+ofToString(rect.height)+"}, area="+ofToString(area), 4, img.getHeight()-5);
 }
@@ -30,17 +28,26 @@ void ofApp::setup(){
     trainingLabel.addListener(this, &ofApp::setTrainingLabel);
     
     // default settings
-    oscDestination = OSC_DESTINATION;
-    oscAddress = OSC_ADDRESS;
-    oscPort = OSC_PORT;
+    oscDestination = DEFAULT_OSC_DESTINATION;
+    oscAddress = DEFAULT_OSC_ADDRESS;
+    oscPort = DEFAULT_OSC_PORT;
     
     // load settings from file
     ofXml xml;
-    xml.load("osc_settings.xml");
+    xml.load("settings_doodleclassifier.xml");
     xml.setTo("DoodleOSC");
     oscDestination = xml.getValue("ip");
     oscPort = ofToInt(xml.getValue("port"));
     oscAddress = xml.getValue("address");
+    if (xml.exists("classes") && xml.setTo("classes") && xml.exists("class[0]")) {
+        xml.setTo("class[0]");
+        classNames.clear();
+        do {
+            string newClass = xml.getValue();
+            classNames.push_back(newClass);
+        }
+        while(xml.setToSibling());
+    }
 
     sender.setup(oscDestination, oscPort);
     
@@ -61,7 +68,7 @@ void ofApp::setup(){
     gui.add(bLoad.setup("Load"));
     gui.add(gCv);
     gui.setPosition(0, 400);
-    gui.loadFromFile("settings.xml");
+    gui.loadFromFile("cv_settings.xml");
     
     fbo.allocate(width, height);
     colorImage.allocate(width, height);
@@ -195,7 +202,7 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-    gui.saveToFile("settings.xml");
+    gui.saveToFile("cv_settings.xml");
 }
 
 //--------------------------------------------------------------
@@ -217,7 +224,7 @@ void ofApp::addSamplesToTrainingSet() {
     ofLog(OF_LOG_NOTICE, "Adding samples...");
     gatherFoundSquares();
     for (int i=0; i<foundSquares.size(); i++) {
-        foundSquares[i].label = trainingLabel;
+        foundSquares[i].label = classNames[trainingLabel];
         vector<float> encoding = ccv.encode(foundSquares[i].img, ccv.numLayers()-1);
         VectorFloat inputVector(encoding.size());
         for (int i=0; i<encoding.size(); i++) inputVector[i] = encoding[i];
@@ -248,14 +255,13 @@ void ofApp::classifyCurrentSamples() {
             // gt classification
             int label = pipeline.getPredictedClassLabel();
             foundSquares[i].isPrediction = true;
-            foundSquares[i].label = label;
+            foundSquares[i].label = classNames[label];
 
             // send over OSC
             ofxOscMessage m;
             m.setAddress(oscAddress);
-            m.addIntArg(foundSquares[i].label);
+            m.addStringArg(foundSquares[i].label);
             sender.sendMessage(m, false);
-
         }
     }
 }

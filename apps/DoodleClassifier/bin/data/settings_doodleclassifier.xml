@@ -1,0 +1,10 @@
+<DoodleOSC>
+	<ip>127.0.0.1</ip>
+	<port>5000</port>
+	<address>/classification</address>
+    <classes>
+        <class>circle</class>
+        <class>star</class>
+        <class>arrow</class>
+    </classes>
+</DoodleOSC>

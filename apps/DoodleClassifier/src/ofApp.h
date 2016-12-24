@@ -12,23 +12,15 @@ using namespace ofxCv;
 using namespace cv;
 
 
-// where to send osc messages
-#define OSC_DESTINATION "localhost"
-#define OSC_ADDRESS "/classification"
-#define OSC_PORT 5000
-
-// define your classes here
-const vector<string> classNames =
-{
-    "circle",
-    "star",
-    "arrow"
-};
+// where to send osc messages by default
+#define DEFAULT_OSC_DESTINATION "localhost"
+#define DEFAULT_OSC_ADDRESS "/classification"
+#define DEFAULT_OSC_PORT 5000
 
 
 struct FoundSquare {
     ofImage img;
-    int label = -1;
+    string label;
     bool isPrediction = false;
     cv::Rect rect;
     float area;
@@ -39,6 +31,15 @@ struct FoundSquare {
 class ofApp : public ofBaseApp
 {
 public:
+
+    // default class names if none found in settings_doodleclassifier.xml
+    vector<string> classNames =
+    {
+        "circle",
+        "star",
+        "arrow"
+    };
+
     void setup();
     void update();
     void draw();
