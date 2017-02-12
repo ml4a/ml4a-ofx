@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "localId": uid,
+      "email": email-address
+      "emailVerified": email-verified,
+      "passwordHash": password-hash,
+      "salt": password-salt,
+      "displayName": name,
+      "photoUrl": photo-url,
+      "providerUserInfo": [
+        {
+          "providerId": provider-id,
+          "rawId": provider-uid,
+          "email":  provider-email,
+          "displayName": provider-name,
+          "photoUrl": provider-photo-url
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
