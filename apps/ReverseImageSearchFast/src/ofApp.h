@@ -22,8 +22,9 @@ public:
     void setup();
     void update();
     void draw();
-    
     void drawResults();
+    
+    void keyPressed(int key);
     
     void analyzeWebcam();
     void analyzeImage();
@@ -35,27 +36,14 @@ public:
     void runPCAonImageSet();
     void runKDTree();
     
-    void keyPressed(int key);
+    void save(string path);
+    void load(string path);
+    void saveKDTree(string path);
+    void loadKDTree(string path);
 
-    void save(string pathData, string pathKDTree, bool featureVectors, bool projectedVectors, bool pcaVectors, bool kdTreeIndex);
-    void load(string pathData, string pathKDTree, bool featureVectors, bool projectedVectors, bool pcaVectors, bool kdTreeIndex);
-    void saveFeatureVectors();
-    void loadFeatureVectors();
-    void saveAll();
-    void loadAll();
-    
-    
-    
-    void extractMSCOCO() {
-        string folder = "/Users/gene/Teaching/ML4A/ml4a-ofx/apps/ReverseImageSearchFast/bin/data/mscoco";
-        extractFeaturesForDirectory(folder);
-    }
-    
-    
-    
-    
-    
-
+    void saveDefault();
+    void loadDefault();
+    void extractMSCOCO();
     
     vector<Image> images;
     vector<ofFile> candidateFiles;

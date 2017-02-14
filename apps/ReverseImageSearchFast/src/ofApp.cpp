@@ -10,8 +10,8 @@ void ofApp::setup(){
     bExtractDir.addListener(this, &ofApp::extractMSCOCO);
     bAnalyze.addListener(this, &ofApp::runPCAonImageSet);
     bKDTree.addListener(this, &ofApp::runKDTree);
-    bSave.addListener(this, &ofApp::saveAll);
-    bLoad.addListener(this, &ofApp::loadAll);
+    bSave.addListener(this, &ofApp::saveDefault);
+    bLoad.addListener(this, &ofApp::loadDefault);
     
 
     gui.setup("Reverse Image Search");
@@ -32,13 +32,8 @@ void ofApp::setup(){
     
     gui.setPosition(ofGetWidth()-200, 0);
     
-    
-    
-//    extractMSCOCO();
-//    runPCAonImageSet();
-//    runKDTree();
-//    saveAll();
-    
+    loadDefault();
+    runKDTree();
 }
 
 //--------------------------------------------------------------
@@ -63,7 +58,6 @@ void ofApp::drawResults(){
     int numRows = floor((ofGetHeight()-headerHeight)/(thumbHeight+margin));
     float y = ofGetHeight() - numRows * (thumbHeight + margin);
     float x = margin;
-
     activeImage.draw(200, 0);
     ofDrawBitmapStringHighlight("Nearest neighbor images:", x + margin, y - margin);
     for (int i=1; i<resultImages.size(); i++) {
@@ -188,13 +182,15 @@ void ofApp::runPCAonImageSet(){
 
 //--------------------------------------------------------------
 void ofApp::runKDTree() {
+    kdTree.clear();
     for (int i=0; i<images.size(); i++) {
-        if (i%200==0) ofLog() << "kd-tree: adding image "<<i<<"/"<<images.size();
+        if (i%2000==0) ofLog() << "kd-tree: adding image "<<i<<"/"<<images.size();
         kdTree.addPoint(images[i].projectedEncoding);
     }
     ofLog() << "build kd-tree" << endl;
+    int startTime = ofGetElapsedTimef();
     kdTree.constructKDTree();
-    ofLog() << "finished constructiong kd-tree for "<<images.size()<<" images.";
+    ofLog() << "finished constructiong kd-tree for "<<images.size()<<" images in "<<(ofGetElapsedTimef() - startTime)<<" sec";
 }
 
 //--------------------------------------------------------------
@@ -205,110 +201,73 @@ void ofApp::keyPressed(int key){
 }
 
 //--------------------------------------------------------------
-void ofApp::save(string pathData, string pathKDTree, bool featureVectors, bool projectedVectors, bool pcaVectors, bool kdTreeIndex) {
-    const char *filepath = pathData.c_str();
+void ofApp::save(string path) {
+    const char *filepath = path.c_str();
     ofstream fout(filepath, ios::binary);
-    if (featureVectors || projectedVectors) {
-        vector<vector<float> > encodings;
-        vector<vector<double> > projectedEncodings;
-        vector<string> filenames;
-        for (auto image : images) {
-            if (featureVectors) {
-                encodings.push_back(image.encoding);
-            }
-            if (projectedVectors) {
-                projectedEncodings.push_back(image.projectedEncoding);
-            }
-            filenames.push_back(image.filename);
-        }
-        if (featureVectors) {
-            dlib::serialize(encodings, fout);
-        }
-        if (projectedVectors) {
-            dlib::serialize(projectedEncodings, fout);
-        }
-        dlib::serialize(filenames, fout);
+    vector<vector<double> > projectedEncodings;
+    vector<string> filenames;
+    for (auto image : images) {
+        projectedEncodings.push_back(image.projectedEncoding);
+        filenames.push_back(image.filename);
     }
-    if (pcaVectors) {
-        dlib::serialize(pca.getE(), fout);
-        dlib::serialize(pca.getV(), fout);
-        dlib::serialize(pca.getColumnMeans(), fout);
-    }
-    if (kdTreeIndex) {
-        kdTree.save(pathKDTree);
-    }
+    dlib::serialize(projectedEncodings, fout);
+    dlib::serialize(filenames, fout);
+    dlib::serialize(pca.getE(), fout);
+    dlib::serialize(pca.getV(), fout);
+    dlib::serialize(pca.getColumnMeans(), fout);
 }
 
 //--------------------------------------------------------------
-void ofApp::load(string pathData, string pathKDTree, bool featureVectors, bool projectedVectors, bool pcaVectors, bool kdTreeIndex) {
-    const char *filepath = pathData.c_str();
+void ofApp::load(string path) {
+    const char *filepath = path.c_str();
     ifstream fin(filepath, ios::binary);
-    float t1, t2, t3, t4, t5, t6, t7, t8, t9;
-    float ta, tb, tc, td, te, tf;
-    if (featureVectors || projectedVectors) {
-        vector<vector<float> > encodings;
-        vector<vector<double> > projectedEncodings;
-        vector<string> filenames;
-        if (featureVectors) {
-            dlib::deserialize(encodings, fin);
-        }
-        if (projectedVectors) {
-            dlib::deserialize(projectedEncodings, fin);
-        }
-        dlib::deserialize(filenames, fin);
-        images.clear();
-        for (int i=0; i<filenames.size(); i++) {
-            Image image;
-            image.filename = filenames[i];
-            if (featureVectors) {
-                image.encoding = encodings[i];
-            }
-            if (projectedVectors) {
-                image.projectedEncoding = projectedEncodings[i];
-            }
-            images.push_back(image);
-        }
-    }
-    if (pcaVectors) {
-        dlib::matrix<double, 0, 0> E, V;
-        vector<double> column_means;
-        dlib::deserialize(E, fin);
-        dlib::deserialize(V, fin);
-        dlib::deserialize(column_means, fin);
-        pca.setE(E);
-        pca.setV(V);
-        pca.setColumnMeans(column_means);
-    }
-    if (kdTreeIndex) {
-        for (auto image : images) {
-            kdTree.addPoint(image.projectedEncoding);
-        }
-        kdTree.load(pathKDTree);
+    vector<vector<double> > projectedEncodings;
+    vector<string> filenames;
+    vector<double> column_means;
+    dlib::matrix<double, 0, 0> E, V;
+    dlib::deserialize(projectedEncodings, fin);
+    dlib::deserialize(filenames, fin);
+    dlib::deserialize(E, fin);
+    dlib::deserialize(V, fin);
+    dlib::deserialize(column_means, fin);
+    pca.setE(E);
+    pca.setV(V);
+    pca.setColumnMeans(column_means);
+    images.clear();
+    for (int i=0; i<filenames.size(); i++) {
+        Image image;
+        image.filename = filenames[i];
+        image.projectedEncoding = projectedEncodings[i];
+        images.push_back(image);
     }
 }
 
 //--------------------------------------------------------------
-void ofApp::saveFeatureVectors() {
-    string pathData = ofToDataPath("feature_vectors.dat");
-    save(pathData, "", true, false, false, false);
+void ofApp::saveKDTree(string path) {
+    kdTree.save(path);
 }
 
 //--------------------------------------------------------------
-void ofApp::loadFeatureVectors() {
-    string pathData = ofToDataPath("feature_vectors.dat");
-    load(pathData, "", true, false, false, false);
+void ofApp::loadKDTree(string path) {
+    kdTree.clear();
+    for (auto image : images) {
+        kdTree.addPoint(image.projectedEncoding);
+    }
+    kdTree.load(path);
 }
 
 //--------------------------------------------------------------
-void ofApp::saveAll() {
-    string pathData = ofToDataPath("data.dat");
-    string pathKDTree = ofToDataPath("data_tree.bin");
-    save(pathData, pathKDTree, false, true, true, true);
+void ofApp::saveDefault() {
+    save(ofToDataPath("data_vecs50k.dat"));
 }
 
 //--------------------------------------------------------------
-void ofApp::loadAll() {
-    string pathData = ofToDataPath("data.dat");
-    string pathKDTree = ofToDataPath("data_tree.bin");
-    load(pathData, pathKDTree, false, true, true, true);
+void ofApp::loadDefault() {
+    load(ofToDataPath("data_vecs50k.dat"));
+}
+
+//--------------------------------------------------------------
+void ofApp::extractMSCOCO() {
+    string folder = "/Users/gene/Teaching/ML4A/ml4a-ofx/apps/ReverseImageSearchFast/bin/data/mscoco";
+    extractFeaturesForDirectory(folder);
 }
