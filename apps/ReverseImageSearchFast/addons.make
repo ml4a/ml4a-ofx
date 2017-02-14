@@ -1,0 +1,4 @@
+ofxCcv
+ofxGui
+ofxKDTree
+ofxLearn
