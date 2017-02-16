@@ -4,13 +4,16 @@
 void ofApp::setup(){
     ofSetWindowShape(1440, 800);
     
-    cam.initGrabber(640, 480);
     ccv.setup("../../../../models/image-net-2012.sqlite3");
     
     maxPCASamples.set("max PCA samples", 50000, 10, 100000);
     bExtractDir.addListener(this, &ofApp::extractDirectory);
     bSave.addListener(this, &ofApp::saveDialog);
     bLoad.addListener(this, &ofApp::loadDialog);
+    tScreenDebug.addListener(this, &ofApp::toggleScreenGrabDebug);
+    tWebcam.addListener(this, &ofApp::enableWebcam);
+    tVideo.addListener(this, &ofApp::enableVideo);
+    tScreen.addListener(this, &ofApp::enableScreenGrab);
     bSampleImage.addListener(this, &ofApp::analyzeImage);
     
     guiOptions.setup();
@@ -20,21 +23,30 @@ void ofApp::setup(){
     guiOptions.add(bExtractDir.setup("analyze directory"));
     guiOptions.add(bSave.setup("save"));
     guiOptions.add(bLoad.setup("load"));
-
+    
     guiView.setup();
     guiView.setName("View");
     guiView.setPosition(0, 0);
     guiView.add(headerHeight.set("header height", 320, 100, 480));
     guiView.add(thumbHeight.set("thumb height", 240, 90, 420));
     guiView.add(numResults.set("num results", 20, 5, 100));
-    guiView.add(tWebcam.set("query webcam", false));
     guiView.add(bSampleImage.setup("query random image"));
+    guiView.add(tWebcam.set("query webcam", false));
+    guiView.add(tVideo.set("query video", false));
+    guiView.add(tScreen.set("query screengrab (OSX)", false));
+    guiView.add(tScreenDebug.set(" > set screengrab window", false));
+    
+    screen.setup(ofGetWidth()-17, ofGetHeight()-10, true);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     if (tWebcam) {
         analyzeWebcam();
+    } else if (tScreen) {
+        analyzeScreen();
+    } else if (tVideo) {
+        analyzeVideo();
     }
 }
 
@@ -42,7 +54,11 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     if (activeImage.isAllocated()) {
-        drawResults();
+        if (screen.isDebug()) {
+            screen.drawDebug();
+        } else {
+            drawResults();
+        }
     }
     guiOptions.draw();
     guiView.draw();
@@ -68,6 +84,35 @@ void ofApp::drawResults(){
 }
 
 //--------------------------------------------------------------
+void ofApp::enableWebcam(bool & enable) {
+    if (!enable) return;
+    tScreen = false;
+    tVideo = false;
+    cam.initGrabber(640, 480);
+    movie.close();
+}
+
+//--------------------------------------------------------------
+void ofApp::enableScreenGrab(bool & enable) {
+    if (!enable) return;
+    tWebcam = false;
+    tVideo = false;
+    cam.close();
+    movie.close();
+}
+
+//--------------------------------------------------------------
+void ofApp::enableVideo(bool & enable) {
+    if (!enable) return;
+    tScreen = false;
+    tWebcam = false;
+    cam.close();
+    ofFileDialogResult result = ofSystemLoadDialog("Load a movie");
+    movie.load(result.getPath());
+    movie.play();
+}
+
+//--------------------------------------------------------------
 void ofApp::analyzeWebcam() {
     cam.update();
     if (cam.isFrameNew()) {
@@ -78,8 +123,45 @@ void ofApp::analyzeWebcam() {
 }
 
 //--------------------------------------------------------------
+void ofApp::analyzeVideo() {
+    movie.update();
+    if (movie.isFrameNew()) {
+        activeImage.setFromPixels(movie.getPixels());
+        activeEncoding = ccv.encode(activeImage, ccv.numLayers()-1);
+        queryResults();
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::analyzeScreen() {
+    screen.update();
+    if (!screen.isDebug()) {
+        screen.getGrabber().getTextureReference().readToPixels(screenPixels);
+        screenPixels.setImageType(OF_IMAGE_COLOR);
+        activeImage.setFromPixels(screenPixels);
+        activeEncoding = ccv.encode(activeImage, ccv.numLayers()-1);
+        queryResults();
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::toggleScreenGrabDebug(bool & debug) {
+    screen.setDebug(debug);
+    if (debug && !tScreen) {
+        tScreen = true;
+        enableScreenGrab((bool&)tScreen);
+    }
+    if (!screen.isDebug()) {
+        screenPixels.allocate(screen.getGrabber().getTextureReference().getWidth(),
+                              screen.getGrabber().getTextureReference().getHeight(), 4);
+    }
+}
+
+//--------------------------------------------------------------
 void ofApp::analyzeImage() {
     tWebcam = false;
+    tScreen = false;
+    tVideo = false;
     int idx = floor(ofRandom(images.size()));
     activeImage.load(images[idx].filename);
     if (images[idx].encoding.size() == 0) {
@@ -129,7 +211,7 @@ void ofApp::extractFeaturesForDirectory(string directory) {
     candidateFiles.clear();
     ofDirectory dir = ofDirectory(directory);
     getImagePathsRecursive(dir);
-    int numImages = 550;//candidateFiles.size();
+    int numImages = 450;//candidateFiles.size();
     for(int i=0; i<numImages; i++) {
         if (i % 200 == 0) ofLog() << "extracting features for image "<<i<<"/"<<numImages;
         bool success = activeImage.load(candidateFiles[i]);
@@ -280,3 +362,24 @@ void ofApp::extractDirectory() {
         runKDTree();
     }
 }
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y ){
+    screen.mouseMoved(x, y);
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button){
+    screen.mouseDragged(x, y);
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+    screen.mousePressed(x, y);
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button){
+    screen.mouseReleased(x, y);
+}
+
