@@ -37,6 +37,9 @@ void ofApp::setup(){
     guiView.add(tScreenDebug.set(" > set screengrab window", false));
     
     screen.setup(ofGetWidth()-17, ofGetHeight()-10, true);
+    
+    load(ofToDataPath("data.dat"));
+    runKDTree();
 }
 
 //--------------------------------------------------------------
@@ -70,11 +73,12 @@ void ofApp::drawResults(){
     int numRows = floor((ofGetHeight()-headerHeight)/(thumbHeight+margin));
     float y = ofGetHeight() - numRows * (thumbHeight + margin);
     float x = margin;
-    activeImage.draw(205, 0);
+    activeImage.draw(205, 0, headerHeight * activeImage.getWidth() / activeImage.getHeight(), headerHeight);
     for (int i=1; i<resultImages.size(); i++) {
-        resultImages[i-1].draw(x, y);
-        x += (margin + resultImages[i-1].getWidth());
-        if (x > (ofGetWidth() - resultImages[i].getWidth()*0.33)) {
+        float thumbWidth = thumbHeight * resultImages[i-1].getWidth() / resultImages[i-1].getHeight();
+        resultImages[i-1].draw(x, y, thumbWidth, thumbHeight);
+        x += (margin + thumbWidth);
+        if (x > (ofGetWidth() - thumbWidth * 0.33)) {
             y += thumbHeight + margin;
             x = margin;
         }
@@ -180,10 +184,6 @@ void ofApp::queryResults() {
     resultImages.resize(numResults-1);
     for (int i=1; i<numResults; i++) {
         resultImages[i-1].load(images[indexes[i]].filename);
-        resultImages[i-1].resize(thumbHeight * resultImages[i-1].getWidth() / resultImages[i-1].getHeight(), thumbHeight);
-    }
-    if (activeImage.getHeight() > headerHeight) {
-        activeImage.resize(headerHeight * activeImage.getWidth() / activeImage.getHeight(), headerHeight);
     }
 }
 
@@ -211,7 +211,7 @@ void ofApp::extractFeaturesForDirectory(string directory) {
     candidateFiles.clear();
     ofDirectory dir = ofDirectory(directory);
     getImagePathsRecursive(dir);
-    int numImages = 450;//candidateFiles.size();
+    int numImages = candidateFiles.size();
     for(int i=0; i<numImages; i++) {
         if (i % 200 == 0) ofLog() << "extracting features for image "<<i<<"/"<<numImages;
         bool success = activeImage.load(candidateFiles[i]);
