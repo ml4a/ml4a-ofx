@@ -1,0 +1,156 @@
+#include "ofApp.h"
+
+void ofApp::setup()
+{
+    ofSetWindowShape(1280, 800);
+    
+    retina = true;  // if using macbook retina
+    
+    string cfgfile = ofToDataPath("cfg/yolo9000.cfg");
+    string weightfile = "/Users/gene/Downloads/yolo9000.weights";
+    string nameslist = ofToDataPath("cfg/9k.names");
+    darknet.init( cfgfile, weightfile, nameslist );
+    
+    tWebcam.addListener(this, &ofApp::useWebcam);
+    tVideo.addListener(this, &ofApp::useVideo);
+    tScreen.addListener(this, &ofApp::useScreen);
+    tScreenDebug.addListener(this, &ofApp::toggleScreenDebug);
+
+    gui.setup();
+    gui.setName("set source");
+    gui.add(tWebcam.setup("webcam", false));
+    gui.add(tVideo.setup("video", false));
+    gui.add(tScreen.setup("screengrab", false));
+    gui.add(tScreenDebug.setup(" -> set window", false));
+    gui.setPosition(ofGetWidth()-200, 0);
+}
+
+void ofApp::update()
+{
+    float thresh = ofMap( ofGetMouseX(), 0, ofGetWidth(), 0, 1 );
+    
+    if (tWebcam) {
+        cam.update();
+        detections = darknet.yolo(cam.getPixels(), thresh);
+    }
+    else if (tVideo) {
+        movie.update();
+        detections = darknet.yolo(movie.getPixels(), thresh);
+    }
+    else if (tScreen) {
+        screen.update();
+        screen.getGrabber().getTextureReference().readToPixels(pixels);
+        if (!tScreenDebug) {
+            detections = darknet.yolo(pixels, thresh);
+        }
+    }
+}
+
+void ofApp::draw()
+{
+    // draw input source
+    if (tWebcam) {
+        cam.draw(0, 0);
+    }
+    else if (tVideo) {
+        movie.draw(0, 0);
+    }
+    else if (tScreen) {
+        if (screen.isDebug()) {
+            screen.drawDebug();
+        } else {
+            screen.draw(0, 0);
+        }
+    }
+
+    // draw detected objects
+    ofPushStyle();
+    for(detected_object d : detections ){
+        ofSetColor( d.color );
+        glLineWidth( ofMap( d.probability, 0, 1, 0, 8 ) );
+        ofNoFill();
+        ofRectangle rect = d.rect;
+        if (tScreen && retina) {    // adjust for screengrab on retina returning pixels at twice the scale
+            rect.set(0.5 * rect.x, 0.5 * rect.y, 0.5 * rect.width, 0.5 * rect.height);
+        }
+        ofDrawRectangle( rect );
+        ofDrawBitmapStringHighlight( d.label + ": " + ofToString(d.probability), rect.x, rect.y+20 );
+    }
+    ofPopStyle();
+
+    // draw gui
+    gui.draw();
+}
+
+//--------------------------------------------------------------
+void ofApp::useWebcam(bool & b) {
+    if (!b) return;
+    tScreen = false;
+    tVideo = false;
+    tScreenDebug = false;
+    cam.initGrabber(640, 480);
+    movie.stop();
+    movie.close();
+}
+
+//--------------------------------------------------------------
+void ofApp::useVideo(bool & b) {
+    if (!b) return;
+    tWebcam = false;
+    tScreen = false;
+    tScreenDebug = false;
+    cam.close();
+    movie.load("/Users/gene/bin/opera-toolkit/colin.mp4");
+    movie.play();
+}
+
+//--------------------------------------------------------------
+void ofApp::useScreen(bool & b) {
+    if (!b) return;
+    tWebcam = false;
+    tVideo = false;
+    cam.close();
+    movie.stop();
+    movie.close();
+    screen.setup(ofGetWidth(), ofGetHeight(), retina);
+}
+
+//--------------------------------------------------------------
+void ofApp::toggleScreenDebug(bool & b) {
+    if(b && !tScreen) {
+        tScreen = true;
+        useScreen(b);
+    }
+    screen.setDebug(b);
+    if (!b) {
+        pixels.allocate(screen.getGrabber().getTextureReference().getWidth(),
+                        screen.getGrabber().getTextureReference().getHeight(), 4);
+        
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y ){
+    screen.mouseMoved(x, y);
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button){
+    screen.mouseDragged(x, y);
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+    screen.mousePressed(x, y);
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button){
+    screen.mouseReleased(x, y);
+}
+
