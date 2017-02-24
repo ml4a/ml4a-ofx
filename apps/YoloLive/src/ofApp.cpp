@@ -23,6 +23,10 @@ void ofApp::setup()
     gui.add(tScreen.setup("screengrab", false));
     gui.add(tScreenDebug.setup(" -> set window", false));
     gui.setPosition(ofGetWidth()-200, 0);
+    
+    // on startup
+    tWebcam = true;
+    useWebcam((bool&)tWebcam);
 }
 
 void ofApp::update()
@@ -74,7 +78,7 @@ void ofApp::draw()
             rect.set(0.5 * rect.x, 0.5 * rect.y, 0.5 * rect.width, 0.5 * rect.height);
         }
         ofDrawRectangle( rect );
-        ofDrawBitmapStringHighlight( d.label + ": " + ofToString(d.probability), rect.x, rect.y+20 );
+        ofDrawBitmapStringHighlight( d.label + ": " /*+ ofToString(d.probability)*/, rect.x, rect.y+20 );
     }
     ofPopStyle();
 
