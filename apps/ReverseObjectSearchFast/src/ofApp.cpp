@@ -42,7 +42,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    // check if loading/analyzing operations selected
+    // check if analyzing/loading
     if (toExtract) {
         extractFeaturesForDirectory(toExtractDir);
         runPCAonImageSet();
@@ -50,6 +50,7 @@ void ofApp::update(){
         toExtract = false;
     }
     if (toLoad) {
+        ofDrawBitmapStringHighlight("Loading saved vectors", 210, 13, ofColor(255,0,0));
         load(toLoadModel, baseDir);
         runKDTree();
         toLoad = false;
@@ -66,6 +67,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackground(0);
+    
     if (activeImage.isAllocated()) {
         drawResults();
     }
