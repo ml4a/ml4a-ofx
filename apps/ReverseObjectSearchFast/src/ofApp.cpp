@@ -38,10 +38,6 @@ void ofApp::setup(){
     guiView.add(bSampleImage.setup("query random image"));
     guiView.add(tWebcam.set("query webcam", false));
     guiView.add(tVideo.set("query video", false));
-    
-    baseDir = "/Users/gene/Teaching/ML4A/ml4a-ofx/apps/ReverseImageSearchFast/bin/data/mscoco";
-    load("/Users/gene/Teaching/ML4A/ml4a-ofx/models/mscoco_145k_rp64.dat", baseDir);
-    runKDTree();
 }
 
 //--------------------------------------------------------------
