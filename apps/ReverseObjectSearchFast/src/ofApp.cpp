@@ -7,11 +7,11 @@ void ofApp::setup(){
     ofSetBackgroundAuto(false);
 
     string cfgfile = ofToDataPath( "cfg/yolo9000.cfg" );
-    string weightfile = ofToDataPath("yolo9000.weights");
+    string weightfile = "/Users/gene/Downloads/yolo9000.weights";
     string nameslist = ofToDataPath( "cfg/9k.names" );
     darknet.init( cfgfile, weightfile, nameslist );
     
-    maxPCASamples.set("max PCA samples", 50000, 10, 100000);
+    maxSamples.set("max samples", 50000, 10, 100000);
     bExtractDir.addListener(this, &ofApp::extractDirectory);
     bSave.addListener(this, &ofApp::saveDialog);
     bLoad.addListener(this, &ofApp::loadDialog);
@@ -22,10 +22,10 @@ void ofApp::setup(){
     guiOptions.setup();
     guiOptions.setName("Options");
     guiOptions.setPosition(ofGetWidth()-200, 0);
-    guiOptions.add(numPCAcomponents.set("num PCA components", 40, 2, 1500));
+    guiOptions.add(numComponents.set("dimensionality", 40, 2, 1500));
     guiOptions.add(bExtractDir.setup("analyze directory"));
-    guiOptions.add(bSave.setup("save"));
-    guiOptions.add(bLoad.setup("load"));
+    guiOptions.add(bSave.setup("save vectors"));
+    guiOptions.add(bLoad.setup("load vectors"));
     
     guiView.setup();
     guiView.setName("View");
@@ -38,6 +38,10 @@ void ofApp::setup(){
     guiView.add(bSampleImage.setup("query random image"));
     guiView.add(tWebcam.set("query webcam", false));
     guiView.add(tVideo.set("query video", false));
+    
+    baseDir = "/Users/gene/Teaching/ML4A/ml4a-ofx/apps/ReverseImageSearchFast/bin/data/mscoco";
+    load("/Users/gene/Teaching/ML4A/ml4a-ofx/models/mscoco_145k_rp64.dat", baseDir);
+    runKDTree();
 }
 
 //--------------------------------------------------------------
@@ -45,7 +49,7 @@ void ofApp::update(){
     // check if analyzing/loading
     if (toExtract) {
         extractFeaturesForDirectory(toExtractDir);
-        runPCAonImageSet();
+        runDimReduction();
         runKDTree();
         toExtract = false;
     }
@@ -234,31 +238,31 @@ void ofApp::extractFeaturesForDirectory(string directory) {
 }
 
 //--------------------------------------------------------------
-void ofApp::runPCAonImageSet(){
-    vector<int> pcaIndexes;
-    for (int i=0; i<images.size(); i++) {pcaIndexes.push_back(i);}
-//    if (maxPCASamples < images.size()) {
-//        random_shuffle(pcaIndexes.begin(), pcaIndexes.end());
-//        pcaIndexes.resize(maxPCASamples);
+void ofApp::runDimReduction(){
+    vector<int> indexes;
+    for (int i=0; i<images.size(); i++) {indexes.push_back(i);}
+//    if (maxSamples < images.size()) {
+//        random_shuffle(indexes.begin(), indexes.end());
+//        indexes.resize(maxSamples);
 //    }
     
     rp.clearTrainingInstances();
-    for (int i=0; i<pcaIndexes.size(); i++) {
-        if (i%200==0) ofLog() << "copying encoding for image "<<i<<"/"<<pcaIndexes.size();
-        int idx = pcaIndexes[i];
+    for (int i=0; i<indexes.size(); i++) {
+        if (i%200==0) ofLog() << "copying encoding for image "<<i<<"/"<<indexes.size();
+        int idx = indexes[i];
         vector<double> sample(images[idx].encoding.begin(), images[idx].encoding.end());
         rp.addSample(sample);
     }
     
-    ofLog() << "Run PCA";
+    ofLog() << "Run dimensionality reduction";
     int startTime = ofGetElapsedTimef();
-    rp.randomProjection(numPCAcomponents);
-//    rp.pca(numPCAcomponents);
-    ofLog() << "Finished PCA in "<<(ofGetElapsedTimef() - startTime)<<" sec";
+    rp.randomProjection(numComponents);
+//    rp.pca(numComponents);
+    ofLog() << "Finished dimensionality reduction in "<<(ofGetElapsedTimef() - startTime)<<" sec";
     
     ofLog() << "Project original samples into reduced space";
     for (int i=0; i<images.size(); i++) {
-        if (i%200==0) ofLog() << "getting PCA-projected encoding for image "<<i<<"/"<<images.size();
+        if (i%200==0) ofLog() << "getting projected encoding for image "<<i<<"/"<<images.size();
         vector<double> sample(images[i].encoding.begin(), images[i].encoding.end());
         images[i].projectedEncoding = rp.project(sample);
     }

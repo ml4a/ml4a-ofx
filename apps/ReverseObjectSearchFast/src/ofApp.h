@@ -34,7 +34,7 @@ public:
     void getImagePathsRecursive(ofDirectory dir);
     void extractFeaturesForDirectory(string directory);
     
-    void runPCAonImageSet();
+    void runDimReduction();
     void runKDTree();
     
     void save(string path, bool featuresOnly=false);
@@ -70,7 +70,7 @@ public:
     ofxPanel guiOptions, guiView;
     ofxButton bExtractDir, bSave, bLoad, bSampleImage;
     ofParameter<bool> tWebcam, tVideo;
-    ofParameter<int> numResults, numPCAcomponents, maxPCASamples;
+    ofParameter<int> numResults, numComponents, maxSamples;
     ofParameter<float> thumbHeight, headerHeight;
     ofParameter<float> yoloThreshold, yoloMaxOverlap;
     
