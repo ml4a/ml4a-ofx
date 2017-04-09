@@ -4,13 +4,15 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    // this should point to the json file containing your audio files and tsne coordinates
+    string file = "drums.json";
+    
     gui.setup();
     gui.setName("Audio t-SNE");
     gui.add(maxDuration.set("maxDuration", 1.0, 0.1, 2.0));
     gui.add(mouseRadius.set("mouseRadius", 250, 100, 500));
     gui.add(pauseLength.set("pauseLength", 2.0, 0.2, 5.0));
     
-    string file = "points.json";
     ofxJSONElement result;
     bool parsingSuccessful = result.open(file);
     for (int i=0; i<result.size(); i++) {

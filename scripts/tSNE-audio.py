@@ -15,9 +15,8 @@ def process_arguments(args):
 	parser.add_argument('--input_dir', action='store', help='path to directory of input files')
 	parser.add_argument('--output_file', action='store', help='path to where to store t-SNE analysis in json')
 	parser.add_argument('--num_dimensions', action='store', default=2, help='dimensionality of t-SNE points (default 2)')
-	parser.add_argument('--perplexity', action='store', default=30, help='perplexity of t-SNE (default 30)')
+	parser.add_argument('--perplexity', action='store', default=150, help='perplexity of t-SNE (default 30)')
 	params = vars(parser.parse_args(args))
-	# do check here instead
 	return params
 
 def get_audio_files(path, extension):
@@ -43,7 +42,7 @@ def get_features(y, sr):
 	#var_mfcc = (var_mfcc-np.mean(var_mfcc))/np.std(var_mfcc)
 	#feature_vector = np.concatenate((mean_mfcc, var_mfcc))
 	feature_vector = np.concatenate((np.mean(mfcc,1), np.mean(delta_mfcc,1), np.mean(delta2_mfcc,1)))
-	feature_vector = (feature_vector-np.mean(feature_vector))/np.std(feature_vector)
+	feature_vector = (feature_vector-np.mean(feature_vector)) / np.std(feature_vector)
 	return feature_vector
 
 def segment_analyze_audio_file(source_audio, save_path_audio, hop_length=512):
