@@ -33,6 +33,8 @@ void ofApp::setup(){
         }
         thumbs.push_back(thumb);
     }
+    
+    position.set(-0.5 * ofGetWidth(), -0.5 * ofGetHeight());
 }
 
 //--------------------------------------------------------------
