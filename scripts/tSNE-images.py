@@ -43,7 +43,7 @@ def main(images_path, tsne_path, tsne_dimensions, tsne_perplexity, tsne_learning
         file_path = join(images_path,image_path)
         img = get_image(file_path, input_shape);
         if img is not None:
-            print "getting activations for %s %d/%d" % (image_path,idx,len(candidate_images))
+            print("getting activations for %s %d/%d" % (image_path,idx,len(candidate_images)))
             acts = feat_extractor.predict(img)[0]
             activations.append(acts)
             images.append(image_path)
