@@ -25,6 +25,7 @@ class ofApp : public ofBaseApp{
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
+        void mouseScrolled(ofMouseEventArgs &evt);
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
 		void mouseEntered(int x, int y);
@@ -34,10 +35,13 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
     vector<ImageThumb> thumbs;
-    
+
+    float maxDim;
+    ofVec2f position;
+
     ofParameter<float> scale;
     ofParameter<float> imageSize;
     ofxButton save;
     ofxPanel gui;
-
 };
+
