@@ -4,7 +4,7 @@
 void ofApp::setup(){
     
     // this should point to the json file containing your image files and tsne coordinates
-    string path = "/Users/gene/Downloads/myanimals.json";
+    string path = "points";
     maxDim = 200;
 
     // listen for scroll events, and save screenshot button press
