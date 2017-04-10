@@ -59,14 +59,14 @@ def segment_analyze_audio_file(source_audio, save_path_audio, hop_length=512):
 		file_path = '%s/onset_%d.wav' % (save_path_audio, i)
 		feature_vectors.append({"file":file_path, "features":feat})
 		librosa.output.write_wav(file_path, y_, sr)
-		print "analyzed %d/%d = %s"%(i, len(onsets)-1, file_path)
+		print("analyzed %d/%d = %s"%(i, len(onsets)-1, file_path))
 	return feature_vectors
 
 def analyze_directory(source_audio):	
 	files = get_audio_files(source_audio, 'wav')
 	feature_vectors = []
 	for i,f in enumerate(files):
-		print "analyze: %d/%d = %s"%(i, len(files), f)
+		print("analyze: %d/%d = %s"%(i, len(files), f))
 		y, sr = librosa.load(f)
 		feat = get_features(y, sr)
 		feature_vectors.append({"file":f, "features":feat})
