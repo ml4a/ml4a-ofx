@@ -47,8 +47,8 @@ void ofApp::setup(){
     predictionModeActive = false;
     trainingInputs = 13; //Number of mfcc's
     trainingData.setNumDimensions( trainingInputs );
-    MinDist minDist; //Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm;
-    pipeline.setClassifier( minDist );
+    Softmax softmax; //Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm;
+    pipeline.setClassifier( softmax );
     
     //OSC
     // default settings
