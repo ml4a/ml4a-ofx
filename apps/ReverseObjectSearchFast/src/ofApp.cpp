@@ -7,7 +7,7 @@ void ofApp::setup(){
     ofSetBackgroundAuto(false);
 
     string cfgfile = ofToDataPath( "cfg/yolo9000.cfg" );
-    string weightfile = ofToDataPath( "/yolo9000.weights" );
+    string weightfile = "/Users/gene/Downloads/yolo9000.weights";
     string nameslist = ofToDataPath( "cfg/9k.names" );
     darknet.init( cfgfile, weightfile, nameslist );
     

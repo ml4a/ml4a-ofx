@@ -29,6 +29,9 @@ void ofApp::setup(){
     guiView.add(numResults.set("num results", 20, 5, 100));
     guiView.add(tWebcam.set("query webcam", false));
     guiView.add(bSampleImage.setup("query random image"));
+    
+    load("/Users/gene/bin/ml4a/ReverseImageSearch/data_small.dat");
+    runKDTree();
 }
 
 //--------------------------------------------------------------

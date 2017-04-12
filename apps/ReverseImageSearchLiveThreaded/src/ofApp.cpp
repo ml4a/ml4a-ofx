@@ -5,10 +5,10 @@ void ofApp::setup(){
     ofSetWindowShape(1280, 720);
 
     ris.setup("/Users/gene/Code/of_v0.9.6_osx_release/apps/ofxaddons-bingo/libccv_instagram/bin/data/image-net-2012.sqlite3");
-//    ris.load("/Users/gene/bin/ml4a/ReverseImageSearch/data_vecs145k.dat");
-    ris.load("/Users/gene/bin/ml4a/ReverseImageSearch/data_small.dat");
+    ris.load("/Users/gene/bin/ml4a/ReverseImageSearch/data_vecs145k.dat");
+//    ris.load("/Users/gene/bin/ml4a/ReverseImageSearch/data_small.dat");
     ris.runKDTree();
-
+    
     tScreenDebug.addListener(this, &ofApp::toggleScreenGrabDebug);
     tWebcam.addListener(this, &ofApp::enableWebcam);
     tVideo.addListener(this, &ofApp::enableVideo);
@@ -36,7 +36,7 @@ void ofApp::setup(){
     guiView.add(tRunning.setup("running?", false));
     guiView.add(headerHeight.set("header height", 320, 100, 480));
     guiView.add(thumbHeight.set("thumb height", 240, 90, 420));
-    guiView.add(ris.numResults.set("num results", 20, 5, 100));
+    guiView.add(ris.numResults.set("num results", 32, 5, 100));
     guiView.add(bSampleImage.setup("query random image"));
     guiView.add(tWebcam.set("query webcam", false));
     guiView.add(tVideo.set("query video", false));

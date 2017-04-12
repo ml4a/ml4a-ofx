@@ -11,7 +11,7 @@
 
 // to-do
 //  - close file dialog
-//  - update status/progress on screen (separate thread?)
+//  - update status/progress on screen (or thread process)
 
 
 class ofApp : public ofBaseApp{
@@ -63,7 +63,6 @@ public:
     vector<double> distances;
     vector<float> activeEncoding;
 
-    ofImage queryImage;
     vector<ofImage> resultImages;
     
     ofxPanel guiOptions, guiView;

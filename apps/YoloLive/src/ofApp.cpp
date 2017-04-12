@@ -4,7 +4,7 @@ void ofApp::setup()
 {
     ofSetWindowShape(1280, 800);
     
-    retina = true;  // if using macbook retina
+    retina = false;  // if using macbook retina
     
     string cfgfile = ofToDataPath("cfg/yolo9000.cfg");
     string weightfile = "/Users/gene/Downloads/yolo9000.weights";
@@ -26,7 +26,7 @@ void ofApp::setup()
     
     // on startup
     tWebcam = true;
-    useWebcam((bool&)tWebcam);
+    useWebcam((bool&) tWebcam);
 }
 
 void ofApp::update()

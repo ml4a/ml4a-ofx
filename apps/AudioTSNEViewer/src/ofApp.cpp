@@ -5,7 +5,8 @@
 void ofApp::setup(){
     
     // this should point to the json file containing your audio files and tsne coordinates
-    string file = "drums.json";
+    // follow instructions in ml4a.github.io/guides/AudioTSNEViewer/ 
+    string file = "points.json";
     
     gui.setup();
     gui.setName("Audio t-SNE");

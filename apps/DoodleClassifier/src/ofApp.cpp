@@ -18,7 +18,7 @@ void ofApp::setup(){
     
     cam.setDeviceID(0);
     cam.setup(width, height);
-    ccv.setup("../../../../models/image-net-2012.sqlite3");
+    ccv.setup("../../../../data/image-net-2012.sqlite3");
     
     bAdd.addListener(this, &ofApp::addSamplesToTrainingSetNext);
     bTrain.addListener(this, &ofApp::trainClassifier);

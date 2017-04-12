@@ -10,8 +10,6 @@
 #include "ofMain.h"
 
 
-
-
 class ofApp : public ofBaseApp{
     
 public:
@@ -76,7 +74,6 @@ public:
     vector<double> distances;
     vector<float> activeEncoding;
     
-    ofImage queryImage;
     vector<ofImage> resultImages;
     
     ofxPanel guiOptions, guiView;

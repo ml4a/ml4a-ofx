@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetWindowShape(1440, 800);
+    ofSetWindowShape(1280, 720);
     
     ccv.setup("../../../../models/image-net-2012.sqlite3");
     
@@ -33,12 +33,13 @@ void ofApp::setup(){
     guiView.add(bSampleImage.setup("query random image"));
     guiView.add(tWebcam.set("query webcam", false));
     guiView.add(tVideo.set("query video", false));
-    guiView.add(tScreen.set("query screengrab (OSX)", false));
+    guiView.add(tScreen.set("query screengrab", false));
     guiView.add(tScreenDebug.set(" > set screengrab window", false));
     
-    screen.setup(ofGetWidth()-17, ofGetHeight()-10, true);
+    screen.setup(ofGetWidth()-17, ofGetHeight()-10, false);
     
-    load(ofToDataPath("data.dat"));
+//    load("/Users/gene/bin/ml4a/ReverseImageSearch/data_vecs145k.dat");
+    load("/Users/gene/bin/ml4a/ReverseImageSearch/data_small.dat");
     runKDTree();
 }
 

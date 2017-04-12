@@ -41,7 +41,7 @@ void ofApp::setup(){
     //Attempt to do post-processing -- see ClassLabelTimeOutFilterExample from ESP
     
     //Post-processing - Set the time between each prediction 
-pipeline.addPostProcessingModule( ClassLabelTimeoutFilter(timeOutFilter,ClassLabelTimeoutFilter::ALL_CLASS_LABELS) );
+    pipeline.addPostProcessingModule( ClassLabelTimeoutFilter(timeOutFilter,ClassLabelTimeoutFilter::ALL_CLASS_LABELS) );
     
     
     //Turn on the automatic data triming, this will remove any sections of none movement from the start and end of the training samples
@@ -69,7 +69,7 @@ pipeline.addPostProcessingModule( ClassLabelTimeoutFilter(timeOutFilter,ClassLab
     //grabber.setup(960,540);
     
     // Setup tracker
-    tracker.setup("../../../../models/shape_predictor_68_face_landmarks.dat");
+    tracker.setup("../../../../data/shape_predictor_68_face_landmarks.dat");
     
 }
 
