@@ -73,7 +73,7 @@ First you need to [download](http://mscoco.org/dataset/#download) the images. Do
 
 Unzip them and place the images into side-by-side folders 'train', 'test', and 'val' respectively. Make sure the images are unzipped this way because the trained vectors are saved for these relative paths. For example, the first image in the the `test` directory should be called something like `/PATH_TO_COCO/test/COCO_test2014_000000000014.jpg` where `/PATH_TO_COCO/` is the location of the folder containing the images.
 
-Next, download the saved vectors. There are 5 options, which vary according to their dimensionality: 16, 32, 64, 128, and 256. The tradeoff is that the bigger ones are more accurate, but are larger, take longer to load into memory, and query times are longer as well. I find 32 to be a good compromise but your results and the demands of your use case may vary.
+Next, download the saved vectors. There are 4 options, which vary according to their dimensionality: 16, 32, 64, and 128. The tradeoff is that the bigger ones are more accurate, but are larger, take longer to load into memory, and query times are longer as well. I find 32 to be a good compromise but your results and the demands of your use case may vary.
 
 All can be downloaded from Dropbox via the following links: 
 
@@ -81,7 +81,6 @@ All can be downloaded from Dropbox via the following links:
 - [mscoco_145k_rp32 (497 MB)](https://www.dropbox.com/s/y7uzxqfskes1n8t/mscoco_145k_rp32.dat?dl=0)
 - [mscoco_145k_rp64 (964 MB)](https://www.dropbox.com/s/x9df05b1xt35mbo/mscoco_145k_rp64.dat?dl=0)
 - [mscoco_145k_rp128 (1.9 GB)](https://www.dropbox.com/s/udf9qpu47r5rfpt/mscoco_145k_rp128.dat?dl=0)
-- [mscoco_145k_rp256 (3.8 GB)](https://www.dropbox.com/s/ipla5lwylojsxbo/mscoco_145k_rp256.dat?dl=0)
 
 Afterwards, you may load them as usual following the method in the previous section. Make sure `baseDir` is pointing towards the parent folder of `train`, `test`, and `val`.
 

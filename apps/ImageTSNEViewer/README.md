@@ -1,12 +1,17 @@
 ## image t-SNE viewer
 
+[A complete guide to this application can be found here](http://ml4a.github.io/guides/ImageTSNEViewer/)
+
+This addon requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
+
+The above instructions, more succinctly:
+
 First run tSNE-images.py script to generate the t-SNE. Specify a directory of images and some parameters:
 
-	python tSNE-images.py --vgg_path path/to/vgg/weights --images_path path/to/input/directory --output_path path/to/output/json
+	python tSNE-images.py --images_path path/to/input/directory --output_path path/to/output/json
 
 for example:
 
-	python tSNE-images.py --vgg_path ../datasets/vgg16_weights.h5 --images_path ../datasets/animals/ --output_path ../apps/ImageTSNEViewer/bin/data/points.json
+	python tSNE-images.py --images_path ../datasets/animals/ --output_path ../apps/ImageTSNEViewer/bin/data/points.json
 
-You can change the number of dimensions for the t-SNE with the parameter "--num_dimensions" but this ofApp is setup to just read 2 columns at the moment.
-
+Then run this application, where `path` has been set to the location of your JSON file generated above. Alternatively, name it `points.json` and place it in the data folder, which is the default path.

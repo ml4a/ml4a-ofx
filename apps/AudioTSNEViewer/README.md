@@ -1,4 +1,10 @@
-## audio t-SNE viewer
+## Audio t-SNE viewer
+
+[A complete guide to this application can be found here](http://ml4a.github.io/guides/AudioTSNEViewer/)
+
+This addon requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
+
+The above instructions, more succinctly:
 
 First run tSNE-audio.py script to generate the t-SNE. You can do it on an entire directory of sounds, or on a single sound which is segmented by onsets. To run it on a directory of sounds:
 
@@ -16,5 +22,4 @@ for example:
 
 	python tSNE-audio.py --input_file /Users/gene/Downloads/bohemianrhapsody.mp3 --output_audio_dir /Users/gene/Desktop/mySounds --output_file ../apps/AudioTSNEViewer/bin/data/points.json
 
-
-You can change the number of dimensions for the t-SNE with the parameter "--num_dimensions" but this ofApp is setup to just read 2 columns at the moment.
+Then run this application, where `path` has been set to the location of your JSON file generated above. Alternatively, name it `points.json` and place it in the data folder, which is the default path.
