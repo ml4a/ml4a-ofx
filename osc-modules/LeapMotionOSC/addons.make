@@ -1,0 +1,3 @@
+ofxControl
+ofxLeapMotion2
+ofxOsc

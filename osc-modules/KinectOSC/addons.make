@@ -1,0 +1,3 @@
+ofxControl
+ofxOpenNI
+ofxOsc

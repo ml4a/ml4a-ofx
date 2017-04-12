@@ -1,0 +1,4 @@
+ofxDarknet
+ofxGui
+ofxOpenCv
+ofxOsc
