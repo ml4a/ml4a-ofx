@@ -1,13 +1,11 @@
-
-
 #pragma once
 
 #include "ofMain.h"
 #include "ofxGrt.h"
 #include "ofxFaceTracker2.h"
+#include "ofxGui.h"
 #include <stdio.h>
 
-//State that we want to use the GRT namespace
 using namespace GRT;
 
 #define PRE_RECORDING_COUNTDOWN_TIME 500
@@ -18,11 +16,20 @@ class ofApp : public ofBaseApp{
 public:
     
     enum RegressifierType{ LINEAR_REGRESSION=0, LOGISTIC_REGRESSION, NEURAL_NET, NUM_REGRESSIFIERS };
-
-    
     void setup();
     void update();
     void draw();
+    
+    void record();
+    void trainClassifier();
+    void save();
+    void load();
+    void clear();
+    void pause();
+    
+    void rawToogled(bool & state);
+    void gestureToggled(bool & state);
+    void orientationToggled(bool & state);
     
     void keyPressed  (int key);
     void keyReleased(int key);
@@ -36,7 +43,6 @@ public:
     
     bool setRegressifier( const int type );
     
-    //Create some variables for the demo
     RegressionData trainingData;      		//This will store our training data
     GestureRecognitionPipeline pipeline;        //This is a wrapper for our classifier and any pre/post processing modules
     bool recordTrainingData;                                //This is a flag that keeps track of when we should record training data
@@ -44,7 +50,7 @@ public:
     bool predictionModeActive;
     bool drawInfo;
     
-        GRT::VectorFloat targetVector;              //This will hold the current label for when we are training the classifier //DON'T KNOW IF IT IS NEEDED??
+        GRT::VectorFloat targetVector;             //This will hold the current label for when we are training the classifier
     
     string infoText;                            //This string will be used to draw some info messages to the main app window
     
@@ -55,9 +61,6 @@ public:
 
     Timer trainingTimer;
 
-    float rectW;
-    float rectH;
-    
     string regressifierTypeToString( const int type ){
         switch( type ){
             case LINEAR_REGRESSION:
@@ -74,8 +77,7 @@ public:
     }
     
     
-    //FaceTracker2 stuff
-    
+    //FaceTracker2
     enum inputSelector{ GESTUREINPUTS=5, ORIENTATIONINPUTS=9, RAWINPUTS=136 };
     
     int trainingInputs = 5;
@@ -90,24 +92,15 @@ public:
     
     float getGesture (Gesture gesture);
     
-    void updateControlPoint(int inputSelector, float smoothFactor=0.0);
-    
     ofxFaceTracker2 tracker;
     ofVideoGrabber grabber;
+
     
-    bool rawBool;
-    bool gestureBool;
-    bool orientationBool;
-    
-    bool drawNumbers;
-    bool drawFace;
-    bool drawPose;
-    bool drawVideo;
-    
-    
-    //Debug stuff
-    int numOrientationValues = 0;
-    int numRawValues = 0;
-    
+    //GUI
+    ofxPanel gui;
+    ofxIntSlider rectWidth;
+    ofxIntSlider rectHeight;
+    ofxButton  bTrain, bSave, bLoad, bClear, bRecord, bPause;
+    ofxToggle rawBool, gestureBool, orientationBool;
     
 };
