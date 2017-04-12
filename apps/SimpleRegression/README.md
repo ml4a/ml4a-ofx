@@ -14,8 +14,4 @@
 
 5. Move your mouse around the canvas and see the changes in the width and height of the rectangle
 
-The video below takes you through the steps of the training process.
-
-<center>
-<iframe src="https://player.vimeo.com/video/212888761" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-</center>
+Tutorial video: https://player.vimeo.com/video/212888761 
