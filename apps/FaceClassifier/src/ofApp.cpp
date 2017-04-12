@@ -51,7 +51,7 @@ void ofApp::setup(){
     drawNumbers = false;
     drawFace = true;
     drawPose = false;
-    drawVideo = false;
+    drawVideo = true;
     
     // Setup grabber
     grabber.setup(1280,720);

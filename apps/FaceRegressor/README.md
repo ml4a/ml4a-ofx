@@ -1,7 +1,14 @@
 ## FaceRegressor
 
- Example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
+[A complete guide to this application can be found here](http://ml4a.github.io/guides/FaceRegressor/)
+
+Example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
  Inputs are your selected facial features (gestures, orientation and/or raw points). Outputs are width and height of a rectangle. 
+
+This application requires the following addons:
+- [ofxCv](https://github.com/kylemcdonald/ofxCv)
+- [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2)
+- [ofxGrt](https://github.com/nickgillian/ofxGrt)
  
 ### Instructions:
 1. Set the height and width of the rectangle using [+], [-], [1] and [2] keys
