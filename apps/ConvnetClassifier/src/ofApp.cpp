@@ -2,10 +2,10 @@
 
 const ofColor backgroundPlotColor = ofColor(50,50,50,255);
 
+//--------------------------------------------------------------
 void ofApp::setup() {
-    ofSetWindowShape(640, 575);
+    ofSetWindowShape(640, 480);
     cam.initGrabber(320, 240);
-    
     
     largeFont.load("verdana.ttf", 12, true, true);
     largeFont.setLineHeight(14.0f);
@@ -26,15 +26,37 @@ void ofApp::setup() {
     //Set the inputs
     trainingData.setNumDimensions( 4096 );
     
-    //set the default classifier
-    setClassifier( SVM_LINEAR );
-    
+    KNN knn; /*Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm; */
+    pipeline.setClassifier( knn );
     
     ccv.setup("../../../../data/image-net-2012.sqlite3");
     if (!ccv.isLoaded()) return;
     
+    //OSC
+    // default settings
+    oscDestination = DEFAULT_OSC_DESTINATION;
+    oscAddress = DEFAULT_OSC_ADDRESS;
+    oscPort = DEFAULT_OSC_PORT;
+    sender.setup(oscDestination, oscPort);
+    
+    //GUI
+    bTrain.addListener(this, &ofApp::trainClassifier);
+    bSave.addListener(this, &ofApp::save);
+    bLoad.addListener(this, &ofApp::load);
+    bClear.addListener(this, &ofApp::clear);
+    
+    gui.setup();
+    gui.add(sliderClassLabel.setup("Class Label", 1, 1, 9));
+    gui.add(tRecord.setup("Record", false));
+    gui.add(bTrain.setup("Train"));
+    gui.add(bSave.setup("Save"));
+    gui.add(bLoad.setup("Load"));
+    gui.add(bClear.setup("Clear"));
+    gui.setPosition(10,10);
+    
 }
 
+//--------------------------------------------------------------
 void ofApp::update() {
     if (!ccv.isLoaded()) {
         ofDrawBitmapString("Network file not found! Check your data folder to make sure it exists.", 20, 20);
@@ -43,342 +65,165 @@ void ofApp::update() {
     
     cam.update();
     
-
     VectorFloat inputVector(4096);
+    featureEncoding = ccv.encode(cam, ccv.numLayers()-1);
     
-
-        featureEncoding = ccv.encode(cam, ccv.numLayers()-1);
-        for (int i=0; i<featureEncoding.size(); i++) {
-            inputVector[i] =  featureEncoding[i];
-        }
-    
-    
-    
-    
-    //Update the training mode if needed
-    if( trainingModeActive ){
-        
-        //Check to see if the countdown timer has elapsed, if so then start the recording
-        if( !recordTrainingData ){
-            if( trainingTimer.timerReached() ){
-                recordTrainingData = true;
-                trainingTimer.start( RECORDING_TIME );
-            }
-        }else{
-            //We should be recording the training data - check to see if we should stop the recording
-            if( trainingTimer.timerReached() ){
-                trainingModeActive = false;
-                recordTrainingData = false;
-            }
-        }
-        
-        if( recordTrainingData ){
-            
-            if( !trainingData.addSample(trainingClassLabel, inputVector) ){
-                infoText = "WARNING: Failed to add training sample to training data!";
-            }
-        }
+    for (int i=0; i<featureEncoding.size(); i++) {
+        inputVector[i] =  featureEncoding[i];
     }
     
-    //Update the prediction mode if active
+    if( tRecord ) {
+        trainingData.addSample( sliderClassLabel, inputVector );
+    }
+    
     if( predictionModeActive ){
-        
-        
         if( pipeline.predict( inputVector ) ){
             predictedClassLabel = pipeline.getPredictedClassLabel();
             predictionPlot.update( pipeline.getClassLikelihoods() );
-            
+            sendOSC();
         }else{
             infoText = "ERROR: Failed to run prediction!";
         }
     }
 }
 
-
+//--------------------------------------------------------------
 void ofApp::draw() {
-
-    ofBackground(200);
-
     
+    ofBackground(150);
     ofSetColor(255);
-    cam.draw(285, 225);
-    
-    
-    
-    int marginX = 5;
-    int marginY = 5;
-    int graphX = marginX;
-    int graphY = marginY;
-    int graphW = ofGetWidth() - graphX*2;
-    int graphH = 150;
+    cam.draw(270, 200);
     
     //Draw the info text
-    if( drawInfo ){
-        float infoX = marginX;
-        float infoW = 250;
-        float textX = 10;
-        float textY = marginY;
-        float textSpacer = smallFont.getLineHeight() * 1.5;
-        
-        ofFill();
-        ofSetColor(100,100,100);
-        ofDrawRectangle( infoX, 5, infoW, 565 );
-        ofSetColor( 255, 255, 255 );
-        
-        smallFont.drawString( "Convnet CLASSIFIER EXAMPLE", textX, textY +20); textY += textSpacer*2;
-        
-        smallFont.drawString( "[i]: Toogle Info", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[r]: Toggle Recording", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[l]: Load Model", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[s]: Save Model", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[c]: Clear Model", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[t]: Train Model", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[1,2,3...]: Set Class Label", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "Classifier: " + classifierTypeToString( classifierType ), textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[n] null rejection: " + ofToString(nullRejection), textX, textY ); textY += textSpacer;
-        textY += textSpacer;
-        
-        smallFont.drawString( "Class Label: " + ofToString( trainingClassLabel ), textX, textY ); textY += textSpacer;
-        smallFont.drawString( "Recording: " + ofToString( recordTrainingData ), textX, textY ); textY += textSpacer;
-        smallFont.drawString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), textX, textY ); textY += textSpacer;
-        textY += textSpacer;
-        
-        ofSetColor (255,204,0);
-        smallFont.drawString( infoText, textX, textY ); textY += textSpacer;
-        textY += textSpacer;
-        
-        textY += textSpacer;
-        
-        ofSetColor (255,255,255);
+    int graphX, graphY = 10;
+    int graphW = ofGetWidth() - graphX*2;
+    int graphH = 150;
+    float infoX = 10;
+    float infoW = 200;
+    float textX = 10;
+    float textY = gui.getHeight() + 10;
+    float textSpacer = smallFont.getLineHeight() * 1.5;
     
-        smallFont.drawString("INSTRUCTIONS", textX, textY ); textY += textSpacer;
-        smallFont.drawString("1. Press [r] to record some ", textX, textY ); textY += textSpacer;
-        smallFont.drawString("training examples", textX, textY ); textY += textSpacer;
-        smallFont.drawString("2. Press [1,2,3...] to switch class", textX, textY ); textY += textSpacer;
-        smallFont.drawString("3. Press [r] to record new samples", textX, textY ); textY += textSpacer;
-        smallFont.drawString("4. Press [t] to train the model", textX, textY ); textY += textSpacer;
-        
-        textY += textSpacer;
-        textY += textSpacer;
-        smallFont.drawString( "Framerate : "+ofToString(ofGetFrameRate()), textX, textY ); textY += textSpacer;
-        
-        //Update the graph position
-        graphX = infoX + infoW + 15;
-        graphW = ofGetWidth() - graphX - 15;
-    }
+    ofFill();
+    ofSetColor( 255, 255, 255 );
     
+    ofDrawBitmapString( "MFCCS CLASSIFIER EXAMPLE", textX, textY +20); textY += textSpacer*2;
+    ofDrawBitmapString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), textX, textY ); textY += textSpacer;
+    textY += textSpacer;
     
-    if( trainingModeActive ){
-        char strBuffer[1024];
-        if( !recordTrainingData ){
-            ofSetColor(255,150,0);
-            sprintf(strBuffer, "Training Mode Active \nGet Ready! Timer: %0.1f",trainingTimer.getSeconds());
-        }else{
-            ofSetColor(255,0,0);
-            sprintf(strBuffer, "Training Mode Active \nRecording! Timer: %0.1f",trainingTimer.getSeconds());
-        }
-        std::string txt = strBuffer;
-        ofRectangle bounds = hugeFont.getStringBoundingBox( txt, 0, 0 );
-        hugeFont.drawString(strBuffer, graphX, 510 );
-    }
+    ofDrawBitmapString( infoText, textX, textY ); textY += textSpacer;
     
+    //Draw the graph
+    graphX = infoX + infoW + 60;
+    graphW = 320;
     
-    //If the model has been trained, then draw this
-    if( pipeline.getTrained()){
+    if( pipeline.getTrained() ){
+        ofSetLineWidth(1);
         predictionPlot.draw( graphX, graphY, graphW, graphH ); graphY += graphH * 1.1;
-        
         std::string txt = "Predicted Class: " + ofToString( predictedClassLabel );
         ofRectangle bounds = hugeFont.getStringBoundingBox( txt, 0, 0 );
-        ofSetColor(0,0,255);
-        hugeFont.drawString( txt, graphX, 195 );
+        ofSetColor(0,255,0);
+        hugeFont.drawString( txt, 10, ofGetHeight() - bounds.height*3 );
     }
-
+    gui.draw();
 }
 
-void ofApp::keyPressed(int key) {
-    
-    infoText = "";
-    bool buildTexture = false;
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){ //Optional key interactions
     
     switch ( key) {
-        case 'r':
-            predictionModeActive = false;
-            trainingModeActive = true;
-            recordTrainingData = false;
-            trainingTimer.start( PRE_RECORDING_COUNTDOWN_TIME );
-            break;
         case '1':
-            trainingClassLabel = 1;
+            sliderClassLabel = 1;
             break;
         case '2':
-            trainingClassLabel = 2;
+            sliderClassLabel = 2;
             break;
         case '3':
-            trainingClassLabel = 3;
+            sliderClassLabel = 3;
             break;
         case '4':
-            trainingClassLabel = 4;
+            sliderClassLabel = 4;
             break;
         case '5':
-            trainingClassLabel = 5;
+            sliderClassLabel = 5;
             break;
         case '6':
-            trainingClassLabel = 6;
+            sliderClassLabel = 6;
             break;
         case '7':
-            trainingClassLabel = 7;
+            sliderClassLabel = 7;
             break;
         case '8':
-            trainingClassLabel = 8;
+            sliderClassLabel = 8;
             break;
         case '9':
-            trainingClassLabel = 9;
+            sliderClassLabel = 9;
             break;
             
-        case 'n':
-            nullRejection =! nullRejection;
-            setClassifier(this->classifierType % NUM_CLASSIFIERS ); //Is this solid?
-            break;
-            
-        case 't':
-            if( pipeline.train( trainingData ) ){
-                infoText = "Pipeline Trained";
-                std::cout << "getNumClasses: " << pipeline.getNumClasses() << std::endl;
-                predictionPlot.setup( 500, pipeline.getNumClasses(), "prediction likelihoods" );
-                predictionPlot.setDrawGrid( true );
-                predictionPlot.setDrawInfoText( true );
-                predictionPlot.setFont( smallFont );
-                predictionPlot.setBackgroundColor( backgroundPlotColor );
-                predictionModeActive = true;
-            }else infoText = "WARNING: Failed to train pipeline";
-            break;
         case 's':
-            if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
-                infoText = "Training data saved to file";
-            }else infoText = "WARNING: Failed to save training data to file";
+            save();
             break;
         case 'l':
-            if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
-                infoText = "Training data loaded from file";
-            }else infoText = "WARNING: Failed to load training data from file";
+            load();
+            break;
+        case 't':
+            trainClassifier();
             break;
         case 'c':
-            trainingData.clear();
-            infoText = "Training data cleared";
+            clear();
             break;
-        case 'i':
-            drawInfo = !drawInfo;
-            break;
-            
-        case OF_KEY_TAB:
-            setClassifier( ++this->classifierType % NUM_CLASSIFIERS );
+        case 'r':
+            tRecord =! tRecord;
             break;
             
         default:
             break;
-            
-            
     }
 }
 
+//--------------------------------------------------------------
+void ofApp::trainClassifier() {
+    ofLog(OF_LOG_NOTICE, "Training...");
+    tRecord = false;
+    if( pipeline.train( trainingData ) ){
+        infoText = "Pipeline Trained";
+        std::cout << "getNumClasses: " << pipeline.getNumClasses() << std::endl;
+        predictionPlot.setup( 500, pipeline.getNumClasses(), "prediction likelihoods" );
+        predictionPlot.setDrawGrid( true );
+        predictionPlot.setDrawInfoText( true );
+        predictionPlot.setFont( smallFont );
+        predictionPlot.setBackgroundColor( ofColor(50,50,50,255));
+        predictionModeActive = true;
+    }else infoText = "WARNING: Failed to train pipeline";
+    ofLog(OF_LOG_NOTICE, "Done training...");
+}
 
-bool ofApp::setClassifier( const int type ){
-    
-    AdaBoost adaboost;
-    DecisionTree dtree;
-    KNN knn;
-    GMM gmm;
-    ANBC naiveBayes;
-    MinDist minDist;
-    RandomForests randomForest;
-    Softmax softmax;
-    SVM svm;
-    
-    this->classifierType = type;
-    
-    switch( classifierType ){
-        case ADABOOST:
-            adaboost.enableNullRejection( nullRejection );
-            adaboost.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( adaboost );
-            break;
-        case DECISION_TREE:
-            dtree.enableNullRejection( nullRejection );
-            dtree.setNullRejectionCoeff( 3 );
-            dtree.setMaxDepth( 10 );
-            dtree.setMinNumSamplesPerNode( 3 );
-            dtree.setRemoveFeaturesAtEachSpilt( false );
-            pipeline.setClassifier( dtree );
-            break;
-        case KKN:
-            knn.enableNullRejection( nullRejection );
-            knn.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( knn );
-            break;
-        case GAUSSIAN_MIXTURE_MODEL:
-            gmm.enableNullRejection( nullRejection );
-            gmm.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( gmm );
-            break;
-        case NAIVE_BAYES:
-            naiveBayes.enableNullRejection( nullRejection );
-            naiveBayes.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( naiveBayes );
-            break;
-        case MINDIST:
-            minDist.enableNullRejection( nullRejection );
-            minDist.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( minDist );
-            break;
-        case RANDOM_FOREST_10:
-            randomForest.enableNullRejection( nullRejection );
-            randomForest.setNullRejectionCoeff( 3 );
-            randomForest.setForestSize( 10 );
-            randomForest.setNumRandomSplits( 2 );
-            randomForest.setMaxDepth( 10 );
-            randomForest.setMinNumSamplesPerNode( 3 );
-            randomForest.setRemoveFeaturesAtEachSpilt( false );
-            pipeline.setClassifier( randomForest );
-            break;
-        case RANDOM_FOREST_100:
-            randomForest.enableNullRejection( nullRejection );
-            randomForest.setNullRejectionCoeff( 3 );
-            randomForest.setForestSize( 100 );
-            randomForest.setNumRandomSplits( 2 );
-            randomForest.setMaxDepth( 10 );
-            randomForest.setMinNumSamplesPerNode( 3 );
-            randomForest.setRemoveFeaturesAtEachSpilt( false );
-            pipeline.setClassifier( randomForest );
-            break;
-        case RANDOM_FOREST_200:
-            randomForest.enableNullRejection( nullRejection );
-            randomForest.setNullRejectionCoeff( 3 );
-            randomForest.setForestSize( 200 );
-            randomForest.setNumRandomSplits( 2 );
-            randomForest.setMaxDepth( 10 );
-            randomForest.setMinNumSamplesPerNode( 3 );
-            randomForest.setRemoveFeaturesAtEachSpilt( false );
-            pipeline.setClassifier( randomForest );
-            break;
-        case SOFTMAX:
-            softmax.enableNullRejection( false );
-            softmax.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( softmax );
-            break;
-        case SVM_LINEAR:
-            svm.enableNullRejection( nullRejection );
-            svm.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( SVM(SVM::LINEAR_KERNEL) );
-            break;
-        case SVM_RBF:
-            svm.enableNullRejection( nullRejection );
-            svm.setNullRejectionCoeff( 3 );
-            pipeline.setClassifier( SVM(SVM::RBF_KERNEL) );
-            break;
-        default:
-            return false;
-            break;
-    }
-    
-    return true;
+//--------------------------------------------------------------
+void ofApp::save() {
+    if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
+        infoText = "Training data saved to file";
+    }else infoText = "WARNING: Failed to save training data to file";
+}
+
+//--------------------------------------------------------------
+void ofApp::load() {
+    if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
+        infoText = "Training data loaded from file";
+        trainClassifier();
+    }else infoText = "WARNING: Failed to load training data from file";
+}
+
+//--------------------------------------------------------------
+void ofApp::clear() {
+    trainingData.clear();
+    infoText = "Training data cleared";
+    predictionModeActive = false;
+}
+
+//--------------------------------------------------------------
+void ofApp::sendOSC() {
+    ofxOscMessage m;
+    m.setAddress(oscAddress);
+    m.addIntArg(pipeline.getPredictedClassLabel());
+    sender.sendMessage(m, false);
 }
