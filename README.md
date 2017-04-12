@@ -18,9 +18,22 @@ The [apps](https://github.com/ml4a/ml4a-ofx/tree/master/apps) folder contains a 
 
 
 
-
+tSNE live?
 
 ___
 
 addons
 
+ofxGui
+ofxOsc
+
+- [ofxCv](https://github.com/kylemcdonald/ofxCv)
+- [ofxCcv](https://github.com/kylemcdonald/ofxCcv)
+- [ofxDarknet](https://github.com/mrzl/ofxDarknet)
+- [ofxFaceTracker2]https://github.com/HalfdanJ/ofxFaceTracker2)
+- [ofxGrt](https://github.com/nickgillian/ofxGrt)
+- [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
+- [ofxLearn](https://github.com/genekogan/ofxLearn)
+- [ofxMaxim](https://github.com/falcon4ever/ofxMaxim)
+
+ofxMSATensorflow
