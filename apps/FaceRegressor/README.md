@@ -1,9 +1,9 @@
-##FaceRegressor
+## FaceRegressor
 
 Example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
 Inputs are your selected facial features (gestures, orientation and/or raw points). Outputs are width and height of a rectangle. 
  
-###Instructions:
+### Instructions:
 
 1. Set the height and width of the rectangle using the sliders
 
