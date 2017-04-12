@@ -43,15 +43,9 @@ void ofApp::setup(){
     setRegressifier( LINEAR_REGRESSION );
     
     grabber.setup(1280,720);
-<<<<<<< HEAD
-    //grabber.setup(960,540);
-    
-    // Setup tracker
     tracker.setup("../../../../data/shape_predictor_68_face_landmarks.dat");
-=======
-    tracker.setup("../../../../models/shape_predictor_68_face_landmarks.dat");
->>>>>>> b8b27de5a3b01aa7fc70d8e0d3ad0bcd0e05e443
-    
+
+
     //GUI
     bRecord.addListener(this, &ofApp::record);
     bTrain.addListener(this, &ofApp::trainClassifier);

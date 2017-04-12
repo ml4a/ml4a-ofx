@@ -1,7 +1,8 @@
 ## FaceRegressor
 
-<<<<<<< HEAD
 [A complete guide to this application can be found here](http://ml4a.github.io/guides/FaceRegressor/)
+
+[And a tutorial video](https://player.vimeo.com/video/212934622)
 
 Example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
  Inputs are your selected facial features (gestures, orientation and/or raw points). Outputs are width and height of a rectangle. 
@@ -10,10 +11,6 @@ This application requires the following addons:
 - [ofxCv](https://github.com/kylemcdonald/ofxCv)
 - [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2)
 - [ofxGrt](https://github.com/nickgillian/ofxGrt)
-=======
-Example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
-Inputs are your selected facial features (gestures, orientation and/or raw points). Outputs are width and height of a rectangle. 
->>>>>>> b8b27de5a3b01aa7fc70d8e0d3ad0bcd0e05e443
  
 ### Instructions:
 
@@ -28,5 +25,5 @@ Inputs are your selected facial features (gestures, orientation and/or raw point
 5. Move your face and see the changes in rectangle width and height
 
 
-Tutorial video: https://player.vimeo.com/video/212934622
+
 
