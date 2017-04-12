@@ -3,15 +3,14 @@
  The inputs are the x and y position of the mouse. The outputs are width and height of a rectangle.
  
  Instructions:
- 1) Set the height and width of the rectangle using [+], [-], [1] and [2] keys
- 2) Press [r] to record some training examples containing the x and y position of your mouse and the width and height of the rectangle.
+ 1) Set the height and width of the rectangle using the sliders
+ 2) Press record and use the countdown time to position your mouse. Once recording, your training examples will contain the x and y position of your mouse and the current width and height of the rectangle.
  3) Repeat step 1-2 with different width and height values for the rectangle and different mouse positions
- 4) Press [t] to train the model
+ 4) Press train to train the model
  5) Move your mouse around the canvas and see the changes in the width and height of the rectangle
-*/
+ */
 
 #include "ofApp.h"
-
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -35,137 +34,118 @@ void ofApp::setup(){
     //The input to the training data will be mouseX and mouseY
     trainingData.setInputAndTargetDimensions( 2, 2 );
     
-    
     //set the default classifier
     setRegressifier( LINEAR_REGRESSION );
-
     
     ofSetVerticalSync(true);
     
-    rectW = 100;
-    rectH = 100;
+    //GUI
+    bRecord.addListener(this, &ofApp::record);
+    bTrain.addListener(this, &ofApp::trainClassifier);
+    bSave.addListener(this, &ofApp::save);
+    bLoad.addListener(this, &ofApp::load);
+    bClear.addListener(this, &ofApp::clear);
+    trainingLabel.addListener(this, &ofApp::setTrainingLabel);
+    bPause.addListener(this, &ofApp::pause);
+    
+    gui.setup();
+    gui.add(rectWidth.setup("rect width", 100, 1, 500));
+    gui.add(rectHeight.setup("rect height", 100, 1, 500));
+    gui.add(trainingLabel.set("Training Label", 0, 0, regressifierNames.size()-1));
+    gui.add(bRecord.setup("Record"));
+    gui.add(bTrain.setup("Train"));
+    gui.add(bSave.setup("Save"));
+    gui.add(bLoad.setup("Load"));
+    gui.add(bClear.setup("Clear"));
+    gui.add(bPause.setup("Pause Prediction Mode"));
+    
+    //gui.add(tPause.setup("Pause Prediction Mode", false));
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
     
-        //Update the training mode if needed
-        if( trainingModeActive ){
-            
-            //Check to see if the countdown timer has elapsed, if so then start the recording
-            if( !recordTrainingData ){
-                if( trainingTimer.timerReached() ){
-                    recordTrainingData = true;
-                    trainingTimer.start( RECORDING_TIME );
-                }
-            }else{
-                //We should be recording the training data - check to see if we should stop the recording
-                if( trainingTimer.timerReached() ){
-                    trainingModeActive = false;
-                    recordTrainingData = false;
-                }
+    
+    //Update the training mode if needed
+    if( trainingModeActive ){
+        
+        //Check to see if the countdown timer has elapsed, if so then start the recording
+        if( !recordTrainingData ){
+            if( trainingTimer.timerReached() ){
+                recordTrainingData = true;
+                trainingTimer.start( RECORDING_TIME );
             }
-            
-            if( recordTrainingData ){
-                //Add the current sample to the training data
-                VectorFloat trainingSample(2);
-                trainingSample[0] = ofGetMouseX();
-                trainingSample[1] = ofGetMouseY();
-
-                VectorFloat targetVector(2);
-                targetVector[0] = rectW;
-                targetVector[1] = rectH;
-                
-                if( !trainingData.addSample(trainingSample,targetVector) ){
-                    infoText = "WARNING: Failed to add training sample to training data!";
-                }
+        }else{
+            //We should be recording the training data - check to see if we should stop the recording
+            if( trainingTimer.timerReached() ){
+                trainingModeActive = false;
+                recordTrainingData = false;
             }
         }
         
-        //Update the prediction mode if active
-        if( predictionModeActive ){
-            VectorFloat inputVector(2);
-            inputVector[0] = ofGetMouseX();
-            inputVector[1] = ofGetMouseY();
-
-            if( pipeline.predict( inputVector ) ){
-                rectW = pipeline.getRegressionData()[0];
-                rectH = pipeline.getRegressionData()[1];
-            }else{
-                infoText = "ERROR: Failed to run prediction!";
+        if( recordTrainingData ){
+            //Add the current sample to the training data
+            VectorFloat trainingSample(2);
+            trainingSample[0] = ofGetMouseX();
+            trainingSample[1] = ofGetMouseY();
+            
+            VectorFloat targetVector(2);
+            targetVector[0] = rectWidth;
+            targetVector[1] = rectHeight;
+            
+            if( !trainingData.addSample(trainingSample,targetVector) ){
+                infoText = "WARNING: Failed to add training sample to training data!";
             }
         }
     }
+    
+    //if (tPause) predictionModeActive = false;
+    
+    //Update the prediction mode if active
+    if( predictionModeActive ){
+        VectorFloat inputVector(2);
+        inputVector[0] = ofGetMouseX();
+        inputVector[1] = ofGetMouseY();
+        
+        if( pipeline.predict( inputVector ) ){
+            rectWidth = pipeline.getRegressionData()[0];
+            rectHeight = pipeline.getRegressionData()[1];
+        }else{
+            infoText = "ERROR: Failed to run prediction!";
+        }
+    }
+}
 
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    
     ofBackground(225, 225, 225);
     
-
+    ofSetRectMode(OF_RECTMODE_CENTER);
+    ofSetColor(255);
+    ofDrawRectangle(ofGetWidth()/2, ofGetHeight()/2, rectWidth, rectHeight);
+    
     if( trainingModeActive ){
+        char strBuffer[1024];
         if( !recordTrainingData ){
-            ofSetColor(255, 204, 0);
-            string txt = "PREP";
-            ofRectangle bounds = hugeFont.getStringBoundingBox(txt,0,0);
-            hugeFont.drawString(txt,ofGetWidth()-25-bounds.width,ofGetHeight()-25-bounds.height);
+            ofSetColor(255,150,0);
+            sprintf(strBuffer, "Training Mode Active \nGet Ready! Timer: %0.1f",trainingTimer.getSeconds());
         }else{
             ofSetColor(255,0,0);
-            string txt = "REC";
-            ofRectangle bounds = hugeFont.getStringBoundingBox(txt,0,0);
-            hugeFont.drawString(txt,ofGetWidth()-25-bounds.width,ofGetHeight()-25-bounds.height);
+            sprintf(strBuffer, "Training Mode Active \nRecording! Timer: %0.1f",trainingTimer.getSeconds());
         }
+        std::string txt = strBuffer;
+        ofRectangle bounds = hugeFont.getStringBoundingBox(txt,0,0);
+        hugeFont.drawString(txt,ofGetWidth()/4,ofGetHeight()-25-bounds.height);
     }
-
-    ofSetColor(255);
-    ofDrawRectangle(ofGetWidth()/2, ofGetHeight()/2, rectW, rectH);
     
+    ofSetColor(0);
+    ofDrawBitmapString("Num Samples: " + ofToString( trainingData.getNumSamples() ), 10, gui.getHeight() + 50 );
+    ofDrawBitmapString(infoText, 10, gui.getHeight() + 70 );
     
-    //Draw the info text
-    if( drawInfo ){
-        float textX = 10;
-        float textY = 25;
-        float textSpacer = smallFont.getLineHeight() * 1.5;
-        
-        ofFill();
-        ofSetColor(100,100,100);
-        ofDrawRectangle( 5, 5, 250, 360 );
-        ofSetColor( 255, 255, 255 );
-
-        largeFont.drawString( "GRT Regressifier Example", textX, textY ); textY += textSpacer*2;
-        smallFont.drawString( "[i]: Toogle Info", textX, textY ); textY += textSpacer;
-        
-        smallFont.drawString( "[-]: rectH-=10", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[+]: rectH+=10", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[1]: rectW-=10", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[2]: rectW+=10", textX, textY ); textY += textSpacer;
-        
-        smallFont.drawString( "[r]: Record Sample", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[t]: Train Model", textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[c]: Clear Training Data", textX, textY ); textY += textSpacer;
-        textY += textSpacer;
-        
-        
-        smallFont.drawString( "Classifier: " + regressifierTypeToString( regressifierType ), textX, textY ); textY += textSpacer;
-        smallFont.drawString( "[tab]: Select Regressifier", textX, textY ); textY += textSpacer;
-        
-        smallFont.drawString( "Recording: " + ofToString( recordTrainingData ), textX, textY ); textY += textSpacer;
-        smallFont.drawString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), textX, textY ); textY += textSpacer;
-        textY += textSpacer;
-        
-        smallFont.drawString( infoText, textX, textY ); textY += textSpacer;
-        
-        smallFont.drawString( "rectW:" + ofToString(rectW), textX, textY ); textY += textSpacer;
-        smallFont.drawString( "rectH:" + ofToString(rectH), textX, textY ); textY += textSpacer;
-        
-        
-        ofSetColor(0);
-        smallFont.drawString( " INSTRUCTIONS: \n \n Train a model and do real time regression with ofxGrt. Inputs: x and y position of the mouse. Outputs: width and height of a rectangle. \n \n 1) Set the height and width of the rectangle using [+], [-], [1] and [2] keys \n \n 2) Press [r] to record some training examples containing the x and y position of your mouse and the width and height of the rectangle \n \n 3) Repeat step 1-2 with different width and height values for the rectangle and different mouse positions \n \n 4) Press [t] to train the model \n \n 5)  Move your mouse around the canvas and see the changes in the width and height of the rectangle",  textX, 580 );
-        
-    }
+    gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -200,27 +180,9 @@ void ofApp::keyPressed(int key){
         case 'c':
             trainingData.clear();
             infoText = "Training data cleared";
+            predictionModeActive = false;
             break;
-        case 'i':
-            drawInfo = !drawInfo;
-            break;
-        case '-':
-            rectH-=10;
-            std::cout << "rectH: " << rectH << std::endl;
-            break;
-        case '+':
-            rectH+=10;
-            std::cout << "rectH: " << rectH << std::endl;
-            break;
-        case '1':
-            rectW-=10;
-            std::cout << "rectW: " << rectW << std::endl;
-            break;
-        case '2':
-            rectW+=10;
-            std::cout << "rectW: " << rectW << std::endl;
-            break;
-        
+            
         case OF_KEY_TAB:
             setRegressifier( ++this->regressifierType % NUM_REGRESSIFIERS );
             break;
@@ -231,6 +193,56 @@ void ofApp::keyPressed(int key){
     
 }
 
+//--------------------------------------------------------------
+void ofApp::record() {
+    predictionModeActive = false;
+    trainingModeActive = true;
+    recordTrainingData = false;
+    trainingTimer.start( PRE_RECORDING_COUNTDOWN_TIME );
+}
+
+//--------------------------------------------------------------
+void ofApp::trainClassifier() {
+    if( pipeline.train( trainingData ) ){
+        infoText = "Pipeline Trained";
+        predictionModeActive = true;
+    }else infoText = "WARNING: Failed to train pipeline";
+    ofLog(OF_LOG_NOTICE, "Done training...");
+}
+
+//--------------------------------------------------------------
+void ofApp::save() {
+    if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
+        infoText = "Training data saved to file";
+    }else infoText = "WARNING: Failed to save training data to file";
+    
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::load() {
+    if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
+        infoText = "Training data loaded from file";
+        trainClassifier();
+    }else infoText = "WARNING: Failed to load training data from file";
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::clear() {
+    trainingData.clear();
+    infoText = "Training data cleared";
+    predictionModeActive = false;
+}
+
+//--------------------------------------------------------------
+void ofApp::pause() {
+    infoText = "Model paused. Add more samples or retrain.";
+    predictionModeActive = false;
+}
+
+
+//--------------------------------------------------------------
 bool ofApp::setRegressifier( const int type ){
     
     LinearRegression linearRegression;
@@ -251,7 +263,7 @@ bool ofApp::setRegressifier( const int type ){
         case NEURAL_NET:
         {
             unsigned int numInputNeurons = trainingData.getNumInputDimensions();
-            unsigned int numHiddenNeurons = 10; 
+            unsigned int numHiddenNeurons = 10;
             unsigned int numOutputNeurons = 1; //1 as we are using multidimensional regression
             
             //Initialize the MLP
@@ -280,6 +292,12 @@ bool ofApp::setRegressifier( const int type ){
     return true;
 }
 
+
+//--------------------------------------------------------------
+void ofApp::setTrainingLabel(int & label_) {
+    trainingLabel.setName(regressifierNames[label_]);
+    setRegressifier(label_);
+}
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -317,6 +335,6 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
     
 }
