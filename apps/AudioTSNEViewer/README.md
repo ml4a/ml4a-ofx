@@ -2,7 +2,7 @@
 
 [A complete guide to this application can be found here](http://ml4a.github.io/guides/AudioTSNEViewer/)
 
-This addon requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
+This app requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
 
 The above instructions, more succinctly:
 

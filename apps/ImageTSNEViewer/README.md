@@ -1,12 +1,12 @@
-## image t-SNE viewer
+## Image t-SNE viewer
 
 [A complete guide to this application can be found here](http://ml4a.github.io/guides/ImageTSNEViewer/)
 
-This addon requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
+This app requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
 
 The above instructions, more succinctly:
 
-First run tSNE-images.py script to generate the t-SNE. Specify a directory of images and some parameters:
+First run `tSNE-images.py` script to generate the t-SNE. Specify a directory of images and some parameters:
 
 	python tSNE-images.py --images_path path/to/input/directory --output_path path/to/output/json
 

@@ -1,6 +1,8 @@
 ## Reverse Image Search
 
-First run analyze-images.py script to extract features for your images and record a list of nearest neighbors for each image. Specify a directory of images and some parameters:
+This app requires [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
+
+First run `analyze-images.py` script to extract features for your images and record a list of nearest neighbors for each image. Specify a directory of images and some parameters:
 
  	python analyze-images.py --vgg_path path/to/vgg/weights --images_path path/to/input/directory --output_path path/to/output/json
 
