@@ -6,7 +6,7 @@ void ofApp::setup() {
     ofSetWindowTitle("ConvnetOSC");
     cam.initGrabber(320, 240);
     
-    ccv.setup("image-net-2012.sqlite3");
+    ccv.setup("../../../../data/image-net-2012.sqlite3");
     if (!ccv.isLoaded()) return;
     
     // default settings
@@ -36,6 +36,9 @@ void ofApp::setup() {
 
 void ofApp::update() {
     cam.update();
+    if (cam.isFrameNew() && sending) {
+        sendOsc();
+    }
 }
 
 void ofApp::sendOsc() {
@@ -58,7 +61,10 @@ void ofApp::keyPressed(int key) {
 
 void ofApp::draw() {
     if (!ccv.isLoaded()) {
+        ofPushStyle();
+        ofSetColor(ofColor::red);
         ofDrawBitmapString("Network file not found!\nCheck your data folder to make sure it exists.", 20, 20);
+        ofPopStyle();
         return;
     }
     
@@ -73,8 +79,6 @@ void ofApp::draw() {
         txt += "osc address \""+oscAddressRoot+"\"\n";
         txt += "press spacebar or click 'sending' to turn off sending.";
         ofDrawBitmapString(txt, 20, 296);
-        
-        sendOsc();
     }
     else {
         ofBackground(255, 0, 0);
