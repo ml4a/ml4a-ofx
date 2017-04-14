@@ -1,6 +1,6 @@
 ## ConvnetClassifier
 
-[A complete guide to this application can be found here](http://ml4a.github.io/guides/AudioTSNEViewer/)
+[A complete guide to this application can be found here](http://ml4a.github.io/guides/ConvnetClassifier/)
 
 Example showing how to train a model and do real time classification with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ConvNet](https://github.com/ml4a/ml4a-ofx/tree/master/apps).
 
@@ -16,9 +16,9 @@ To do:
 - Run the convnet part in a separate thread
  
 ### Instructions:
-1. Press [r] to record some training examples
-2. Press [1,2,3...] to switch class
-3. Press [r] to record new samples
-4. Press [t] to train the model
+1. Click [record] or press [r] to record some training examples
+2. Set the slider or press [1,2,3...] to switch class
+3. Click [record] or press [r] to record new samples
+4. Click [train] or press [t] to train the model
 
 

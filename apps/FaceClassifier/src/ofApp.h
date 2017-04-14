@@ -3,13 +3,17 @@
 #include "ofMain.h"
 #include "ofxGrt.h"
 #include "ofxFaceTracker2.h"
+#include "ofxGui.h"
+#include "ofxOsc.h"
 #include <stdio.h>
 
 //State that we want to use the GRT namespace
 using namespace GRT;
 
-#define PRE_RECORDING_COUNTDOWN_TIME 2000
-#define RECORDING_TIME 5000
+// where to send osc messages by default
+#define DEFAULT_OSC_DESTINATION "localhost"
+#define DEFAULT_OSC_ADDRESS "/classification"
+#define DEFAULT_OSC_PORT 8000
 
 class ofApp : public ofBaseApp{
 
@@ -19,16 +23,20 @@ public:
     void setup();
     void update();
     void draw();
+    
+    void trainClassifier();
+    void save();
+    void load();
+    void clear();
+    void pause();
+    
+    void rawToogled(bool & state);
+    void gestureToggled(bool & state);
+    void orientationToggled(bool & state);
 
+    void sendOSC();
+    
     void keyPressed  (int key);
-    void keyReleased(int key);
-    void mouseMoved(int x, int y );
-    void mouseDragged(int x, int y, int button);
-    void mousePressed(int x, int y, int button);
-    void mouseReleased(int x, int y, int button);
-    void windowResized(int w, int h);
-    void dragEvent(ofDragInfo dragInfo);
-    void gotMessage(ofMessage msg);
     
     bool setClassifier( const int type );
     
@@ -44,69 +52,16 @@ public:
     UINT trainingClassLabel;                    //This will hold the current label for when we are training the classifier
     UINT predictedClassLabel;
     string infoText;                            //This string will be used to draw some info messages to the main app window
-    ofTrueTypeFont largeFont;
     ofTrueTypeFont smallFont;
     ofTrueTypeFont hugeFont;
-    ofxGrtTimeseriesPlot plot1;
-    ofxGrtTimeseriesPlot plot2;
     ofxGrtTimeseriesPlot predictionPlot;
-    Timer trainingTimer;
-    
-    float lastX = 0;
-    float lastY = 0;
-    float lastTic = 0;
-    
-    bool nullRejection = false;
     
     int classifierType;
     
-    string classifierTypeToString( const int type ){
-        switch( type ){
-            case ADABOOST:
-                return "ADABOOST";
-                break;
-            case DECISION_TREE:
-                return "DECISION_TREE";
-                break;
-            case KKN:
-                return "KKN";
-                break;
-            case GAUSSIAN_MIXTURE_MODEL:
-                return "GMM";
-                break;
-            case NAIVE_BAYES:
-                return "NAIVE_BAYES";
-                break;
-            case MINDIST:
-                return "MINDIST";
-                break;
-            case RANDOM_FOREST_10:
-                return "RANDOM_FOREST_10";
-                break;
-            case RANDOM_FOREST_100:
-                return "RANDOM_FOREST_100";
-                break;
-            case RANDOM_FOREST_200:
-                return "RANDOM_FOREST_200";
-                break;
-            case SOFTMAX:
-                return "SOFTMAX";
-                break;
-            case SVM_LINEAR:
-                return "SVM_LINEAR";
-                break;
-            case SVM_RBF:
-                return "SVM_RBF";
-                break;
-        }
-        return "UNKOWN_CLASSIFIER";
-    }
-    
     //FaceTracker2 stuff
-    
     enum inputSelector{ GESTUREINPUTS=5, ORIENTATIONINPUTS=9, RAWINPUTS=136 };
     
-    int trainingInputs = 5;
+    int trainingInputs;
     
     enum Gesture {
         MOUTH_WIDTH, MOUTH_HEIGHT,
@@ -118,19 +73,17 @@ public:
     
     float getGesture (Gesture gesture);
     
-    //void updateControlPoint(int inputSelector, float smoothFactor=0.0);
-    
     ofxFaceTracker2 tracker;
     ofVideoGrabber grabber;
     
-    bool rawBool;
-    bool gestureBool;
-    bool orientationBool;
+    //OSC
+    ofxOscSender sender;
+    string oscDestination, oscAddress;
+    int oscPort;
     
-    bool drawNumbers;
-    bool drawFace;
-    bool drawPose;
-    bool drawVideo;
-    
-    
+    //GUI
+    ofxPanel gui;
+    ofxIntSlider sliderClassLabel;
+    ofxButton  bTrain, bSave, bLoad, bClear, bRecord, bPause;
+    ofxToggle tRecord, rawBool, gestureBool, orientationBool;
 };

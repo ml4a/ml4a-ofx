@@ -3,22 +3,29 @@
 #include "ofMain.h"
 #include "ofxCcv.h"
 #include "ofxGrt.h"
+#include "ofxGui.h"
+#include "ofxOsc.h"
 
-#define PRE_RECORDING_COUNTDOWN_TIME 2000
-#define RECORDING_TIME 5000
-
+// where to send osc messages by default
+#define DEFAULT_OSC_DESTINATION "localhost"
+#define DEFAULT_OSC_ADDRESS "/classification"
+#define DEFAULT_OSC_PORT 8000
 
 class ofApp : public ofBaseApp {
 public:
-        enum ClassifierType{ ADABOOST=0, DECISION_TREE, KKN, GAUSSIAN_MIXTURE_MODEL, NAIVE_BAYES, MINDIST, RANDOM_FOREST_10, RANDOM_FOREST_100, RANDOM_FOREST_200, SOFTMAX, SVM_LINEAR, SVM_RBF, NUM_CLASSIFIERS };
     
     void setup();
     void update();
     void draw();
     
-    void sendOsc();
-    void keyPressed(int key);
+    void trainClassifier();
+    void save();
+    void load();
+    void clear();
     
+    void sendOSC();
+    
+    void keyPressed(int key);
     
     ofVideoGrabber cam;
     
@@ -45,59 +52,21 @@ public:
     ofTrueTypeFont largeFont;
     ofTrueTypeFont smallFont;
     ofTrueTypeFont hugeFont;
-    ofxGrtTimeseriesPlot plot1;
-    ofxGrtTimeseriesPlot plot2;
     ofxGrtTimeseriesPlot predictionPlot;
     Timer trainingTimer;
     
-    float lastX = 0;
-    float lastY = 0;
-    float lastTic = 0;
+    //OSC
+    ofxOscSender sender;
+    string oscDestination, oscAddress;
+    int oscPort;
     
-    bool nullRejection = false;
+    //GUI
+    ofxPanel gui;
+    ofxIntSlider sliderClassLabel;
     
-    int classifierType;
+    ofxButton bTrain, bSave, bLoad, bClear;
+    ofxToggle tRecord;
     
-    string classifierTypeToString( const int type ){
-        switch( type ){
-            case ADABOOST:
-                return "ADABOOST";
-                break;
-            case DECISION_TREE:
-                return "DECISION_TREE";
-                break;
-            case KKN:
-                return "KKN";
-                break;
-            case GAUSSIAN_MIXTURE_MODEL:
-                return "GMM";
-                break;
-            case NAIVE_BAYES:
-                return "NAIVE_BAYES";
-                break;
-            case MINDIST:
-                return "MINDIST";
-                break;
-            case RANDOM_FOREST_10:
-                return "RANDOM_FOREST_10";
-                break;
-            case RANDOM_FOREST_100:
-                return "RANDOM_FOREST_100";
-                break;
-            case RANDOM_FOREST_200:
-                return "RANDOM_FOREST_200";
-                break;
-            case SOFTMAX:
-                return "SOFTMAX";
-                break;
-            case SVM_LINEAR:
-                return "SVM_LINEAR";
-                break;
-            case SVM_RBF:
-                return "SVM_RBF";
-                break;
-        }
-        return "UNKOWN_CLASSIFIER";
-    }
+   
     
 };
