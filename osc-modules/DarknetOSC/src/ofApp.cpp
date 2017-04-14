@@ -2,37 +2,102 @@
 
 void ofApp::setup()
 {
-    std::string cfgfile = ofToDataPath( "cfg/darknet.cfg" );
-    std::string weightfile = "/Users/gene/Learn/darknet_old/darknet.weights";
-    std::string nameslist = ofToDataPath( "cfg/imagenet.shortnames.list" );
+    ofSetWindowShape(540, 360);
+    ofSetWindowTitle("DarknetOSC");
     
-//    darknet.init( cfgfile, weightfile, nameslist );
+    cam.initGrabber(320, 240);
     
-    video.setDeviceID( 0 );
-    video.setDesiredFrameRate( 30 );
-    video.initGrabber( 640, 480 );
+    // initialize darknet
+    string cfgfile = ofToDataPath("../../../../data/darknet/darknet.cfg");
+    string weightfile = ofToDataPath("../../../../data/darknet/darknet.weights");
+    string nameslist = ofToDataPath( "../../../../data/darknet/imagenet.shortnames.list");
+    darknet.init( cfgfile, weightfile, nameslist );
+    
+    oscDestination = OSC_DESTINATION_DEFAULT;
+    oscAddressRoot = OSC_ADDRESS_ROOT_DEFAULT;
+    oscPort = OSC_PORT_DEFAULT;
+    
+    // load settings from file
+    ofXml xml;
+    xml.load("settings_darknet.xml");
+    xml.setTo("DarknetOSC");
+    oscDestination = xml.getValue("ip");
+    oscPort = ofToInt(xml.getValue("port"));
+    oscAddressRoot = xml.getValue("address");
+    bool sendClassificationsByDefault = (xml.getValue("sendClassificationsByDefault") == "1");
+    
+    // setup osc
+    osc.setup(oscDestination, oscPort);
+    sending = false;
+    
+    // setup gui
+    gui.setup();
+    gui.setName("DarknetOSC");
+    gui.add(sending.set("sending", false));
+    gui.add(sendClassifications.setup("send classifications", sendClassificationsByDefault));
+}
+
+void ofApp::sendOsc() {
+    classifications = darknet.classify(cam.getPixels());
+    
+    int idxLayer = sendClassifications ? darknet.getLayerNames().size() - 3 : darknet.getLayerNames().size() - 4;
+    
+    float * activations = get_network_output_layer_gpu( darknet.getNetwork(), idxLayer);
+    auto layer = darknet.getNetwork().layers[idxLayer];
+    int numFeatures = layer.out_c * layer.out_h * layer.out_w;
+    
+    msg.clear();
+    msg.setAddress(oscAddressRoot);
+    for (int i=0; i<numFeatures; i++) {
+        msg.addFloatArg(activations[i]);
+    }
+    osc.sendMessage(msg);
 }
 
 void ofApp::update()
 {
-//    ofLog() << ofGetFrameRate();
-    video.update();
+    cam.update();
+    if (cam.isFrameNew() && sending) {
+        sendOsc();
+    }
 }
 
 void ofApp::draw()
 {
-    video.draw( 0, 0 );
-    /*
-    if( video.isFrameNew() ) {
-        classifications = darknet.classify( video.getPixels() );
+    if (!darknet.isLoaded()) {
+        ofDrawBitmapString("Network file not found!\nCheck your data folder to make sure it exists.", 20, 20);
+        return;
     }
     
-    int offset = 20;
-    for( classification c : classifications )
-    {
-        std::stringstream ss;
-        ss << c.label << " : " << ofToString( c.probability );
-        ofDrawBitmapStringHighlight( ss.str(), 20, offset );
-        offset += 20;
-    }*/
+    if (sending) {
+        ofBackground(0, 255, 0);
+        
+        ofSetColor(0, 100);
+        ofDrawRectangle(10, 280, 520, 66);
+        ofSetColor(255);
+        string txt = "sending "+ofToString(sendClassifications ? "classification probabilities":"fc2 layer activations")+" ("+ofToString(msg.getNumArgs())+" values)\n";
+        txt += "to "+oscDestination+", port "+ofToString(oscPort)+",\n";
+        txt += "osc address \""+oscAddressRoot+"\"\n";
+        txt += "press spacebar or click 'sending' to turn off sending.";
+        ofDrawBitmapString(txt, 20, 296);
+    }
+    else {
+        ofBackground(255, 0, 0);
+        
+        ofSetColor(0, 100);
+        ofDrawRectangle(10, 280, 520, 66);
+        ofSetColor(255);
+        string txt = "press spacebar or click 'sending' to turn on sending.";
+        ofDrawBitmapString(txt, 20, 296);
+    }
+    
+    ofSetColor(255);
+    cam.draw(210, 10);
+    gui.draw();
+}
+
+void ofApp::keyPressed(int key) {
+    if (key==' ') {
+        sending = !sending;
+    }
 }
