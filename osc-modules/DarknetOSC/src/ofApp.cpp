@@ -24,7 +24,7 @@ void ofApp::setup()
     oscDestination = xml.getValue("ip");
     oscPort = ofToInt(xml.getValue("port"));
     oscAddressRoot = xml.getValue("address");
-    bool sendClassificationsByDefault = (xml.getValue("sendClassificationsByDefault") == "1");
+//    bool sendClassificationsByDefault = (xml.getValue("sendClassificationsByDefault") == "1");
     
     // setup osc
     osc.setup(oscDestination, oscPort);
@@ -34,22 +34,27 @@ void ofApp::setup()
     gui.setup();
     gui.setName("DarknetOSC");
     gui.add(sending.set("sending", false));
-    gui.add(sendClassifications.setup("send classifications", sendClassificationsByDefault));
+//    gui.add(sendClassifications.setup("send classifications", sendClassificationsByDefault));
 }
 
 void ofApp::sendOsc() {
-    classifications = darknet.classify(cam.getPixels());
-    
-    int idxLayer = sendClassifications ? darknet.getLayerNames().size() - 3 : darknet.getLayerNames().size() - 4;
-    
-    float * activations = get_network_output_layer_gpu( darknet.getNetwork(), idxLayer);
-    auto layer = darknet.getNetwork().layers[idxLayer];
-    int numFeatures = layer.out_c * layer.out_h * layer.out_w;
-    
+//    int idxLayer = sendClassifications ? darknet.getLayerNames().size() - 3 : darknet.getLayerNames().size() - 4;
+//    float * activations = get_network_output_layer_gpu( darknet.getNetwork(), idxLayer);
+//    auto layer = darknet.getNetwork().layers[idxLayer];
+//    int numFeatures = layer.out_c * layer.out_h * layer.out_w;
+//    msg.clear();
+//    msg.setAddress(oscAddressRoot);
+//    for (int i=0; i<numFeatures; i++) {
+//        msg.addFloatArg(activations[i]);
+//    }
+//    osc.sendMessage(msg);
+
+    classifications = darknet.classify(cam.getPixels(), 1000);
+
     msg.clear();
     msg.setAddress(oscAddressRoot);
-    for (int i=0; i<numFeatures; i++) {
-        msg.addFloatArg(activations[i]);
+    for (int i=0; i<classifications.size(); i++) {
+        msg.addFloatArg(classifications[i].probability);
     }
     osc.sendMessage(msg);
 }

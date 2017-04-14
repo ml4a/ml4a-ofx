@@ -25,7 +25,6 @@ public:
     ofVideoGrabber cam;
     std::vector< classification > classifications;
     
-    
     string oscDestination, oscAddressRoot;
     int oscPort;
     
