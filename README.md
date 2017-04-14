@@ -31,6 +31,7 @@ All of the included applications require some combination of the following addon
 - [ofxJSON](https://github.com/jeffcrouse/ofxJSON)
 - [ofxLearn](https://github.com/genekogan/ofxLearn)
 - [ofxMaxim](https://github.com/falcon4ever/ofxMaxim)
+- [ofxScreenGrab](https://github.com/genekogan/ofxScreenGrab)
 
 The addons also make use of ofxGui, ofxOsc, and ofxOpenCv, which are included in openFrameworks by default.
 

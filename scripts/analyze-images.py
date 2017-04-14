@@ -1,135 +1,74 @@
 import argparse
 import sys
 import numpy as np
+import json
 import os
 from os.path import isfile, join
-import h5py
-from PIL import Image
-from keras.models import Sequential
-from keras.layers.core import Flatten, Dense, Dropout
-from keras.layers import Convolution2D, ZeroPadding2D, MaxPooling2D
-from keras.optimizers import SGD
+import keras
+from keras.preprocessing import image
+from keras.applications.imagenet_utils import decode_predictions, preprocess_input
+from keras.models import Model
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from scipy.spatial import distance
-import json
-
 
 def process_arguments(args):
     parser = argparse.ArgumentParser(description='tSNE on audio')
-    parser.add_argument('--vgg_path', action='store', help='path to location of VGG-16 weights')
     parser.add_argument('--images_path', action='store', help='path to directory of images')
     parser.add_argument('--output_path', action='store', help='path to where to put output json file')
-    parser.add_argument('--num_components', action='store', default=300, help='number of principal components to keep [300]')
-    parser.add_argument('--num_closest', action='store', default=100, help='number of nearest neighbors for each image to record [100]')
+    parser.add_argument('--num_closest', action='store', default=10, help='number of nearest neighbors to store')
     params = vars(parser.parse_args(args))
     return params
 
-def get_image(path):
-    try:
-        img = Image.open(path)
-    except:
-        print("Error loading %s: skipping"%path)
-        return None
-    if img.mode != 'RGB':
-        img = img.convert('RGB')
-    img = img.resize((224, 224), Image.ANTIALIAS)
-    im = np.array(img.getdata(), np.uint8)
-    im = im.reshape(img.size[1], img.size[0], 3).astype(np.float32)
-    im[:,:,0] -= 123.68   # mean-centering and transposition is probably unecessary
-    im[:,:,1] -= 116.779
-    im[:,:,2] -= 103.939
-    im = im.transpose((2,0,1))
-    im = np.expand_dims(im, axis=0)
-    return im
+def get_image(path, input_shape):
+    img = image.load_img(path, target_size=input_shape)
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = preprocess_input(x)
+    return x
 
-def VGG_16(weights_path):
-    model = Sequential()
-    model.add(ZeroPadding2D((1,1),input_shape=(3,224,224)))
-    model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1,1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-    model.add(Flatten())
-    model.add(Dense(4096, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(4096, activation='relu'))
-    f = h5py.File(weights_path)
-    for k in range(f.attrs['nb_layers']):
-        if k >= len(model.layers):
-            break
-        g = f['layer_{}'.format(k)]
-        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
-        model.layers[k].set_weights(weights)
-    print("finished loading VGGNet")
-    return model
+def analyze_images(images_path):
+    # make feature_extractor
+    model = keras.applications.VGG16(weights='imagenet', include_top=True)
+    feat_extractor = Model(inputs=model.input, outputs=model.get_layer("fc2").output)
+    input_shape = model.input_shape[1:3]
+    # get images
+    candidate_images = [f for f in os.listdir(images_path) if os.path.splitext(f)[1].lower() in ['.jpg','.png','.jpeg']]
+    # analyze images and grab activations
+    activations = []
+    images = []
+    for idx,image_path in enumerate(candidate_images):
+        file_path = join(images_path,image_path)
+        img = get_image(file_path, input_shape);
+        if img is not None:
+            print("getting activations for %s %d/%d" % (image_path,idx,len(candidate_images)))
+            acts = feat_extractor.predict(img)[0]
+            activations.append(acts)
+            images.append(image_path)
+    # run PCA firt
+    print("Running PCA on %d images..." % len(activations))
+    features = np.array(activations)
+    pca = PCA(n_components=300)
+    pca.fit(features)
+    pca_features = pca.transform(features)
+    return images, pca_features
 
-def main(vgg_path, images_path, output_path, num_components, num_closest):
-	model = VGG_16(vgg_path) # load model
-	sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-	model.compile(optimizer=sgd, loss='categorical_crossentropy')
-	# get images
-	images = [f for f in os.listdir(images_path) if isfile(join(images_path, f))]
-	# analyze images and grab activations
-	data = {"paths":[], "activations":[]}
-	for idx,image_path in enumerate(images):
-	    file_path = join(images_path,image_path)
-	    image = get_image(file_path);
-	    if image is not None:
-	        print "getting activations for %s %d/%d" % (image_path,idx,len(images))
-	        acts = model.predict(image)[0]
-	        data["paths"].append(os.path.abspath(join(images_path,images[idx])))
-	        data["activations"].append(acts)
-	activations = np.array(data["activations"])
-	pca = PCA(n_components=num_components)
-	pca.fit(activations)
-	data["pca_acts"] = pca.transform(activations)
-	lookups = []
-	for i, p1 in enumerate(data["pca_acts"]):
-	    distances = []
-	    for j, p2 in enumerate(data["pca_acts"]):
-	        dst = distance.euclidean(p1, p2)
-	        distances.append(dst)
-	    idx_closest = sorted(range(len(distances)), key=lambda k: distances[k])[1:num_closest]
-	    lookups.append(idx_closest)
-	json_data = []
-	for i,lookup in enumerate(lookups):
-	    json_data.append({"path":data["paths"][i], "lookup":lookup})
-	with open(output_path, 'w') as outfile:
-	    json.dump(json_data, outfile)
+def find_closest_lookup(images_path, output_path, num_closest):
+    images, pca_features = analyze_images(images_path)
+    lookups = []
+    for i, p1 in enumerate(pca_features):
+        distances = [distance.euclidean(p1, p2) for p2 in pca_features]
+        idx_closest = sorted(range(len(distances)), key=lambda k: distances[k])[1:num_closest+1]
+        lookups.append(idx_closest)
+    json_data = [{"path":os.path.abspath(join(images_path, images[i])), "lookup":lookup} for i,lookup in enumerate(lookups)]
+    with open(output_path, 'w') as outfile:
+        json.dump(json_data, outfile)
+    
 
 if __name__ == '__main__':
-	params = process_arguments(sys.argv[1:])
-	vgg_path = params['vgg_path']
-	images_path = params['images_path']
-	num_components = int(params['num_components'])
-	num_closest = int(params['num_closest'])
-	output_path = params['output_path']
-	main(vgg_path, images_path, output_path, num_components, num_closest)
-	print("finished saving %s"%output_path)
-
+    params = process_arguments(sys.argv[1:])
+    images_path = params['images_path']
+    output_path = params['output_path']
+    num_closest = int(params['num_closest'])
+    find_closest_lookup(images_path, output_path, num_closest)
+    print("finished saving %s" % output_path)

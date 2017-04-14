@@ -10,7 +10,7 @@ from keras.applications.imagenet_utils import decode_predictions, preprocess_inp
 from keras.models import Model
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-
+from scipy.spatial import distance
 
 def process_arguments(args):
     parser = argparse.ArgumentParser(description='tSNE on audio')
@@ -29,12 +29,12 @@ def get_image(path, input_shape):
     x = preprocess_input(x)
     return x
 
-def main(images_path, tsne_path, tsne_dimensions, tsne_perplexity, tsne_learning_rate):
+def analyze_images(images_path):
     # make feature_extractor
     model = keras.applications.VGG16(weights='imagenet', include_top=True)
     feat_extractor = Model(inputs=model.input, outputs=model.get_layer("fc2").output)
     input_shape = model.input_shape[1:3]
-	# get images
+    # get images
     candidate_images = [f for f in os.listdir(images_path) if os.path.splitext(f)[1].lower() in ['.jpg','.png','.jpeg']]
     # analyze images and grab activations
     activations = []
@@ -48,13 +48,16 @@ def main(images_path, tsne_path, tsne_dimensions, tsne_perplexity, tsne_learning
             activations.append(acts)
             images.append(image_path)
     # run PCA firt
-    print("Running PCA on "+str(len(activations))+" images...")
+    print("Running PCA on %d images..." % len(activations))
     features = np.array(activations)
     pca = PCA(n_components=300)
     pca.fit(features)
     pca_features = pca.transform(features)
-    # run t-SNE
-    print("Running t-SNE on "+str(len(activations))+" images...")
+    return images, pca_features
+
+def run_tsne(images_path, output_path, tsne_dimensions, tsne_perplexity, tsne_learning_rate):
+    images, pca_features = analyze_images(images_path)
+    print("Running t-SNE on %d images..." % len(images))
     X = np.array(pca_features)
     tsne = TSNE(n_components=tsne_dimensions, learning_rate=tsne_learning_rate, perplexity=tsne_perplexity, verbose=2).fit_transform(X)
     # save data to json
@@ -62,16 +65,16 @@ def main(images_path, tsne_path, tsne_dimensions, tsne_perplexity, tsne_learning
     for i,f in enumerate(images):
         point = [ (tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k])) for k in range(tsne_dimensions) ]
         data.append({"path":os.path.abspath(join(images_path,images[i])), "point":point})
-    with open(tsne_path, 'w') as outfile:
+    with open(output_path, 'w') as outfile:
         json.dump(data, outfile)
 
 
 if __name__ == '__main__':
     params = process_arguments(sys.argv[1:])
     images_path = params['images_path']
-    tsne_path = params['output_path']
+    output_path = params['output_path']
     tsne_dimensions = int(params['num_dimensions'])
     tsne_perplexity = int(params['perplexity'])
     tsne_learning_rate = int(params['learning_rate'])
-    main(images_path, tsne_path, tsne_dimensions, tsne_perplexity, tsne_learning_rate)
-    print("finished saving %s"%tsne_path)
+    run_tsne(images_path, output_path, tsne_dimensions, tsne_perplexity, tsne_learning_rate)
+    print("finished saving %s" % output_path)

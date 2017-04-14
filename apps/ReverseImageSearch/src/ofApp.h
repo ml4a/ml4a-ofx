@@ -30,7 +30,6 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-    
     vector<ImageThumb> thumbs;
     vector<int> order;
     

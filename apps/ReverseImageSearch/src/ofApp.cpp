@@ -77,7 +77,8 @@ void ofApp::draw(){
         float y = ofGetHeight() - 2 * (thumbHeight + margin);
         ofSetColor(255);
         ofDrawBitmapString("Nearest neighbor images:", x + margin, y - margin);
-        for (int i=0; i<20; i++) {
+        int numNeighbors = min(30, (int) thumbs[highlighted].closest.size()-1);
+        for (int i=0; i<numNeighbors; i++) {
             thumbs[thumbs[highlighted].closest[i]].image.draw(x, y);
             x += (margin + thumbs[thumbs[highlighted].closest[i]].image.getWidth());
             if (x > (ofGetWidth() - thumbs[thumbs[highlighted].closest[i+1]].image.getWidth()*0.33)) {
