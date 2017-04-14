@@ -4,7 +4,7 @@
 void ofApp::setup(){
     ofSetWindowShape(1280, 800);
     grab.initGrabber(640, 480);
-    ccv.setup("../../../../data/image-net-2012.sqlite3");
+    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
     ccv.setEncode(true);
     ccv.start();
 }

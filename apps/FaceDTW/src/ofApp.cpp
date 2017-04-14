@@ -69,7 +69,7 @@ void ofApp::setup(){
     //grabber.setup(960,540);
     
     // Setup tracker
-    tracker.setup("../../../../data/shape_predictor_68_face_landmarks.dat");
+    tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));
     
 }
 

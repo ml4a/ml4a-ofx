@@ -21,7 +21,7 @@ void ofApp::setup(){
 
     // setup tracker and cam
     grabber.setup(640, 480);
-    tracker.setup();
+    tracker.setup("../../../../data/shape_predictor_68_face_landmarks.dat");
 
     // addresses + setup osc
     osc.setup(oscDestination, oscPort);

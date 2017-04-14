@@ -43,7 +43,7 @@ void ofApp::setup(){
     setRegressifier( LINEAR_REGRESSION );
     
     grabber.setup(1280,720);
-    tracker.setup("../../../../data/shape_predictor_68_face_landmarks.dat");
+    tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));
 
 
     //GUI
