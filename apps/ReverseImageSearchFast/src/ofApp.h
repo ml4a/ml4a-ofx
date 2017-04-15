@@ -5,17 +5,12 @@
 #include "ofxCcv.h"
 #include "ofxLearn.h"
 #include "ofxKDTree.h"
+#include "ofxScreenGrabCropped.h"
 
 #include "ofMain.h"
 
 
-// to-do
-//  - close file dialog
-//  - update status/progress on screen (or thread process)
-
-
 class ofApp : public ofBaseApp{
-    
 public:
     
     struct Image {
@@ -30,17 +25,25 @@ public:
     void drawResults();
     
     void analyzeWebcam();
+    void analyzeScreen();
+    void analyzeVideo();
     void analyzeImage();
     void queryResults();
+    
+    void enableWebcam(bool & enable);
+    void enableScreenGrab(bool & enable);
+    void enableVideo(bool & enable);
+    void toggleScreenGrabDebug(bool & debug);
+    void toggleMBPRetina(bool & retina);
 
     void getImagePathsRecursive(ofDirectory dir);
     void extractFeaturesForDirectory(string directory);
 
-    void runPCAonImageSet();
+    void runDimReduction();
     void runKDTree();
     
-    void save(string path);
-    void load(string path);
+    void save(string path, bool featuresOnly=false);
+    void load(string path, string baseDir, bool featuresOnly=false);
     void saveDialog();
     void loadDialog();
 
@@ -49,14 +52,24 @@ public:
 
     void extractDirectory();
     
+    void mouseMoved(int x, int y );
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    
     vector<Image> images;
+    map<string, bool> imageMap;
     vector<ofFile> candidateFiles;
+    string baseDir;
     
     ofxCcv ccv;
-    ofxLearnPCA pca;
+    ofxLearnRandomProjection rp;
     ofxKDTree kdTree;
     
+    ofxScreenGrabCropped screen;
+    ofPixels screenPixels;
     ofVideoGrabber cam;
+    ofVideoPlayer movie;
     ofImage activeImage;
     
     vector<size_t> indexes;
@@ -67,8 +80,13 @@ public:
     
     ofxPanel guiOptions, guiView;
     ofxButton bExtractDir, bSave, bLoad, bSampleImage;
-    ofParameter<bool> tWebcam;
-    ofParameter<int> numResults, numPCAcomponents, maxPCASamples;
+    ofParameter<bool> tWebcam, tVideo, tScreen, tScreenDebug;
+    ofParameter<bool> tRetina;
+    ofParameter<int> numResults, numComponents, maxSamples;
     ofParameter<float> thumbHeight, headerHeight;
+    
+    bool toLoad, toExtract;
+    string toLoadModel, toExtractDir;
 };
+
 
