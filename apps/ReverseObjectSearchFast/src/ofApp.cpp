@@ -6,9 +6,9 @@ void ofApp::setup(){
     ofSetFullscreen(true);
     ofSetBackgroundAuto(false);
 
-    string cfgfile = ofToDataPath( "cfg/yolo9000.cfg" );
-    string weightfile = "/Users/gene/Downloads/yolo9000.weights";
-    string nameslist = ofToDataPath( "cfg/9k.names" );
+    string cfgfile = ofToDataPath("../../../../data/darknet/yolo9000.cfg");
+    string weightfile = ofToDataPath("../../../../data/darknet/yolo9000.weights");
+    string nameslist = ofToDataPath("../../../../data/darknet/9k.names");
     darknet.init( cfgfile, weightfile, nameslist );
     
     maxSamples.set("max samples", 50000, 10, 100000);
@@ -22,7 +22,7 @@ void ofApp::setup(){
     guiOptions.setup();
     guiOptions.setName("Options");
     guiOptions.setPosition(ofGetWidth()-200, 0);
-    guiOptions.add(numComponents.set("dimensionality", 40, 2, 1500));
+    guiOptions.add(numComponents.set("dimensionality", 100, 2, 1000));
     guiOptions.add(bExtractDir.setup("analyze directory"));
     guiOptions.add(bSave.setup("save vectors"));
     guiOptions.add(bLoad.setup("load vectors"));
@@ -38,6 +38,7 @@ void ofApp::setup(){
     guiView.add(bSampleImage.setup("query random image"));
     guiView.add(tWebcam.set("query webcam", false));
     guiView.add(tVideo.set("query video", false));
+    
 }
 
 //--------------------------------------------------------------
@@ -208,6 +209,10 @@ void ofApp::extractFeaturesForDirectory(string directory) {
     int numImages = candidateFiles.size();
     for(int i=0; i<numImages; i++) {
         if (i % 200 == 0) ofLog() << "extracting features for image "<<i<<"/"<<numImages;
+        if (i % 5000 == 0) {
+            //optional: save feature vectors as you go, in case extraction gets interrupted so you can retrieve later
+            //save(ofToDataPath("mscoco_object_vectors_"+ofToString(images.size())+".dat"), true);
+        }
         string imagePath = candidateFiles[i].getAbsolutePath();
         ofStringReplace(imagePath, dir.getAbsolutePath(), "");
         if (imageMap.count(imagePath)) {
@@ -230,6 +235,7 @@ void ofApp::extractFeaturesForDirectory(string directory) {
             ofLog(OF_LOG_ERROR, "Failed to load image: "+candidateFiles[i].getAbsolutePath());
         }
     }
+    save("/Users/gene/Downloads/mscoco_feature_vectors_final.dat", true);
     ofLog() << "finished extracting features for "<<images.size()<<" objects from "<<imageMap.size()<<" images.";
 }
 

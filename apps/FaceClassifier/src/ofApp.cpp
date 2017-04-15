@@ -30,14 +30,12 @@ void ofApp::setup(){
     
     
     grabber.setup(1280,720);
-<<<<<<< HEAD
+
     //grabber.setup(960,540);
     
     // Setup tracker
     tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));
 
-=======
-    tracker.setup("../../../../data/shape_predictor_68_face_landmarks.dat");
     
     //OSC
     // default settings
@@ -71,7 +69,6 @@ void ofApp::setup(){
     gui.add(orientationBool.setup("orientation input",false));
     
     gui.setPosition(10,10);
->>>>>>> 2e491a445281802e793c57c39af5bbc57256360c
 }
 
 //--------------------------------------------------------------
