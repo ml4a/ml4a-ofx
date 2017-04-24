@@ -1,51 +1,64 @@
-## Applications
+#@ Applications
 
 Specific instructions for running each application are included in a README inside each app folder. A description of each application follows:
+---
 
-#### tSNE-images
+#### AudioClassifier
+
+Train a classifier on microphone audio recordings.
+
+#### AudioTSNEViewer
 
 View a collection of audio samples organized via t-SNE on extracted audio features. Works both on a collection (folder) of individual files, or a single audio file which can is segmented by onsets or beats.
 
-#### tSNE-audio
+#### ConvnetClassifier
 
-View a collection of audio samples organized via t-SNE on extracted audio features. Works both on a collection (folder) of individual files, or a single audio file which can is segmented by onsets or beats.
-
-#### tSNE-images-manual (TBD)
-
-(to-do) The same as tSNE-images, but uses ofxCcv and ofxTSNE to do the analysis entirely within openFrameworks. 
-
-#### ConvnetOSC
-
-Send the fc7 activations of a trained convnet over OSC.
+Train an image classifier on a webcam feed.
 
 #### ConvnetViewer
 
-View the activations of a trained convnet. In the future, this may be merged with ConvnetOSC as a single application which enables viewing, encoding, sending OSC, and importing image sets.
+View the activations of a trained convnet. 
+
+#### DoodleClassifier
+
+Similar to convnet classifier, but optimized toward classifying images of hand-drawings.
+
+#### FaceClassifier
+
+Train a model and do real time classification of face poses.
+
+#### FaceDTW
+
+Perform facial gestures over time and classify them using Dynamic Time Warping.
+
+#### FaceRegressor
+
+Train a model and do real time regression of face poses.
+
+#### ImageTSNEViewer
+
+View a collection of images organized via t-SNE on extracted features from a convnet, where the feature extraction is done from a python script and the results are imported into the app.
+
+#### ImageTSNELive
+
+The same as ImageTSNEViewer (above), but handles the feature extraction and t-SNE assignment internally, and optionally allows for assignment to grid.
 
 #### ReverseImageSearch
 
 Search for most similar images in an image collection, given a query image. Analyze it first, then save the results for real-time browsing.
 
-#### ConvnetClassifier
+#### ReverseImageSearchFast
 
-Use the fc7 activations of a trained convnet to make your own classifier using [ofxGrt](https://github.com/nickgillian/ofxGrt).
+Fast search and retrieval of similar images in a database to a query image, webcam feed, video, or screengrabber.
 
-#### FaceClassifier
+#### ReverseObjectSearchFast
 
-Train a model and do real time classification with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
+Fast search and retrieval of similar images in a database to multiple objects found in a query image, webcam feed, video, or screengrabber.
 
-#### FaceDTW
+#### SimpleRegression
 
-Perform facial gestures over time and classify them using Dynamic Time Warping with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
+Boiled down example showing how to train a model and do real time regression with mouse position as the input.
 
-#### FaceRegressor
+#### YoloLive
 
-Train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) and [ofxFaceTracker2](https://github.com/HalfdanJ/ofxFaceTracker2).
-
-###SimpleRegression
-
-Boiled down example showing how to train a model and do real time regression with [ofxGrt](https://github.com/nickgillian/ofxGrt) with mouse position as the input.
-
-
-
-
+Do real-time object detection from 9000 classes on a webcam feed, video, or screengrabber.

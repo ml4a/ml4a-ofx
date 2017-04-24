@@ -5,14 +5,16 @@ void ofApp::setup()
     ofSetWindowShape(540, 360);
     ofSetWindowTitle("DarknetOSC");
     
-    cam.initGrabber(320, 240);
-    
     // initialize darknet
     string cfgfile = ofToDataPath("../../../../data/darknet/darknet.cfg");
     string weightfile = ofToDataPath("../../../../data/darknet/darknet.weights");
-    string nameslist = ofToDataPath( "../../../../data/darknet/imagenet.shortnames.list");
-    darknet.init( cfgfile, weightfile, nameslist );
+//    string cfgfile = ofToDataPath("darknet.cfg");
+//    string weightfile = ofToDataPath("darknet.weights");
+    darknet.init( cfgfile, weightfile );
     
+    // setup camera
+    cam.initGrabber(320, 240);
+
     oscDestination = OSC_DESTINATION_DEFAULT;
     oscAddressRoot = OSC_ADDRESS_ROOT_DEFAULT;
     oscPort = OSC_PORT_DEFAULT;
