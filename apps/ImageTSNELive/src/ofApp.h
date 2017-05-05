@@ -5,52 +5,59 @@
 #include "ofxTSNE.h"
 #include "ofxAssignment.h"
 #include "ofxGui.h"
+#include "ofxJSON.h"
+
+
+#define THUMB_SIZE 256
+
+struct ImageThumb {
+public:
+    ofImage image;
+    ofPoint point;
+    ofPoint gridPoint;
+    string path;
+};
 
 class ofApp : public ofBaseApp{
-    
 public:
     void setup();
-    void update();
+    void update();    
     void draw();
+    void drawThumbs();
     
-    void analyzeImages();
-    void runTSNEAndGridding();
+    void solveToGrid();
+    void analyzeDirectory(string imagesPath);
+    void loadJSON(string jsonPath);
+    void saveJSON(string jsonPath);
+    void saveScreenshot(string imgPath);
     
+    void eLoadJSON();
+    void eSaveJSON();
+    void eSaveScreenshot();
+    void eAnalyzeDirectory();
+    void scanDirectoryRecursive(ofDirectory dir);
     
-    void analyzeNew() {
-        ofFileDialogResult result = ofSystemLoadDialog("Select folder of images to analyze", true);
-        if (result.bSuccess) {
-            imageDir = result.getPath();
-        }
-    }
-    
-    
-    void saveToImage();
-    void scan_dir_imgs(ofDirectory dir);
-
     void mouseDragged(int x, int y, int button);
     void mouseScrolled(ofMouseEventArgs &evt);
     
+    vector<ImageThumb> thumbs;
+    vector<ofFile> imageFiles;
+
     ofxCcv ccv;
     ofxTSNE tsne;
     ofxAssignment solver;
-    
-    vector<ofFile> imageFiles;
-    vector<ofImage> images;
     vector<vector<float> > encodings;
     vector<vector<double> > tsneVecs;
     vector<ofVec2f> solvedGrid;
     
-    string imageDir;
-    int resizeWidth, resizeHeight;
-    int displayW, displayH;
-    float perplexity, theta;
-    
-    ofParameter<float> scale, zoom;
-    ofParameter<int> numGridRows, numGridCols;
-    
     ofxPanel gui;
-    ofxButton bAnalyzeNew;
+    ofxButton bAnalyzeNew, bSave, bLoad, bSaveScreenshot;
     ofParameter<bool> tViewGrid;
+    ofParameter<float> scale, imageSize;
+    ofParameter<float> perplexity, theta;
+    ofParameter<int> numImages;
+    
+    int numGridRows, numGridCols;
     ofVec2f position;
 };
+
