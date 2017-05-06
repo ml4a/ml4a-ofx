@@ -1,7 +1,6 @@
-#@ Applications
+# Applications
 
 Specific instructions for running each application are included in a README inside each app folder. A description of each application follows:
----
 
 #### AudioClassifier
 

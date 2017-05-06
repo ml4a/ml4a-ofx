@@ -25,6 +25,8 @@ public:
     void draw();
     void drawThumbs();
     
+    void updateAnalysis();
+    void runTsne();
     void solveToGrid();
     void analyzeDirectory(string imagesPath);
     void loadJSON(string jsonPath);
@@ -59,5 +61,9 @@ public:
     
     int numGridRows, numGridCols;
     ofVec2f position;
+    string ccvPath;
+    bool isAnalyzing;
+    string progressMsg;
 };
+
 

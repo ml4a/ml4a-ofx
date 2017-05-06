@@ -4,6 +4,9 @@ const ofColor backgroundPlotColor = ofColor(50,50,50,255);
 
 //--------------------------------------------------------------
 void ofApp::setup() {
+    
+    string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+    
     ofSetWindowShape(640, 480);
     cam.initGrabber(320, 240);
     
@@ -29,7 +32,7 @@ void ofApp::setup() {
     KNN knn; /*Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm; */
     pipeline.setClassifier( knn );
     
-    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
+    ccv.setup(ccvPath);
     if (!ccv.isLoaded()) return;
     
     //OSC

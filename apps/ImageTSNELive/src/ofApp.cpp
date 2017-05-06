@@ -23,6 +23,8 @@ void ofApp::scanDirectoryRecursive(ofDirectory dir) {
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+    
     // listen for scroll events, and save screenshot button press
     ofAddListener(ofEvents().mouseScrolled, this, &ofApp::mouseScrolled);
     bSaveScreenshot.addListener(this, &ofApp::eSaveScreenshot);
@@ -49,14 +51,18 @@ void ofApp::setup(){
     gui.add(bSave.setup("save result to json"));
     gui.add(bSaveScreenshot.setup("save screenshot"));
     
-    // go to center of screen
     position.set(0, 0);
+    isAnalyzing = false;
 }
 
 //--------------------------------------------------------------
 void ofApp::analyzeDirectory(string imagesPath){
     if (!ccv.isLoaded()){
-        ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
+        ccv.setup(ccvPath);
+        if (!ccv.isLoaded()) {
+            ofSystemAlertDialog("Can't find model file "+ccvPath+"!");
+            return;
+        }
     }
     
     // get list of all the images in the directory
@@ -64,57 +70,18 @@ void ofApp::analyzeDirectory(string imagesPath){
     ofDirectory dir = ofDirectory(imagesPath);
     imageFiles.clear();
     scanDirectoryRecursive(dir);
-    //int numImages = numGridRows * numGridCols;
     if (imageFiles.size() < numImages) {
         numImages = imageFiles.size();
         ofLog(OF_LOG_NOTICE, "There are less images in the directory than the number of images requested. Adjusting to "+ofToString(numImages));
     }
 
-    // load all the images
+    // start analyzing
     thumbs.clear();
-    for(int i=0; i<numImages; i++) {
-        if (i % 20 == 0)    ofLog() << " - loading image "<<i<<" / "<<numImages<<" ("<<dir.size()<<" in dir)";
-        ImageThumb thumb;
-        thumb.path = imageFiles[i].getAbsolutePath();
-        thumb.image.load(thumb.path);
-        // resize thumb
-        if (thumb.image.getWidth() > thumb.image.getHeight()) {
-            thumb.image.crop((thumb.image.getWidth()-thumb.image.getHeight()) * 0.5, 0, thumb.image.getHeight(), thumb.image.getHeight());
-        } else if (thumb.image.getHeight() > thumb.image.getWidth()) {
-            thumb.image.crop(0, (thumb.image.getHeight()-thumb.image.getWidth()) * 0.5, thumb.image.getWidth(), thumb.image.getWidth());
-        }
-        thumb.image.resize(THUMB_SIZE, THUMB_SIZE);
-        thumbs.push_back(thumb);
-    }
-    
-    // encode all of the images with ofxCcv
+    encodings.clear();
+    tsneVecs.clear();
+    solvedGrid.clear();
+    isAnalyzing = true;
     ofLog() << "Encoding images...";
-    for (int i=0; i<thumbs.size(); i++) {
-        if (i % 20 == 0) ofLog() << " - encoding image "<<i<<" / "<<thumbs.size();
-        vector<float> encoding = ccv.encode(thumbs[i].image, ccv.numLayers()-1);
-        encodings.push_back(encoding);
-    }
-    
-    // run t-SNE and load image points to imagePoints
-    ofLog() << "Run t-SNE on images";
-    tsneVecs = tsne.run(encodings, 2, perplexity, theta, true);
-    
-    // normalize t-SNE vectors
-    ofPoint tMin(1e8, 1e8), tMax(-1e8, -1e8);
-    for (auto & t : tsneVecs) {
-        tMin.set(min(tMin.x, (float) t[0]), min(tMin.y, (float) t[1]));
-        tMax.set(max(tMax.x, (float) t[0]), max(tMax.y, (float) t[1]));
-    }
-    
-    // save them to thumbs
-    for (int t=0; t<tsneVecs.size(); t++) {
-        thumbs[t].point.set((tsneVecs[t][0] - tMin.x) / (tMax.x - tMin.x), (tsneVecs[t][1] - tMin.y) / (tMax.y - tMin.y));
-    }
-
-    // solve grid assignment
-    solveToGrid();
-    
-    ofLog() << "Finished analyzing " << imagesPath << "!";
 }
 
 //--------------------------------------------------------------
@@ -126,22 +93,74 @@ void ofApp::eAnalyzeDirectory(){
 }
 
 //--------------------------------------------------------------
+void ofApp::updateAnalysis(){
+    if (thumbs.size() < numImages) {
+        int currIdx = thumbs.size();
+        ImageThumb thumb;
+        thumb.path = imageFiles[currIdx].getAbsolutePath();
+        thumb.image.load(thumb.path);
+        // resize thumb
+        if (thumb.image.getWidth() > thumb.image.getHeight()) {
+            thumb.image.crop((thumb.image.getWidth()-thumb.image.getHeight()) * 0.5, 0, thumb.image.getHeight(), thumb.image.getHeight());
+        } else if (thumb.image.getHeight() > thumb.image.getWidth()) {
+            thumb.image.crop(0, (thumb.image.getHeight()-thumb.image.getWidth()) * 0.5, thumb.image.getWidth(), thumb.image.getWidth());
+        }
+        thumb.image.resize(THUMB_SIZE, THUMB_SIZE);
+        thumbs.push_back(thumb);
+        progressMsg = "loaded "+ofToString(thumbs.size())+"/"+ofToString(numImages)+" images.";
+    }
+    else if (encodings.size() < thumbs.size()){
+        int currIdx = encodings.size();
+        vector<float> encoding = ccv.encode(thumbs[currIdx].image, ccv.numLayers()-1);
+        encodings.push_back(encoding);
+        progressMsg = "loaded "+ofToString(thumbs.size())+" images.";
+        progressMsg += "\nencoded "+ofToString(encodings.size())+"/"+ofToString(thumbs.size())+" images.";
+        if (encodings.size() == thumbs.size()) {
+            progressMsg += "\nrunning t-SNE...";
+        }
+    }
+    else if (tsneVecs.size() == 0) {
+        runTsne();
+        progressMsg = "loaded "+ofToString(thumbs.size())+" images.";
+        progressMsg += "\nencoded "+ofToString(encodings.size())+" images.";
+        progressMsg += "\nfinished running t-SNE!";
+        progressMsg += "\nsolving grid...";
+    }
+    else if (solvedGrid.size() == 0) {
+        solveToGrid();
+        isAnalyzing = false;
+        ofLog() << "Finished analyzing directory!";
+    }
+}
+
+//--------------------------------------------------------------
 void ofApp::update(){
-    
+    if (isAnalyzing) {
+        updateAnalysis();
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackgroundGradient(ofColor(0), ofColor(100));
     ofPushMatrix();
-    ofTranslate(position.x * (scale - 1.0), position.y * (scale - 1.0));
-    drawThumbs();
+    if (isAnalyzing) {
+        ofDrawBitmapString(progressMsg, 250, 20);
+    } else {
+        ofTranslate(position.x * (scale - 1.0), position.y * (scale - 1.0));
+        drawThumbs();
+    }
     ofPopMatrix();
     gui.draw();
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::drawThumbs(){
+    if (thumbs.size() == 0) {
+        return;
+    }
+    
     if (tViewGrid) {
         imageSize = (scale * ofGetWidth()) / (thumbs[0].image.getWidth() * numGridCols);
         for (int i=0; i<solvedGrid.size(); i++) {
@@ -161,14 +180,32 @@ void ofApp::drawThumbs(){
 }
 
 //--------------------------------------------------------------
+void ofApp::runTsne() {
+    ofLog() << "Run t-SNE on images";
+    tsneVecs = tsne.run(encodings, 2, perplexity, theta, true);
+    
+    // normalize t-SNE vectors
+    ofPoint tMin(1e8, 1e8), tMax(-1e8, -1e8);
+    for (auto & t : tsneVecs) {
+        tMin.set(min(tMin.x, (float) t[0]), min(tMin.y, (float) t[1]));
+        tMax.set(max(tMax.x, (float) t[0]), max(tMax.y, (float) t[1]));
+    }
+    
+    // save them to thumbs
+    for (int t=0; t<tsneVecs.size(); t++) {
+        thumbs[t].point.set((tsneVecs[t][0] - tMin.x) / (tMax.x - tMin.x), (tsneVecs[t][1] - tMin.y) / (tMax.y - tMin.y));
+    }
+}
+
+//--------------------------------------------------------------
 void ofApp::solveToGrid() {
     // this is a naive, brute-force way to figure out a grid configuration
     // (num rows x num columns) which fits as many of the original images as
     // possible. try all combinations where rows and cols are between
-    // 2/3 * sqrt(numImages) and 3/2 * sqrt(numImages)
+    // 3/ * sqrt(numImages) and 4/3 * sqrt(numImages)
     int numImages = thumbs.size();
-    int minRows = floor((0.) * sqrt(thumbs.size()));
-    int maxRows = ceil(1.5 * sqrt(thumbs.size()));
+    int minRows = floor((0.75) * sqrt(thumbs.size()));
+    int maxRows = ceil(1.3333 * sqrt(thumbs.size()));
     int sizeGrid = 0;
     for (int i=minRows; i<maxRows; i++) {
         for (int j=i+1; j<=maxRows; j++) {
@@ -288,8 +325,8 @@ void ofApp::saveScreenshot(string imgPath){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-    position.x = ofClamp(position.x - (ofGetMouseX()-ofGetPreviousMouseX()), -scale * ofGetWidth() - 400, -400);
-    position.y = ofClamp(position.y - (ofGetMouseY()-ofGetPreviousMouseY()), -scale * ofGetWidth() - 400, -400);
+    position.x = ofClamp(position.x - (ofGetPreviousMouseX()-ofGetMouseX()), -scale * ofGetWidth() - 500, 500);
+    position.y = ofClamp(position.y - (ofGetPreviousMouseY()-ofGetMouseY()), -scale * ofGetWidth() - 500, 500);
 }
 
 //--------------------------------------------------------------

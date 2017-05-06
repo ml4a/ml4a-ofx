@@ -4,13 +4,13 @@ void ofApp::setup()
 {
     ofSetWindowShape(1280, 800);
     
-    retina = true;  // if using macbook retina
+    retina = true;  // if using macbook retina (only for screengrabber)
     
     string cfgfile = ofToDataPath("../../../../data/darknet/yolo9000.cfg");
     string weightfile = ofToDataPath("../../../../data/darknet/yolo9000.weights");
     string nameslist = ofToDataPath("../../../../data/darknet/9k.names");
     darknet.init( cfgfile, weightfile, nameslist );
-    
+   
     tWebcam.addListener(this, &ofApp::useWebcam);
     tVideo.addListener(this, &ofApp::useVideo);
     tScreen.addListener(this, &ofApp::useScreen);
