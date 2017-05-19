@@ -1,4 +1,4 @@
-# Keyboard Controller OSC
+# Keyboard Controller Osc
 
 This interface enables you to simulate keystrokes in any application over OSC. 
 
@@ -11,11 +11,6 @@ With this app you can through OSC control any kind of keyboard-based interaction
 
 Combined with the AudioClassifier you can play Wolfenstein 3D using sounds:
 [![Watch video on Vimeo](http://projects.stoj.io/keyboard-controller/wolfenstein.jpg)](https://vimeo.com/154583964)
-
-
-Or play Tetris with FaceTracker2OSC
-
-![](http://projects.stoj.io/keyboard-controller/face-tetris.gif)
 
 
 
