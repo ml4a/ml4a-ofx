@@ -19,12 +19,7 @@ void ofApp::setup() {
     
     //Initialize the training and info variables
     infoText = "";
-    trainingClassLabel = 1;
     predictedClassLabel = 0;
-    trainingModeActive = false;
-    recordTrainingData = false;
-    predictionModeActive = false;
-    drawInfo = true;
     
     //Set the inputs
     trainingData.setNumDimensions( 4096 );
@@ -49,9 +44,11 @@ void ofApp::setup() {
     bClear.addListener(this, &ofApp::clear);
     
     gui.setup();
+    gui.setName("Convnet classifier");
     gui.add(sliderClassLabel.setup("Class Label", 1, 1, 9));
     gui.add(tRecord.setup("Record", false));
     gui.add(bTrain.setup("Train"));
+    gui.add(tPredict.setup("Predict", false));
     gui.add(bSave.setup("Save"));
     gui.add(bLoad.setup("Load"));
     gui.add(bClear.setup("Clear"));
@@ -67,25 +64,28 @@ void ofApp::update() {
     }
     
     cam.update();
-    
-    VectorFloat inputVector(4096);
-    featureEncoding = ccv.encode(cam, ccv.numLayers()-1);
-    
-    for (int i=0; i<featureEncoding.size(); i++) {
-        inputVector[i] =  featureEncoding[i];
+    if (!cam.isFrameNew()) {
+        return;
     }
     
-    if( tRecord ) {
-        trainingData.addSample( sliderClassLabel, inputVector );
-    }
+    if (tRecord || tPredict) {
+        featureEncoding = ccv.encode(cam, ccv.numLayers()-1);
+        VectorFloat inputVector(featureEncoding.size());
+        for (int i=0; i<featureEncoding.size(); i++) {
+            inputVector[i] =  featureEncoding[i];
+        }
     
-    if( predictionModeActive ){
-        if( pipeline.predict( inputVector ) ){
-            predictedClassLabel = pipeline.getPredictedClassLabel();
-            predictionPlot.update( pipeline.getClassLikelihoods() );
-            sendOSC();
-        }else{
-            infoText = "ERROR: Failed to run prediction!";
+        if( tRecord ) {
+            trainingData.addSample( sliderClassLabel, inputVector );
+        }
+        else if( tPredict ){
+            if( pipeline.predict( inputVector ) ){
+                predictedClassLabel = pipeline.getPredictedClassLabel();
+                predictionPlot.update( pipeline.getClassLikelihoods() );
+                sendOSC();
+            }else{
+                infoText = "ERROR: Failed to run prediction!";
+            }
         }
     }
 }
@@ -110,7 +110,7 @@ void ofApp::draw() {
     ofFill();
     ofSetColor( 255, 255, 255 );
     
-    ofDrawBitmapString( "MFCCS CLASSIFIER EXAMPLE", textX, textY +20); textY += textSpacer*2;
+    ofDrawBitmapString( "CLASSIFIER EXAMPLE", textX, textY +20); textY += textSpacer*2;
     ofDrawBitmapString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), textX, textY ); textY += textSpacer;
     textY += textSpacer;
     
@@ -196,7 +196,7 @@ void ofApp::trainClassifier() {
         predictionPlot.setDrawInfoText( true );
         predictionPlot.setFont( smallFont );
         predictionPlot.setBackgroundColor( ofColor(50,50,50,255));
-        predictionModeActive = true;
+        tPredict = true;
     }else infoText = "WARNING: Failed to train pipeline";
     ofLog(OF_LOG_NOTICE, "Done training...");
 }
@@ -220,7 +220,7 @@ void ofApp::load() {
 void ofApp::clear() {
     trainingData.clear();
     infoText = "Training data cleared";
-    predictionModeActive = false;
+    tPredict = false;
 }
 
 //--------------------------------------------------------------

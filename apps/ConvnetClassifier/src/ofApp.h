@@ -32,7 +32,6 @@ public:
     ofxCcv ccv;
     ofVideoPlayer video;
     
-    vector<float> classifierEncoding;
     vector<float> featureEncoding;
     
     bool setClassifier( const int type );
@@ -40,13 +39,7 @@ public:
     //Create some variables for the demo
     ClassificationData trainingData;      		//This will store our training data
     GestureRecognitionPipeline pipeline;        //This is a wrapper for our classifier and any pre/post processing modules
-    bool recordTrainingData;                                //This is a flag that keeps track of when we should record training data
-    bool trainingModeActive;
-    bool predictionModeActive;
-    bool drawInfo;
     
-    
-    UINT trainingClassLabel;                    //This will hold the current label for when we are training the classifier
     UINT predictedClassLabel;
     string infoText;                            //This string will be used to draw some info messages to the main app window
     ofTrueTypeFont largeFont;
@@ -65,8 +58,6 @@ public:
     ofxIntSlider sliderClassLabel;
     
     ofxButton bTrain, bSave, bLoad, bClear;
-    ofxToggle tRecord;
-    
-   
+    ofxToggle tRecord, tPredict;
     
 };
