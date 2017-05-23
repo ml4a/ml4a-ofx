@@ -1,17 +1,17 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxCcv.h"
 #include "ofxGrt.h"
 #include "ofxGui.h"
 #include "ofxOsc.h"
+#include "ofxCcvThreaded.h"
 
 // where to send osc messages by default
 #define DEFAULT_OSC_DESTINATION "localhost"
-#define DEFAULT_OSC_ADDRESS "/classification"
-#define DEFAULT_OSC_PORT 8000
-
+#define DEFAULT_OSC_ADDRESS "/wek/outputs"
+#define DEFAULT_OSC_PORT 12000
 #define SIZE_INPUT_VECTOR 4096
+
 
 class ofApp : public ofBaseApp {
 public:
@@ -20,40 +20,54 @@ public:
     void update();
     void draw();
     
+    void updateParameters();
     void setupRegressor();
     void addSlider();
-    void trainClassifier();
+    void train();
+    
+    void setupOSC();
+    void sendOSC();
+
     void save();
     void load();
     void clear();
     
-    void sendOSC();
+    void eSlider(float & v);
+    void eChangeOscSettings();
     
-    void keyPressed(int key);
+    void exit();
     
+    // input/cv
     ofVideoGrabber cam;
-    ofxCcv ccv;
+    ofxCcvThreaded ccv;
     vector<float> featureEncoding;
     
+    // learning
     RegressionData trainingData;
     GestureRecognitionPipeline pipeline;
     GRT::VectorFloat targetVector;
+    vector<ofParameter<float> > values;
+    vector<float> targetValues;
 
-    string infoText;                            //This string will be used to draw some info messages to the main app window
+    // draing/ui
+    string infoText;
     ofTrueTypeFont largeFont;
     ofTrueTypeFont smallFont;
     ofTrueTypeFont hugeFont;
-    ofxGrtTimeseriesPlot predictionPlot;
     
-    //OSC
+    // parameters
+    ofParameter<float> lerpAmt;
+    ofParameter<int> maxEpochs, numHiddenNeurons;
+    ofParameter<string> gOscDestination, gOscAddress, gOscPort;
+
+    // gui
+    ofxPanel gui, guiSliders;
+    ofParameterGroup gOscSettings, gTraining;
+    ofxButton bTrain, bSave, bLoad, bClear, bAddSlider, bOscSettings;
+    ofxToggle tRecord, tPredict;
+    
+    // osc
     ofxOscSender sender;
     string oscDestination, oscAddress;
     int oscPort;
-    
-    //GUI
-    ofxPanel gui;
-    ofxButton bTrain, bSave, bLoad, bClear, bAddSlider;
-    ofxToggle tRecord, tPredict;
-    
-    vector<ofParameter<float> > values;
 };
