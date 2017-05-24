@@ -13,6 +13,42 @@
 #define SIZE_INPUT_VECTOR 4096
 
 
+
+class GestureRecognitionPipelineThreaded : public ofThread, public GestureRecognitionPipeline {
+public:
+    void startTraining(RegressionData *trainingData) {
+        this->trainingData = trainingData;
+        startThread();
+        training = true;
+    }
+    
+    void threadedFunction() {
+        while(isThreadRunning()) {
+            if(lock()) {
+                trained = train(*trainingData);
+                training = false;
+                unlock();
+                stopThread();
+            } else {
+                ofLogWarning("threadedFunction()") << "Unable to lock mutex.";
+            }
+        }
+    }
+    
+    bool isTraining() {return training;}
+    bool isTrained() {return trained;}
+    
+protected:
+    
+    RegressionData *trainingData;
+    bool training=false;
+    bool success=false;
+};
+
+
+
+
+
 class ofApp : public ofBaseApp {
 public:
     
@@ -44,10 +80,11 @@ public:
     
     // learning
     RegressionData trainingData;
-    GestureRecognitionPipeline pipeline;
+    GestureRecognitionPipelineThreaded pipeline;
     GRT::VectorFloat targetVector;
     vector<ofParameter<float> > values;
     vector<float> targetValues;
+    bool isTraining;
 
     // draing/ui
     string infoText;

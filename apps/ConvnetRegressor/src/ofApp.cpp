@@ -12,12 +12,7 @@ void ofApp::setup() {
     oscPort = DEFAULT_OSC_PORT;
 
     ofSetWindowShape(640, 480);
-    largeFont.load("verdana.ttf", 12, true, true);
-    largeFont.setLineHeight(14.0f);
-    smallFont.load("verdana.ttf", 10, true, true);
-    smallFont.setLineHeight(12.0f);
-    hugeFont.load("verdana.ttf", 20, true, true);
-    hugeFont.setLineHeight(38.0f);
+    ofBackground(150);
     
     // ccv
     ccv.setup(ccvPath);
@@ -36,7 +31,7 @@ void ofApp::setup() {
     bOscSettings.addListener(this, &ofApp::eChangeOscSettings);
     
     gTraining.setName("Training");
-    gTraining.add(numHiddenNeurons.set("neurons in hidden layer", 10, 5, 50));
+    gTraining.add(numHiddenNeurons.set("hidden neurons", 10, 5, 50));
     gTraining.add(maxEpochs.set("epochs", 100, 20, 1000));
     
     gOscSettings.setName("OSC settings");
@@ -54,7 +49,7 @@ void ofApp::setup() {
     gui.add(tPredict.setup("Predict", false));
     gui.add(bSave.setup("Save model"));
     gui.add(bLoad.setup("Load model"));
-    gui.add(lerpAmt.set("prediction lerp", 0.2, 0.01, 1.0));
+    gui.add(lerpAmt.set("Prediction lerp", 0.2, 0.01, 1.0));
     gui.add(gOscSettings);
     gui.add(bOscSettings.setup("change OSC settings"));
     gui.loadFromFile("settings_convnetR.xml");
@@ -107,6 +102,8 @@ void ofApp::eSlider(float & v) {
 //--------------------------------------------------------------
 void ofApp::exit() {
     gui.saveToFile("settings_convnetR.xml");
+    ccv.setEncode(false);
+    ccv.stop();
 }
 
 //--------------------------------------------------------------
@@ -162,7 +159,17 @@ void ofApp::update() {
         return;
     }
     
-    if (tPredict) {
+    if (isTraining) {
+        if (!pipeline.isTraining()) {
+            cout << "FINISHED TRAINING MAIN THREAD"<<endl;
+            infoText = pipeline.isTrained() ? "Pipeline trained" : "WARNING: Failed to train pipeline";
+            isTraining = false;
+            ofBackground(150);
+        } else if (ofGetFrameNum() % 10 == 0) {
+            ofBackground(ofRandom(255),ofRandom(255),ofRandom(255));
+        }
+    }
+    else if (tPredict) {
         updateParameters();
     }
     
@@ -205,12 +212,11 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    ofBackground(150);
     ofSetColor(255);
 
     cam.draw(270, 10);
-    ofDrawBitmapString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 272, 30 + cam.getHeight() );
-    ofDrawBitmapString( infoText, 272, 50 + cam.getHeight() );
+    ofDrawBitmapStringHighlighted( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 272, 30 + cam.getHeight() );
+    ofDrawBitmapStringHighlighted( infoText, 272, 50 + cam.getHeight() );
     
     gui.draw();
     guiSliders.draw();
@@ -221,9 +227,15 @@ void ofApp::train() {
     ofLog(OF_LOG_NOTICE, "Training...");
     tRecord = false;
     setupRegressor();
-    if( pipeline.train( trainingData ) ){
-        infoText = "Pipeline Trained";
-    } else infoText = "WARNING: Failed to train pipeline";
+//    if( pipeline.train( trainingData ) ){
+//        infoText = "Pipeline Trained";
+//    } else infoText = "WARNING: Failed to train pipeline";
+    
+    pipeline.startTraining( &trainingData );
+    pipeline.startThread();
+    infoText = "Is training!!";
+    isTraining = true;
+    
     ofLog(OF_LOG_NOTICE, "Done training...");
 }
 
@@ -252,7 +264,6 @@ void ofApp::clear() {
 //--------------------------------------------------------------
 void ofApp::sendOSC() {
     ofxOscMessage m;
-    cout << "send "<<oscAddress << endl;
     m.setAddress(oscAddress);
     for (int i=0; i<values.size(); i++) {
         m.addFloatArg(values[i]);

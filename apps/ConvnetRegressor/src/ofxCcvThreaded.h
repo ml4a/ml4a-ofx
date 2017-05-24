@@ -16,6 +16,7 @@ public:
     }
     
     void stop() {
+        ready = true;
         stopThread();
     }
     
