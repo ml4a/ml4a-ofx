@@ -32,7 +32,10 @@ public:
     void load();
     void clear();
     
+    void setupOSC();
     void sendOSC();
+    
+    void changeOscSettings();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -95,11 +98,13 @@ public:
     
     //GUI
     ofxPanel gui;
+    ofParameterGroup gOscSettings;
     ofxFloatSlider volThreshold;
     ofxIntSlider triggerTimerThreshold;
     ofxIntSlider sliderClassLabel;
+    ofParameter<string> gOscDestination, gOscAddress, gOscPort;
     
-    ofxButton  bTrain, bSave, bLoad, bClear;
+    ofxButton  bTrain, bSave, bLoad, bClear, bOscSettings;
     ofxToggle tThresholdMode, tRecord; 
     
     //Threshold & triggermode

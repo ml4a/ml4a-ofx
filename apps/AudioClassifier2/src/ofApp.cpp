@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetWindowShape(860, 250);
+    ofSetWindowShape(860, 310);
     ofSetWindowTitle("Audio Classifier");
     ofSetFrameRate(60);
     ofBackground(60);
@@ -32,15 +32,15 @@ void ofApp::setup(){
     
     //512 bins, 42 filters, 13 coeffs, min/max freq 20/20000
     mfcc.setup(512, 42, nMfcc, 20, 20000, sampleRate);
-    featureWindow.setup(nMfcc, 10);
+    featureWindow.setup(nMfcc, numFrames);
     
     ofxMaxiSettings::setup(sampleRate, 2, initialBufferSize);
     ofSoundStreamSetup(2,2, this, sampleRate, initialBufferSize, 4);// Call this last !
     
     //Fonts
-    smallFont.load("arial.ttf", 10, true, true);
+    smallFont.load("Arial.ttf", 10, true, true);
     smallFont.setLineHeight(12.0f);
-    hugeFont.load("arial.ttf", 30, true, true);
+    hugeFont.load("Arial.ttf", 30, true, true);
     hugeFont.setLineHeight(38.0f);
     
     //Grt
@@ -48,7 +48,7 @@ void ofApp::setup(){
     predictedClassLabel = 0;
     trainingModeActive = false;
     predictionModeActive = false;
-    trainingData.setNumDimensions( nMfcc );
+    trainingData.setNumDimensions( nMfcc*2 );
     
     SVM svm; //Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm;
     svm.setMaxNumEpochs(10000);
@@ -59,15 +59,19 @@ void ofApp::setup(){
     oscDestination = DEFAULT_OSC_DESTINATION;
     oscAddress = DEFAULT_OSC_ADDRESS;
     oscPort = DEFAULT_OSC_PORT;
-    sender.setup(oscDestination, oscPort);
-    
     
     //GUI
     bTrain.addListener(this, &ofApp::trainClassifier);
     bSave.addListener(this, &ofApp::save);
     bLoad.addListener(this, &ofApp::load);
     bClear.addListener(this, &ofApp::clear);
+    bOscSettings.addListener(this, &ofApp::changeOscSettings);
     
+    gOscSettings.setName("OSC settings");
+    gOscSettings.add(gOscDestination.set("IP", oscDestination));
+    gOscSettings.add(gOscPort.set("port", ofToString(oscPort)));
+    gOscSettings.add(gOscAddress.set("message", oscAddress));
+
     gui.setup();
     gui.setName("AudioClassifier");
     gui.add(sliderClassLabel.setup("Class Label", 1, 1, 9));
@@ -79,11 +83,45 @@ void ofApp::setup(){
     gui.add(tThresholdMode.setup("Threshold Mode", false));
     gui.add(triggerTimerThreshold.setup("Threshold timer (ms)", 10, 1, 1000));
     gui.add(volThreshold.setup("volThreshold", 0.6, 0.0, 10.0));
-    
-    gui.setPosition(10,10);
+    gui.add(gOscSettings);
+    gui.add(bOscSettings.setup("change OSC settings"));
+
+    gui.setPosition(8,8);
     gui.loadFromFile("settings.xml");
     
     startTime = ofGetElapsedTimeMillis();
+    
+    setupOSC();
+}
+
+//--------------------------------------------------------------
+void ofApp::setupOSC() {
+    sender.setup(oscDestination, oscPort);
+}
+
+//--------------------------------------------------------------
+void ofApp::changeOscSettings() {
+    string input = ofSystemTextBoxDialog("Send OSC to what destination IP", oscDestination);
+    bool toSwitchOsc = false;
+    if (input != "" && input != oscDestination) {
+        oscDestination = input;
+        gOscDestination.set(oscDestination);
+        toSwitchOsc = true;
+    }
+    input = ofSystemTextBoxDialog("Send OSC to what destination port", ofToString(oscPort));
+    if (ofToInt(input) > 0 && ofToInt(input) != oscPort) {
+        oscPort = ofToInt(input);
+        gOscPort.set(ofToString(oscPort));
+        toSwitchOsc = true;
+    }
+    input = ofSystemTextBoxDialog("Send OSC with what message address", oscAddress);
+    if (input != "" && input != oscAddress) {
+        oscAddress = input;
+        gOscAddress.set(oscAddress);
+    }
+    if (toSwitchOsc) {
+        setupOSC();
+    }
 }
 
 //--------------------------------------------------------------
@@ -143,6 +181,8 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(220, 10);
     
+    float logMult = 200.0 / log(11);
+    
     //RMS
     ofFill();
     if (singleTrigger) {
@@ -150,18 +190,20 @@ void ofApp::draw(){
     }else {
         ofSetColor(100);
     }
-    ofDrawRectangle(10, 10, ofClamp(60*rms,0,400), 30);
+    
+    ofDrawRectangle(10, 10, ofClamp(logMult * log(1 + rms), 0, 200), 30);
     ofSetColor(255);
     char rmsString[255]; // an array of chars
     sprintf(rmsString, "RMS: %.2f", rms);
-    smallFont.drawString(rmsString, 10, 55);
+    smallFont.drawString(rmsString, 10, 57);
     
     //Threshold line
     if (tThresholdMode) {
+        float thresh = logMult * log(1 + volThreshold) + 10;
         ofPushStyle();
         ofSetColor(255,0,0);
         ofSetLineWidth(5);
-        ofDrawLine(volThreshold*60 + 10, 10, volThreshold*60 + 10, 40);
+        ofDrawLine(thresh, 10, thresh, 40);
         ofPopStyle();
     }
     
@@ -172,22 +214,22 @@ void ofApp::draw(){
     float bin_w = (float) mw / nMfcc;
     for (int i = 0; i < nMfcc; i++){
         float bin_h = -1 * (mfccs[i] * mfccGraphH);
-        ofDrawRectangle(i*bin_w + 10, 105, bin_w, bin_h);
+        ofDrawRectangle(i*bin_w + 10, 122, bin_w, bin_h);
     }
     
     // boxes
     ofNoFill();
     ofDrawRectangle(5, 5, 210, 60);
-    ofDrawRectangle(5, 75, 210, 65);
+    ofDrawRectangle(5, 75, 210, 100);
     
     ofFill();
     ofSetColor(255);
     
-    smallFont.drawString( "MFCCs", 10, 135);
-    smallFont.drawString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 10, 170 );
+    smallFont.drawString( "MFCCs", 10, 170);
+    smallFont.drawString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 10, 200 );
     //smallFont.drawString( "Total input values: "+ofToString(2*nMfcc), 10, 185 );
     ofSetColor(0,255,0);
-    smallFont.drawString( infoText, 10, 200);
+    smallFont.drawString( infoText, 10, 225);
 
     ofPopMatrix();
     
