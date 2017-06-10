@@ -1,0 +1,4 @@
+ofxDarknet
+ofxOpenCv
+ofxScreenGrab
+ofxTemplateMatching
