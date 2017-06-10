@@ -1,0 +1,34 @@
+<OSCKeySimulator>
+	<port>8000</port>
+	<address>/classification</address>
+	<!-- The address for enabling keystrokes over OSC -->
+	<enable>/wek/enable</enable>
+	<!-- The address for disabling keystrokes over OSC -->
+	<disable>/wek/disable</disable>
+	<!-- The duration for how long each keystroke is pressed down (in milliseconds) -->
+	<key-duration>10</key-duration>
+	<keys>
+		<!-- 
+			For every key you want to control add a <input> tag.
+			Each <input> tag has to contain:
+				a <key> tag with the desired key (See README for possible keystrokes)
+				a <osc-id> tag with the osc value that will trigger the key.
+		-->
+		<input>
+			<key>UP</key>
+			<osc-id>1</osc-id>
+		</input>
+		<input>
+			<key>DOWN</key>
+			<osc-id>2</osc-id>
+		</input>
+		<input>
+			<key>RIGHT</key>
+			<osc-id>3</osc-id>
+		</input>
+		<input>
+			<key>DOWN</key>
+			<osc-id>4</osc-id>
+		</input>
+	</keys>
+</OSCKeySimulator>

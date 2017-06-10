@@ -35,3 +35,6 @@ data/image-net-2012.sqlite3
 data/shape_predictor_68_face_landmarks.dat
 *.weights
 *.dat
+
+release
+release/*
