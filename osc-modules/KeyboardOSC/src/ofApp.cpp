@@ -2,21 +2,29 @@
 
 
 void ofApp::setup(){
+    ofSetWindowShape(280, 180);
     oscPort = OSC_PORT;
     oscAddressRoot = OSC_ADDRESS_ROOT;
-    
-    // Load settings from xml
+    fadeStep = 255 / stayOnScreenFrames;
+    setupOSC();
+}
+
+void ofApp::setupOSC() {
+    receiver.setup(oscPort);
+}
+
+void ofApp::loadSettings() {
+    ofLog() << "reloading settings....";
     ofXml xml;
-    xml.load("settings.xml");
+    xml.load(ofToDataPath("settings_keyboardOsc.xml"));
     xml.setTo("OSCKeySimulator");
     oscPort = ofToInt(xml.getValue("port"));
     oscAddressRoot = xml.getValue("address");
     oscAddressEnable = xml.getValue("enable");
     oscAddressDisable = xml.getValue("disable");
-    
     keyDuration = ofToInt(xml.getValue("key-duration"));
-    
     // Key inputs
+    keyInputs.clear();
     xml.setTo("keys");
     totalKeyInputs = xml.getNumChildren();
     xml.setTo("input[0]");
@@ -25,25 +33,31 @@ void ofApp::setup(){
         string keyString = ofToString(xml.getValue("key"));
         int keyCode = keyCodes.convertStringToKeyCode(keyString);
         
-        
         KeyInput keyInput;
         keyInput.setup(keyCode, keyString, oscId);
-        
         keyInputs.push_back(keyInput);
-
         
         xml.setToSibling();
     }
     
-    
-    fadeStep = 255 / stayOnScreenFrames;
-    
-    receiver.setup(oscPort);
-    
+    setupOSC();
+}
+
+void ofApp::checkSettings(){
+    boost::filesystem::path filePath = ofToDataPath("settings_keyboardOsc.xml");
+    time_t t = boost::filesystem::last_write_time(filePath);
+    if (t != tSettings) {
+        tSettings = t;
+        loadSettings();
+    }
 }
 
 
 void ofApp::update(){
+    if (ofGetFrameNum() % 30 == 0) {
+        checkSettings();
+    }
+    
     if (!canPressKey) {
         if (ofGetElapsedTimeMillis() - timer >= keyDuration) {
             triggerKeyUp();
@@ -56,12 +70,10 @@ void ofApp::update(){
         receivingOSC = false;
     }
     
-    
     while (receiver.hasWaitingMessages()) {
         
-        receiver.getNextMessage(&oscMessage);
+        receiver.getNextMessage(oscMessage );
         
-            
         if (canPressKey) {
             if (oscMessage.getAddress() == oscAddressEnable) {
                 allowVirtualKeystrokes = true;
@@ -123,6 +135,17 @@ void ofApp::draw(){
     ofDrawBitmapString("Trigger keys as toggles", 50, 63);
 
     
+    ofSetColor(255, 255, 255);
+    ofDrawRectangle(20, 80, 20, 20);
+    if (ofGetMousePressed() &&
+        ofRectangle(20, 80, 20, 20).inside(ofGetMouseX(),ofGetMouseY())) {
+        ofSetColor(0, 150, 0);
+        ofDrawRectangle(22, 82, 16, 16);
+    }
+    ofSetColor(255, 255, 255);
+    ofDrawBitmapString("Change settings", 50, 93);
+
+    
     
     if (receivingOSC) {
         ofSetColor(0, 150, 0);
@@ -130,9 +153,9 @@ void ofApp::draw(){
         ofSetColor(150, 0, 0);
     }
     
-    ofDrawCircle(30, 90, 5);
+    ofDrawCircle(30, 120, 5);
     ofSetColor(255, 255, 255);
-    ofDrawBitmapString("Receiving OSC", 50, 94);
+    ofDrawBitmapString("Receiving OSC", 50, 124);
     
     
     if (oscId > -1) {
@@ -145,7 +168,7 @@ void ofApp::draw(){
             }
         }
         ofSetColor(255 - (fadeStep * frameCounter), 255 - (fadeStep * frameCounter), 255 - (fadeStep * frameCounter));
-        ofDrawBitmapString("Keystroke: " + keyString, 20, 130);
+        ofDrawBitmapString("Keystroke: " + keyString, 20, 160);
     }
 }
 
@@ -210,7 +233,11 @@ void ofApp::mouseReleased(int x, int y, int button){
         allowVirtualKeystrokes = !allowVirtualKeystrokes;
     }
     
-    if (x >= 20 && x <= 40 && y >= 50 && y <= 70) {
+    else if (x >= 20 && x <= 40 && y >= 50 && y <= 70) {
         triggerKeysAsToggles = !triggerKeysAsToggles;
+    }
+
+    else if (x >= 20 && x <= 40 && y >= 80 && y <= 100) {
+        ofSystem("open "+ofToDataPath("settings_keyboardOsc.xml"));
     }
 }

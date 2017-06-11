@@ -12,10 +12,13 @@ class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
+        void setupOSC();
+        void loadSettings();
 		void update();
 		void draw();
         void mouseReleased(int x, int y, int button);
         int convertStringToKeycode(string key);
+        void checkSettings();
         void sendKeyCode(int key);
         void triggerKeyDown();
         void triggerKeyUp();
@@ -48,7 +51,8 @@ class ofApp : public ofBaseApp{
     bool canPressKey = true;
     int timer = 0;
     
-    
     char charKey;
     vector<char> pressedKeys;
+    
+    time_t tSettings;
 };
