@@ -2,9 +2,9 @@
 
 Specific instructions for running each application are included in a README inside each app folder. A description of each application follows:
 
-#### AudioClassifier
+#### AudioClassifier + AudioClassifier2
 
-Train a classifier on microphone audio recordings.
+Train a classifier on microphone audio recordings. AudioClassifier2 is w.i.p., will merge soon.
 
 #### AudioTSNEViewer
 
@@ -13,6 +13,10 @@ View a collection of audio samples organized via t-SNE on extracted audio featur
 #### ConvnetClassifier
 
 Train an image classifier on a webcam feed.
+
+#### ConvnetRegressor
+
+Train an image regression on a webcam feed.
 
 #### ConvnetViewer
 
@@ -33,6 +37,10 @@ Perform facial gestures over time and classify them using Dynamic Time Warping.
 #### FaceRegressor
 
 Train a model and do real time regression of face poses.
+
+#### Gobot
+
+Automatically scrape [Go](https://en.wikipedia.org/wiki/Go_(game)) board position from [online-go.com](https://online-go.com/) and make next move recommendations.
 
 #### ImageTSNEViewer
 

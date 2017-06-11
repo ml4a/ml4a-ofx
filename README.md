@@ -39,6 +39,7 @@ All of the included applications (both in the apps and osc-modules folders) requ
 - [ofxMaxim](https://github.com/falcon4ever/ofxMaxim)
 - [ofxOpenNI](https://github.com/gameoverhack/ofxOpenNI)
 - [ofxScreenGrab](https://github.com/genekogan/ofxScreenGrab)
+- [ofxTemplateMatch](https://github.com/genekogan/ofxTemplateMatching)
 - [ofxTSNE](https://github.com/genekogan/ofxTSNE)
 
 The addons also make use of ofxGui, ofxOsc, and ofxOpenCv, which are included in openFrameworks by default.

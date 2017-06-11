@@ -8,6 +8,7 @@ Includes:
  - [ConvnetOSC](https://github.com/ml4a/ml4a-ofx/tree/master/osc-modules/ConvnetOSC) : Sends convolutional neural network-based feature vectors of a live webcam stream (using ofxCcv).
  - [DarknetOSC](https://github.com/ml4a/ml4a-ofx/tree/master/osc-modules/DarknetOSC) : Sends convolutional neural network-based feature vectors of a live webcam stream (using ofxDarknet).
  - [FaceTracker2OSC](https://github.com/ml4a/ml4a-ofx/tree/master/osc-modules/FaceTracker2OSC) : Sends coordinates of face found in a webcam stream.
+ - [KeyboardOSC](https://github.com/ml4a/ml4a-ofx/tree/master/osc-modules/KeyboardOSC) : Execute keystrokes via OSC commands.
  - [KinectOSC](https://github.com/ml4a/ml4a-ofx/tree/master/osc-modules/KinectOSC) : Sends skeleton data of a single tracked skeleton from a Kinect.
  - [LeapMotionOSC](https://github.com/ml4a/ml4a-ofx/tree/master/osc-modules/LeapMotionOSC) : Sends finger point data detected by Leap Motion hand tracker.
 
