@@ -43,5 +43,8 @@ class ofApp : public ofBaseApp{
     ofParameter<float> imageSize;
     ofxButton save;
     ofxPanel gui;
+    
+    string tsnePath;
+    bool parsingSuccessful;
 };
 

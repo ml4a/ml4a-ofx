@@ -24,6 +24,7 @@ void ofApp::scanDirectoryRecursive(ofDirectory dir) {
 void ofApp::setup(){
     
     ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+//    ccvPath = ofToDataPath("image-net-2012.sqlite3");
     
     // listen for scroll events, and save screenshot button press
     ofAddListener(ofEvents().mouseScrolled, this, &ofApp::mouseScrolled);
@@ -39,7 +40,7 @@ void ofApp::setup(){
     gView.add(scale.set("scale", 4.0, 1.0, 10.0));
     gView.add(imageSize.set("image size", 1.0, 0.0, 2.0));
     gAnalyze.setName("analyze");
-    gAnalyze.add(numImages.set("max num images", 500, 1, 5000));
+    gAnalyze.add(numImages.set("max num images", 500, 1, 8000));
     gAnalyze.add(perplexity.set("perplexity", 50, 5, 80));
     gAnalyze.add(theta.set("theta", 0.3, 0.1, 0.7));
     gui.setup();
@@ -97,6 +98,7 @@ void ofApp::updateAnalysis(){
     if (thumbs.size() < numImages) {
         int currIdx = thumbs.size();
         ImageThumb thumb;
+        thumb.idx = currIdx;
         thumb.path = imageFiles[currIdx].getAbsolutePath();
         thumb.image.load(thumb.path);
         // resize thumb
@@ -167,6 +169,7 @@ void ofApp::drawThumbs(){
             float x = ofMap(solvedGrid[i].x, 0, 1, 0, imageSize * thumbs[i].image.getWidth() * (numGridCols-1));
             float y = ofMap(solvedGrid[i].y, 0, 1, 0, imageSize * thumbs[i].image.getHeight() * (numGridRows-1));
             thumbs[i].image.draw(x, y, imageSize * thumbs[i].image.getWidth(), imageSize * thumbs[i].image.getHeight());
+            //ofDrawBitmapStringHighlight(ofToString(thumbs[i].idx), x+2, y+13);
         }
     }
     else {
@@ -208,7 +211,7 @@ void ofApp::solveToGrid() {
     int maxRows = ceil(1.3333 * sqrt(thumbs.size()));
     int sizeGrid = 0;
     for (int i=minRows; i<maxRows; i++) {
-        for (int j=i+1; j<=maxRows; j++) {
+        for (int j=i; j<=maxRows; j++) {
             int n = i * j;
             if (n > sizeGrid && n <= numImages) {
                 numGridRows = i;
@@ -239,6 +242,7 @@ void ofApp::loadJSON(string jsonPath) {
         float y = result[i]["point"][1].asFloat();
         ImageThumb thumb;
         thumb.point.set(x, y);
+        thumb.idx = i;
         thumb.path = path;
         thumb.image.load(path);
         // resize thumb

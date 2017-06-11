@@ -7,7 +7,6 @@
 #include "ofxGui.h"
 #include "ofxJSON.h"
 
-
 #define THUMB_SIZE 256
 
 struct ImageThumb {
@@ -16,6 +15,7 @@ public:
     ofPoint point;
     ofPoint gridPoint;
     string path;
+    int idx;
 };
 
 class ofApp : public ofBaseApp{

@@ -4,7 +4,7 @@
 void ofApp::setup(){
     
     // this should point to the json file containing your image files and tsne coordinates
-    string path = "points.json";
+    tsnePath = ofToDataPath("imagetsne.json");
     maxDim = 200;
 
     // listen for scroll events, and save screenshot button press
@@ -18,7 +18,7 @@ void ofApp::setup(){
     gui.add(save.setup("save screenshot"));
     
     ofxJSONElement result;
-    bool parsingSuccessful = result.open(path);
+    parsingSuccessful = result.open(tsnePath);
     for (int i=0; i<result.size(); i++) {
         string path = result[i]["path"].asString();
         float x = result[i]["point"][0].asFloat();
@@ -45,6 +45,11 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackgroundGradient(ofColor(0), ofColor(100));
+    if (!parsingSuccessful) {
+        ofDrawBitmapString("Could not find file "+tsnePath+"\nSee the instructions for how to create one.", 50, 50);
+        return;
+    }
+    
     ofPushMatrix();
     ofTranslate(position.x * (scale - 1.0), position.y * (scale - 1.0));
     for (int i=0; i<thumbs.size(); i++) {
