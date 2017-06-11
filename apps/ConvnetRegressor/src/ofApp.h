@@ -16,37 +16,12 @@
 
 class GestureRecognitionPipelineThreaded : public ofThread, public GestureRecognitionPipeline {
 public:
-    void startTraining(RegressionData *trainingData) {
-        this->trainingData = trainingData;
-        startThread();
-        training = true;
-    }
-    
-    void threadedFunction() {
-        while(isThreadRunning()) {
-            if(lock()) {
-                trained = train(*trainingData);
-                training = false;
-                unlock();
-                stopThread();
-            } else {
-                ofLogWarning("threadedFunction()") << "Unable to lock mutex.";
-            }
-        }
-    }
-    
-    bool isTraining() {return training;}
-    bool isTrained() {return trained;}
-    
-protected:
-    
+    void startTraining(RegressionData *trainingData);
+    void threadedFunction();
     RegressionData *trainingData;
     bool training=false;
     bool success=false;
 };
-
-
-
 
 
 class ofApp : public ofBaseApp {

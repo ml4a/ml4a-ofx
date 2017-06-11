@@ -3,9 +3,10 @@
 	<Run>0</Run>
 	<CV_initial>
 		<Min_area>10</Min_area>
-		<Max_area>199.582</Max_area>
-		<Threshold>122.296</Threshold>
-		<Dilations>3</Dilations>
+		<Max_area>189.398</Max_area>
+		<Threshold>94.9745</Threshold>
+		<Dilations>4</Dilations>
 	</CV_initial>
 <DoodleClassifier/>
+<arrow>2</arrow>
 </DoodleClassifier>

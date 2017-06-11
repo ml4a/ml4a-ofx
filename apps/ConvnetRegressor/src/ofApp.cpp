@@ -1,11 +1,32 @@
 #include "ofApp.h"
 
-const ofColor backgroundPlotColor = ofColor(50,50,50,255);
+
+//--------------------------------------------------------------
+void GestureRecognitionPipelineThreaded::startTraining(RegressionData *trainingData) {
+    this->trainingData = trainingData;
+    startThread();
+    training = true;
+}
+
+//--------------------------------------------------------------
+void GestureRecognitionPipelineThreaded::threadedFunction() {
+    while(isThreadRunning()) {
+        if(lock()) {
+            success = train(*trainingData);
+            training = false;
+            unlock();
+            stopThread();
+        } else {
+            ofLogWarning("threadedFunction()") << "Unable to lock mutex.";
+        }
+    }
+}
 
 //--------------------------------------------------------------
 void ofApp::setup() {
     
     string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+//    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
     
     oscDestination = DEFAULT_OSC_DESTINATION;
     oscAddress = DEFAULT_OSC_ADDRESS;
@@ -52,7 +73,7 @@ void ofApp::setup() {
     gui.add(lerpAmt.set("Prediction lerp", 0.2, 0.01, 1.0));
     gui.add(gOscSettings);
     gui.add(bOscSettings.setup("change OSC settings"));
-    gui.loadFromFile("settings_convnetR.xml");
+    gui.loadFromFile(ofToDataPath("settings_convnetR.xml"));
     tPredict = false;
     
     guiSliders.setup();
@@ -101,9 +122,10 @@ void ofApp::eSlider(float & v) {
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-    gui.saveToFile("settings_convnetR.xml");
+    gui.saveToFile(ofToDataPath("settings_convnetR.xml"));
     ccv.setEncode(false);
     ccv.stop();
+    pipeline.stopThread();
 }
 
 //--------------------------------------------------------------
@@ -160,12 +182,11 @@ void ofApp::update() {
     }
     
     if (isTraining) {
-        if (!pipeline.isTraining()) {
-            cout << "FINISHED TRAINING MAIN THREAD"<<endl;
-            infoText = pipeline.isTrained() ? "Pipeline trained" : "WARNING: Failed to train pipeline";
+        if (!pipeline.training) {
+            infoText = pipeline.success ? "Pipeline trained" : "WARNING: Failed to train pipeline";
             isTraining = false;
             ofBackground(150);
-        } else if (ofGetFrameNum() % 10 == 0) {
+        } else if (ofGetFrameNum() % 15 == 0) {
             ofBackground(ofRandom(255),ofRandom(255),ofRandom(255));
         }
     }
@@ -179,7 +200,6 @@ void ofApp::update() {
     } else if (cam.isFrameNew() && ccv.isReady()) {
         ccv.update(cam, ccv.numLayers()-1);
     }
-
     
     if ((tRecord||tPredict)&&ccv.hasNewResults()) {
         featureEncoding = ccv.getEncoding();
@@ -215,8 +235,8 @@ void ofApp::draw() {
     ofSetColor(255);
 
     cam.draw(270, 10);
-    ofDrawBitmapStringHighlighted( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 272, 30 + cam.getHeight() );
-    ofDrawBitmapStringHighlighted( infoText, 272, 50 + cam.getHeight() );
+    ofDrawBitmapStringHighlight( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 272, 30 + cam.getHeight() );
+    ofDrawBitmapStringHighlight( infoText, 272, 50 + cam.getHeight() );
     
     gui.draw();
     guiSliders.draw();
@@ -226,14 +246,11 @@ void ofApp::draw() {
 void ofApp::train() {
     ofLog(OF_LOG_NOTICE, "Training...");
     tRecord = false;
+    tPredict = false;
     setupRegressor();
-//    if( pipeline.train( trainingData ) ){
-//        infoText = "Pipeline Trained";
-//    } else infoText = "WARNING: Failed to train pipeline";
-    
     pipeline.startTraining( &trainingData );
     pipeline.startThread();
-    infoText = "Is training!!";
+    infoText = "Training!! please wait.";
     isTraining = true;
     
     ofLog(OF_LOG_NOTICE, "Done training...");
@@ -241,14 +258,14 @@ void ofApp::train() {
 
 //--------------------------------------------------------------
 void ofApp::save() {
-    if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
+    if( trainingData.save( ofToDataPath("TrainingDataConvnetR.grt") ) ){
         infoText = "Training data saved to file";
     } else infoText = "WARNING: Failed to save training data to file";
 }
 
 //--------------------------------------------------------------
 void ofApp::load() {
-    if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
+    if( trainingData.load( ofToDataPath("TrainingDataConvnetR.grt") ) ){
         infoText = "Training data loaded from file";
         train();
     } else infoText = "WARNING: Failed to load training data from file";
@@ -257,6 +274,7 @@ void ofApp::load() {
 //--------------------------------------------------------------
 void ofApp::clear() {
     trainingData.clear();
+    pipeline.clear();
     infoText = "Training data cleared";
     tPredict = false;
 }

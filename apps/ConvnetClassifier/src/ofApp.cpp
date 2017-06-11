@@ -6,15 +6,16 @@ const ofColor backgroundPlotColor = ofColor(50,50,50,255);
 void ofApp::setup() {
     
     string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+//    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
     
     ofSetWindowShape(640, 480);
     cam.initGrabber(320, 240);
     
-    largeFont.load("verdana.ttf", 12, true, true);
+    largeFont.load(ofToDataPath("verdana.ttf"), 12, true, true);
     largeFont.setLineHeight(14.0f);
-    smallFont.load("verdana.ttf", 10, true, true);
+    smallFont.load(ofToDataPath("verdana.ttf"), 10, true, true);
     smallFont.setLineHeight(12.0f);
-    hugeFont.load("verdana.ttf", 20, true, true);
+    hugeFont.load(ofToDataPath("verdana.ttf"), 20, true, true);
     hugeFont.setLineHeight(38.0f);
     
     //Initialize the training and info variables
@@ -203,14 +204,14 @@ void ofApp::trainClassifier() {
 
 //--------------------------------------------------------------
 void ofApp::save() {
-    if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
+    if( trainingData.save( ofToDataPath("TrainingDataConvnetC.grt") ) ){
         infoText = "Training data saved to file";
     }else infoText = "WARNING: Failed to save training data to file";
 }
 
 //--------------------------------------------------------------
 void ofApp::load() {
-    if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
+    if( trainingData.load( ofToDataPath("TrainingDataConvnetC.grt") ) ){
         infoText = "Training data loaded from file";
         trainClassifier();
     }else infoText = "WARNING: Failed to load training data from file";

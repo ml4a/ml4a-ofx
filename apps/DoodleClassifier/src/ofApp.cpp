@@ -19,6 +19,7 @@ void ofApp::setup(){
     cam.setDeviceID(0);
     cam.setup(width, height);
     ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
+//    ccv.setup(ofToDataPath("image-net-2012.sqlite3"));
     
     bAdd.addListener(this, &ofApp::addSamplesToTrainingSetNext);
     bTrain.addListener(this, &ofApp::trainClassifier);
@@ -34,7 +35,7 @@ void ofApp::setup(){
     
     // load settings from file
     ofXml xml;
-    xml.load("settings_doodleclassifier.xml");
+    xml.load(ofToDataPath("settings_doodleclassifier.xml"));
     xml.setTo("DoodleOSC");
     oscDestination = xml.getValue("ip");
     oscPort = ofToInt(xml.getValue("port"));
@@ -68,7 +69,7 @@ void ofApp::setup(){
     gui.add(bLoad.setup("Load"));
     gui.add(gCv);
     gui.setPosition(0, 400);
-    gui.loadFromFile("cv_settings.xml");
+    gui.loadFromFile("settings_doodleclassifier_cv.xml");
     
     fbo.allocate(width, height);
     colorImage.allocate(width, height);
@@ -202,7 +203,7 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-    gui.saveToFile("cv_settings.xml");
+    gui.saveToFile(ofToDataPath("settings_doodleclassifier_cv.xml"));
 }
 
 //--------------------------------------------------------------
@@ -273,12 +274,12 @@ void ofApp::setTrainingLabel(int & label_) {
 
 //--------------------------------------------------------------
 void ofApp::save() {
-    trainingData.save(ofToDataPath("model.grt"));
+    trainingData.save(ofToDataPath("doodleclassifier_model.grt"));
 }
 
 //--------------------------------------------------------------
 void ofApp::load() {
-    trainingData.load(ofToDataPath("model.grt"));
+    trainingData.load(ofToDataPath("doodleclassifier_model.grt"));
     trainClassifier();
 }
 
