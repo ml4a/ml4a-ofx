@@ -30,7 +30,7 @@ public:
     ofVideoPlayer movie;
     ofVideoGrabber cam;
     ofxScreenGrabCropped screen;
-    bool retina;
+    ofParameter<bool> tRetina;
     
     ofxPanel gui;
     ofxToggle tWebcam, tVideo, tScreen, tScreenDebug;

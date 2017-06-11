@@ -4,11 +4,14 @@ void ofApp::setup()
 {
     ofSetWindowShape(1280, 800);
     
-    retina = true;  // if using macbook retina (only for screengrabber)
-    
     string cfgfile = ofToDataPath("../../../../data/darknet/yolo9000.cfg");
     string weightfile = ofToDataPath("../../../../data/darknet/yolo9000.weights");
     string nameslist = ofToDataPath("../../../../data/darknet/9k.names");
+    
+//    string cfgfile = ofToDataPath("darknet/yolo9000.cfg");
+//    string weightfile = ofToDataPath("darknet/yolo9000.weights");
+//    string nameslist = ofToDataPath("darknet/9k.names");
+
     darknet.init( cfgfile, weightfile, nameslist );
    
     tWebcam.addListener(this, &ofApp::useWebcam);
@@ -21,6 +24,7 @@ void ofApp::setup()
     gui.add(tWebcam.setup("webcam", false));
     gui.add(tVideo.setup("video", false));
     gui.add(tScreen.setup("screengrab", false));
+    gui.add(tRetina.set("macbook retina?", false));
     gui.add(tScreenDebug.setup(" -> set window", false));
     gui.setPosition(ofGetWidth()-200, 0);
     
@@ -74,7 +78,7 @@ void ofApp::draw()
         glLineWidth( ofMap( d.probability, 0, 1, 0, 8 ) );
         ofNoFill();
         ofRectangle rect = d.rect;
-        if (tScreen && retina) {    // adjust for screengrab on retina returning pixels at twice the scale
+        if (tScreen && tRetina) {    // adjust for screengrab on retina returning pixels at twice the scale
             rect.set(0.5 * rect.x, 0.5 * rect.y, 0.5 * rect.width, 0.5 * rect.height);
         }
         ofDrawRectangle( rect );
@@ -100,12 +104,15 @@ void ofApp::useWebcam(bool & b) {
 //--------------------------------------------------------------
 void ofApp::useVideo(bool & b) {
     if (!b) return;
-    tWebcam = false;
-    tScreen = false;
-    tScreenDebug = false;
-    cam.close();
-    movie.load("/Users/gene/bin/opera-toolkit/colin.mp4");
-    movie.play();
+    ofFileDialogResult result = ofSystemLoadDialog();
+    if (result.bSuccess) {
+        tWebcam = false;
+        tScreen = false;
+        tScreenDebug = false;
+        cam.close();
+        movie.load(result.filePath);
+        movie.play();
+    }
 }
 
 //--------------------------------------------------------------
@@ -116,7 +123,7 @@ void ofApp::useScreen(bool & b) {
     cam.close();
     movie.stop();
     movie.close();
-    screen.setup(ofGetWidth(), ofGetHeight(), retina);
+    screen.setup(ofGetWidth(), ofGetHeight(), tRetina);
 }
 
 //--------------------------------------------------------------

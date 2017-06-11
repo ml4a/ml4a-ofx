@@ -9,6 +9,9 @@ void ofApp::setup(){
     string cfgfile = ofToDataPath("../../../../data/darknet/yolo9000.cfg");
     string weightfile = ofToDataPath("../../../../data/darknet/yolo9000.weights");
     string nameslist = ofToDataPath("../../../../data/darknet/9k.names");
+//    string cfgfile = ofToDataPath("darknet/yolo9000.cfg");
+//    string weightfile = ofToDataPath("darknet/yolo9000.weights");
+//    string nameslist = ofToDataPath("darknet/9k.names");
     darknet.init( cfgfile, weightfile, nameslist );
     
     maxSamples.set("max samples", 50000, 10, 100000);
@@ -235,7 +238,7 @@ void ofApp::extractFeaturesForDirectory(string directory) {
             ofLog(OF_LOG_ERROR, "Failed to load image: "+candidateFiles[i].getAbsolutePath());
         }
     }
-    save("/Users/gene/Downloads/mscoco_feature_vectors_final.dat", true);
+    //save(ofToDataPath("feature_vectors_final.dat", true));
     ofLog() << "finished extracting features for "<<images.size()<<" objects from "<<imageMap.size()<<" images.";
 }
 

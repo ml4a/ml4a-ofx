@@ -39,5 +39,8 @@ class ofApp : public ofBaseApp{
     float thumbHeight;
     float margin;
     float zoom;
+    
+    string lookupFile;
+    bool parsingSuccessful;
 };
 

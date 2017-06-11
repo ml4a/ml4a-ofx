@@ -8,8 +8,8 @@ void ofApp::setup()
     // initialize darknet
     string cfgfile = ofToDataPath("../../../../data/darknet/darknet.cfg");
     string weightfile = ofToDataPath("../../../../data/darknet/darknet.weights");
-//    string cfgfile = ofToDataPath("darknet.cfg");
-//    string weightfile = ofToDataPath("darknet.weights");
+//    string cfgfile = ofToDataPath("darknet/darknet.cfg");
+//    string weightfile = ofToDataPath("darknet/darknet.weights");
     darknet.init( cfgfile, weightfile );
     
     // setup camera
@@ -21,7 +21,7 @@ void ofApp::setup()
     
     // load settings from file
     ofXml xml;
-    xml.load("settings_darknet.xml");
+    xml.load(ofToDataPath("settings_darknet.xml"));
     xml.setTo("DarknetOSC");
     oscDestination = xml.getValue("ip");
     oscPort = ofToInt(xml.getValue("port"));
