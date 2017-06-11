@@ -7,9 +7,9 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
 
-    smallFont.load("verdana.ttf", 10, true, true);
+    smallFont.load(ofToDataPath("verdana.ttf"), 10, true, true);
     smallFont.setLineHeight(12.0f);
-    hugeFont.load("verdana.ttf", 36, true, true);
+    hugeFont.load(ofToDataPath("verdana.ttf"), 36, true, true);
     hugeFont.setLineHeight(38.0f);
     
     //Initialize the training and info variables
@@ -35,6 +35,7 @@ void ofApp::setup(){
     
     // Setup tracker
     tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));
+//    tracker.setup(ofToDataPath("shape_predictor_68_face_landmarks.dat"));
 
     
     //OSC
@@ -311,14 +312,14 @@ void ofApp::trainClassifier() {
 
 //--------------------------------------------------------------
 void ofApp::save() {
-    if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
+    if( trainingData.save( ofToDataPath("TrainingData_FaceClassifier.grt") ) ){
         infoText = "Training data saved to file";
     }else infoText = "WARNING: Failed to save training data to file";
 }
 
 //--------------------------------------------------------------
 void ofApp::load() {
-    if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
+    if( trainingData.load( ofToDataPath("TrainingData_FaceClassifier.grt") ) ){
         infoText = "Training data loaded from file";
         trainClassifier();
     }else infoText = "WARNING: Failed to load training data from file";
