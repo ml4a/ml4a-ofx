@@ -36,4 +36,7 @@ public:
     ofParameter<float> mouseRadius;
     ofParameter<float> pauseLength;
     ofxPanel gui;
+    
+    string tsnePath;
+    bool parsingSuccessful;
 };

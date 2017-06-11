@@ -38,9 +38,9 @@ void ofApp::setup(){
     ofSoundStreamSetup(2,2, this, sampleRate, initialBufferSize, 4);// Call this last !
     
     //Fonts
-    smallFont.load("Arial.ttf", 10, true, true);
+    smallFont.load(ofToDataPath("Arial.ttf"), 10, true, true);
     smallFont.setLineHeight(12.0f);
-    hugeFont.load("Arial.ttf", 30, true, true);
+    hugeFont.load(ofToDataPath("Arial.ttf"), 30, true, true);
     hugeFont.setLineHeight(38.0f);
     
     //Grt
@@ -59,6 +59,7 @@ void ofApp::setup(){
     oscDestination = DEFAULT_OSC_DESTINATION;
     oscAddress = DEFAULT_OSC_ADDRESS;
     oscPort = DEFAULT_OSC_PORT;
+    setupOSC();
     
     //GUI
     bTrain.addListener(this, &ofApp::trainClassifier);
@@ -71,7 +72,7 @@ void ofApp::setup(){
     gOscSettings.add(gOscDestination.set("IP", oscDestination));
     gOscSettings.add(gOscPort.set("port", ofToString(oscPort)));
     gOscSettings.add(gOscAddress.set("message", oscAddress));
-
+    
     gui.setup();
     gui.setName("AudioClassifier");
     gui.add(sliderClassLabel.setup("Class Label", 1, 1, 9));
@@ -85,13 +86,10 @@ void ofApp::setup(){
     gui.add(volThreshold.setup("volThreshold", 0.6, 0.0, 10.0));
     gui.add(gOscSettings);
     gui.add(bOscSettings.setup("change OSC settings"));
-
     gui.setPosition(8,8);
-    gui.loadFromFile("settings.xml");
-    
+    gui.loadFromFile(ofToDataPath("settings_audioclassifier.xml"));
+
     startTime = ofGetElapsedTimeMillis();
-    
-    setupOSC();
 }
 
 //--------------------------------------------------------------
@@ -295,7 +293,7 @@ void ofApp::audioReceived 	(float * input, int bufferSize, int nChannels){
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-    gui.saveToFile("settings.xml");
+    gui.saveToFile("settings_audioclassifier.xml");
     ofSoundStreamStop();
 }
 

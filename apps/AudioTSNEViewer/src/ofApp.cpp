@@ -6,7 +6,7 @@ void ofApp::setup(){
     
     // this should point to the json file containing your audio files and tsne coordinates
     // follow instructions in ml4a.github.io/guides/AudioTSNEViewer/ 
-    string file = "points.json";
+    tsnePath = ofToDataPath("audiotsne.json");
     
     gui.setup();
     gui.setName("Audio t-SNE");
@@ -15,7 +15,7 @@ void ofApp::setup(){
     gui.add(pauseLength.set("pauseLength", 2.0, 0.2, 5.0));
     
     ofxJSONElement result;
-    bool parsingSuccessful = result.open(file);
+    parsingSuccessful = result.open(tsnePath);
     for (int i=0; i<result.size(); i++) {
         string path = result[i]["path"].asString();
         float x = result[i]["point"][0].asFloat();
@@ -30,6 +30,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    if (!parsingSuccessful) {
+        return;
+    }
+    
     for (int i=0; i<sounds.size(); i++) {
         if (sounds[i].sound.isPlaying() && sounds[i].sound.getPositionMS() > maxDuration*1000) {
             sounds[i].sound.stop();
@@ -41,6 +45,10 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackgroundGradient(ofColor(100), ofColor(20));
+    if (!parsingSuccessful) {
+        ofDrawBitmapString("Could not find file "+tsnePath, 50, 50);
+        return;
+    }
     for (int i=0; i<sounds.size(); i++) {
         if (sounds[i].sound.isPlaying()) {
             ofSetColor(0, 255, 0, 180);

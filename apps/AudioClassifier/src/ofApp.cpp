@@ -35,9 +35,9 @@ void ofApp::setup(){
     ofSoundStreamSetup(2,2, this, sampleRate, initialBufferSize, 4);// Call this last !
     
     //Fonts
-    smallFont.load("arial.ttf", 10, true, true);
+    smallFont.load(ofToDataPath("Arial.ttf"), 10, true, true);
     smallFont.setLineHeight(12.0f);
-    hugeFont.load("arial.ttf", 36, true, true);
+    hugeFont.load(ofToDataPath("Arial.ttf"), 36, true, true);
     hugeFont.setLineHeight(38.0f);
     
     //Grt
