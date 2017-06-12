@@ -32,6 +32,7 @@ public:
     ofVideoGrabber cam;
     ofxScreenGrabCropped screen;
     ofParameter<bool> tRetina;
+    ofParameter<float> thresh;
     
     ofxPanel gui;
     ofxToggle tWebcam, tVideo, tScreen, tScreenDebug;

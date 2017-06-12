@@ -21,7 +21,8 @@ void ofApp::setup()
     tScreenDebug.addListener(this, &ofApp::toggleScreenDebug);
 
     gui.setup();
-    gui.setName("set source");
+    gui.setName("YoloLive");
+    gui.add(thresh.set("threshold", 0.24, 0.0, 1.0));
     gui.add(tWebcam.setup("webcam", false));
     gui.add(tVideo.setup("video", false));
     gui.add(tScreen.setup("screengrab", false));
@@ -36,8 +37,6 @@ void ofApp::setup()
 
 void ofApp::update()
 {
-    float thresh = ofMap( ofGetMouseX(), 0, ofGetWidth(), 0, 1 );
-    
     if (tWebcam) {
         cam.update();
         detections = darknet.yolo(cam.getPixels(), thresh);
