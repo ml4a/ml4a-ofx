@@ -14,6 +14,7 @@ public:
     void setup();
     void update();
     void draw();
+    void drawDebug(int x, int y, float scale);
     
     void exit();
     
@@ -35,8 +36,8 @@ public:
     ofxDarknetGo darknet;
     
     ofxTemplateMatching matcher;
-    vector <MatchObject> objects;
-    vector <TemplateMatch> matches;
+    vector<MatchObject> objects;
+    vector<TemplateMatch> matches;
     int confidenceMin;
     int nMatches;
     
@@ -44,7 +45,8 @@ public:
     ofxCvGrayscaleImage grayImage;
     ofxScreenGrabCropped screen;
     ofPixels pixels;
+    ofImage cvDebug;
     bool retina;
+    float debugDrawScale;
     bool debug;
-    bool debugDraw;
 };

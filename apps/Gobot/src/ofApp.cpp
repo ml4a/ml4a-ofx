@@ -2,24 +2,19 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    debugDraw = true;
-    debug = false;
     retina = true;  // if using macbook retina
-    confidenceMin = 90;
     
     ofSetWindowShape(1280, 800);
     
-    string cfgfile = ofToDataPath("darknet/go.test.cfg");
-    string weightfile = ofToDataPath("darknet/go.weights");
-    //string cfgfile = ofToDataPath("../../../darknet/go.test.cfg");
-    //string weightfile = ofToDataPath("../../../darknet/go.weights");
+    //string cfgfile = ofToDataPath("darknet/go.test.cfg");
+    //string weightfile = ofToDataPath("darknet/go.weights");
+    string cfgfile = ofToDataPath("../../../../data/darknet/go.test.cfg");
+    string weightfile = ofToDataPath("../../../../data/darknet/go.weights");
+    
     darknet.setup(cfgfile, weightfile);
+    darknet.setNumRecommendations(10);
     darknet.setMouseActive(true);
-    if (debugDraw) {
-        darknet.setDrawPosition(700, 60, 550, 550);
-    } else {
-        darknet.setDrawPosition(30, 60, 550, 550);
-    }
+    darknet.setDrawPosition(50, 250, 500, 500);
     
     screen.setup(ofGetWidth(), ofGetHeight(), retina);
     screen.loadCorners(ofToDataPath("corners_gobot.xml"));
@@ -30,6 +25,10 @@ void ofApp::setup() {
     addObject(ofToDataPath("blacksquare2.png"));
     addObject(ofToDataPath("whitesquare.png"));
     addObject(ofToDataPath("whitesquare2.png"));
+    
+    debugDrawScale = 0.15;
+    confidenceMin = 90;
+    debug = false;
 }
 
 //--------------------------------------------------------------
@@ -49,9 +48,8 @@ void ofApp::addObject(string path) {
 
 //--------------------------------------------------------------
 void ofApp::toggleScreenDebug(bool b) {
-    debug = b;
-    screen.setDebug(debug);
-    if (!debug) {
+    screen.setDebug(b);
+    if (!screen.isDebug()) {
         int width = screen.getGrabber().getTextureReference().getWidth();
         int height = screen.getGrabber().getTextureReference().getHeight();
         pixels.allocate(width, height, 4);
@@ -68,12 +66,19 @@ void ofApp::exit() {
 //--------------------------------------------------------------
 void ofApp::update() {
     screen.update();
-    screen.getGrabber().getTextureReference().readToPixels(pixels);
-    pixels.setImageType(OF_IMAGE_COLOR);
-    colorImage.setFromPixels(pixels);
-    grayImage = colorImage;
     if (ofGetFrameNum() % 5 == 0) {
+        screen.getGrabber().getTextureReference().readToPixels(pixels);
+        pixels.setImageType(OF_IMAGE_COLOR);
+        colorImage.setFromPixels(pixels);
+        grayImage = colorImage;
         analyzeGoImage();
+        if (matches.size() != nMatches) {
+            cvDebug.setFromPixels(grayImage.getPixels());
+            cvDebug.resize(grayImage.getWidth() * debugDrawScale,
+                           grayImage.getHeight() * debugDrawScale);
+            nMatches = matches.size();
+            runGoRecommender();
+        }
     }
 }
 
@@ -90,27 +95,31 @@ void ofApp::analyzeGoImage() {
 }
 
 //--------------------------------------------------------------
+void ofApp::drawDebug(int x, int y, float scale) {
+    ofPushMatrix();
+    ofTranslate(x, y);
+    ofSetColor(255);
+    if (cvDebug.isAllocated()) {
+        cvDebug.draw(0, 0);
+    }
+    ofScale(scale, scale);
+    for (int i=0; i<matches.size(); i++) {
+        matches[i].draw();
+    }
+    ofPopMatrix();
+}
+
+//--------------------------------------------------------------
 void ofApp::draw() {
     
-    if (screen.isDebug()) {
+    if (debug) {
         screen.drawDebug();
     }
-    else {
-        if (debugDraw) {
-            ofPushMatrix();
-            ofScale(0.5, 0.5);
-            ofSetColor(255);
-            grayImage.draw(0, 0);
-            for (int i=0; i<matches.size(); i++) {
-                matches[i].draw();
-            }
-            ofPopMatrix();
-            if (matches.size() != nMatches) {
-                nMatches = matches.size();
-                runGoRecommender();
-            }
-        }
-        darknet.draw();
+    else { // presentation view
+        drawDebug(20, 16, debugDrawScale);
+        ofDrawBitmapStringHighlight("CV debug", 22, 15);
+        darknet.drawRecommendations(300, 0);
+        darknet.drawBoard();
     }
 }
 
@@ -136,14 +145,10 @@ void ofApp::runGoRecommender() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key=='1') {
-        toggleScreenDebug(!debug);
-    }
-    if(key == OF_KEY_UP) {
-        if(confidenceMin<100) confidenceMin ++;
-    }
-    if(key == OF_KEY_DOWN) {
-        if(confidenceMin>0) confidenceMin --;
+    if (key=='d'){
+        debug = !debug;
+        toggleScreenDebug(debug);
+        darknet.setMouseActive(!debug);
     }
 }
 
