@@ -17,6 +17,7 @@ void ofApp::setup()
     tWebcam.addListener(this, &ofApp::useWebcam);
     tVideo.addListener(this, &ofApp::useVideo);
     tScreen.addListener(this, &ofApp::useScreen);
+    tRetina.addListener(this, &ofApp::toggleRetina);
     tScreenDebug.addListener(this, &ofApp::toggleScreenDebug);
 
     gui.setup();
@@ -139,6 +140,17 @@ void ofApp::toggleScreenDebug(bool & b) {
         
     }
 }
+
+//--------------------------------------------------------------
+void ofApp::toggleRetina(bool & b) {
+    if(tScreen) {
+        tScreen = true;
+        screen.setup(ofGetWidth(), ofGetHeight(), tRetina);
+        pixels.allocate(screen.getGrabber().getTextureReference().getWidth(),
+                        screen.getGrabber().getTextureReference().getHeight(), 4);
+    }
+}
+
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {

@@ -16,6 +16,7 @@ public:
     void useVideo(bool & b);
     void useScreen(bool & b);
     void toggleScreenDebug(bool & b);
+    void toggleRetina(bool & b);
 
     void keyPressed(int key);
     void mouseMoved(int x, int y );
