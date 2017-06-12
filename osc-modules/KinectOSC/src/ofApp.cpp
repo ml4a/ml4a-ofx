@@ -5,8 +5,9 @@ void ofApp::setup(){
     ofSetWindowShape(640, 480);
 
     // default settings
+    debug = false;
     normalize = true;
-    sendScreen = true;
+    sendScreen = false;
     oscDestination = OSC_DESTINATION_DEFAULT;
     oscAddress = OSC_ADDRESS_ROOT_DEFAULT;
     oscPort = OSC_PORT_DEFAULT;
@@ -103,9 +104,13 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackground(0);
+    ofSetColor(255);
+    
+    if (debug) {
+        kinect.drawDepth(ofGetWidth() - 320, 0, 320, 240);
+    }
     
     // draw skeleton
-    ofSetColor(255);
     if (kinect.getNumTrackedUsers() > 0) {
         kinect.drawSkeleton(0);
     }
@@ -114,7 +119,9 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if (key=='d') {
+        debug = !debug;
+    }
 }
 
 //--------------------------------------------------------------

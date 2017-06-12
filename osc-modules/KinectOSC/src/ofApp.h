@@ -40,5 +40,5 @@ class ofApp : public ofBaseApp{
     bool normalize;
     bool sendScreen;
     ofxControlWidget gui;
-    
+    bool debug;
 };
