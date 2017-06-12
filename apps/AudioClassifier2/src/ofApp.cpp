@@ -88,6 +88,10 @@ void ofApp::setup(){
     gui.add(bOscSettings.setup("change OSC settings"));
     gui.setPosition(8,8);
     gui.loadFromFile(ofToDataPath("settings_audioclassifier.xml"));
+    
+    oscDestination = gOscDestination.get();
+    oscAddress = gOscAddress.get();
+    oscPort = ofToInt(gOscPort.get());
 
     startTime = ofGetElapsedTimeMillis();
 }
