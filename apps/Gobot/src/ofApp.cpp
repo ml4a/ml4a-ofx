@@ -4,6 +4,11 @@
 void ofApp::setup() {
     retina = true;  // if using macbook retina
     
+    debugDrawScale = 0.15;
+    confidenceMin = 85;
+    boardWidth = boardHeight = 2 * 680;
+    debug = false;
+
     ofSetWindowShape(1280, 800);
     
     //string cfgfile = ofToDataPath("darknet/go.test.cfg");
@@ -26,9 +31,8 @@ void ofApp::setup() {
     addObject(ofToDataPath("whitesquare.png"));
     addObject(ofToDataPath("whitesquare2.png"));
     
-    debugDrawScale = 0.15;
-    confidenceMin = 90;
-    debug = false;
+    colorImage.allocate(boardWidth, boardHeight);
+    grayImage.allocate(boardWidth, boardHeight);
 }
 
 //--------------------------------------------------------------
@@ -53,8 +57,6 @@ void ofApp::toggleScreenDebug(bool b) {
         int width = screen.getGrabber().getTextureReference().getWidth();
         int height = screen.getGrabber().getTextureReference().getHeight();
         pixels.allocate(width, height, 4);
-        colorImage.allocate(width, height);
-        grayImage.allocate(width, height);
     }
 }
 
@@ -69,13 +71,14 @@ void ofApp::update() {
     if (ofGetFrameNum() % 5 == 0) {
         screen.getGrabber().getTextureReference().readToPixels(pixels);
         pixels.setImageType(OF_IMAGE_COLOR);
+        pixels.resize(boardWidth, boardHeight);
         colorImage.setFromPixels(pixels);
         grayImage = colorImage;
+        cvDebug.setFromPixels(grayImage.getPixels());
+        cvDebug.resize(grayImage.getWidth() * debugDrawScale,
+                       grayImage.getHeight() * debugDrawScale);
         analyzeGoImage();
         if (matches.size() != nMatches) {
-            cvDebug.setFromPixels(grayImage.getPixels());
-            cvDebug.resize(grayImage.getWidth() * debugDrawScale,
-                           grayImage.getHeight() * debugDrawScale);
             nMatches = matches.size();
             runGoRecommender();
         }

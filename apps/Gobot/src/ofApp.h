@@ -49,4 +49,5 @@ public:
     bool retina;
     float debugDrawScale;
     bool debug;
+    int boardWidth, boardHeight;
 };

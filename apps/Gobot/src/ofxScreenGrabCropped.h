@@ -24,8 +24,8 @@ public:
     }
     
     void setMargins() {
-        marginx = int(float(brx-tlx)/36.0);
-        marginy = int(float(bry-tly)/36.0);
+        marginx = 2*int(float(brx-tlx)/36.0);
+        marginy = 2*int(float(bry-tly)/36.0);
     }
     
     void update() {
