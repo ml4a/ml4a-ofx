@@ -3,6 +3,7 @@
 //-----------
 void LeapMotion::setup(){
     leap.open();
+    leap.setReceiveBackgroundFrames(true);
     
     cam.setOrientation(ofPoint(-20, 0, 0));
     fbo.allocate(1024, 768, GL_RGBA);

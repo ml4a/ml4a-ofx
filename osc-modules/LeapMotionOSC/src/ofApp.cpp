@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetWindowShape(720, 420);
+    ofSetFrameRate(60);
+    ofSetVerticalSync(true);
     
     leap.setup();
     gui.setName("LeapOSC");
