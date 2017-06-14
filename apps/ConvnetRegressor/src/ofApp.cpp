@@ -24,9 +24,12 @@ void GestureRecognitionPipelineThreaded::threadedFunction() {
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    
+
+#ifdef RELEASE
+    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+#else
     string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
-//    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+#endif
     
     oscDestination = DEFAULT_OSC_DESTINATION;
     oscAddress = DEFAULT_OSC_ADDRESS;
@@ -40,8 +43,6 @@ void ofApp::setup() {
     if (!ccv.isLoaded()) return;
     ccv.setEncode(true);
     ccv.start();
-    
-    cam.initGrabber(320, 240);
     
     //GUI
     bTrain.addListener(this, &ofApp::train);
@@ -63,6 +64,7 @@ void ofApp::setup() {
     gui.setup();
     gui.setPosition(10,10);
     gui.setName("Convnet regressor");
+    gui.add(gDeviceId.set("deviceId", ofToString(DEFAULT_DEVICE_ID)));
     gui.add(gTraining);
     gui.add(tRecord.setup("Record", false));
     gui.add(bClear.setup("Clear training data"));
@@ -82,7 +84,17 @@ void ofApp::setup() {
     guiSliders.add(bAddSlider.setup("Add Slider"));
     addSlider();
     
+    // osc
     setupOSC();
+    
+    // camera
+    int idx = ofToInt(gDeviceId.get());
+    if (idx > cam.listDevices().size()-1) {
+        cam.setDeviceID(0);
+    } else {
+        cam.setDeviceID(idx);
+    }
+    cam.initGrabber(320, 240);
 }
 
 //--------------------------------------------------------------

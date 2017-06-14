@@ -10,8 +10,10 @@
 #define DEFAULT_OSC_DESTINATION "localhost"
 #define DEFAULT_OSC_ADDRESS "/wek/outputs"
 #define DEFAULT_OSC_PORT 12000
+#define DEFAULT_DEVICE_ID 0
 #define SIZE_INPUT_VECTOR 4096
 
+//#define RELEASE
 
 
 class GestureRecognitionPipelineThreaded : public ofThread, public GestureRecognitionPipeline {
@@ -70,7 +72,7 @@ public:
     // parameters
     ofParameter<float> lerpAmt;
     ofParameter<int> maxEpochs, numHiddenNeurons;
-    ofParameter<string> gOscDestination, gOscAddress, gOscPort;
+    ofParameter<string> gOscDestination, gOscAddress, gOscPort, gDeviceId;
 
     // gui
     ofxPanel gui, guiSliders;
