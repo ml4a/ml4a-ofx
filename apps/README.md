@@ -2,9 +2,9 @@
 
 Specific instructions for running each application are included in a README inside each app folder. A description of each application follows:
 
-#### AudioClassifier + AudioClassifier2
+#### AudioClassifier
 
-Train a classifier on microphone audio recordings. AudioClassifier2 is w.i.p., will merge soon.
+Train a classifier on microphone audio recordings.
 
 #### AudioTSNEViewer
 
@@ -17,6 +17,10 @@ Train an image classifier on a webcam feed.
 #### ConvnetRegressor
 
 Train an image regression on a webcam feed.
+
+#### ConvnetPredictor
+
+(in progress) This app combines ConvnetRegressor and ConvnetClassifier into one app with an interface. This should eventually replace the former two.
 
 #### ConvnetViewer
 
