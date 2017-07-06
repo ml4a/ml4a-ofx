@@ -1,12 +1,14 @@
-
-
 #include "ofApp.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
-    ofBackground(34, 34, 34);
+    ofSetWindowShape(860, 310);
+    ofSetWindowTitle("Audio Classifier");
     ofSetFrameRate(60);
+    ofBackground(60);
+    
+    nMfcc = 13;
+    numFrames = 5;
     
     //MAXIM
     // This is stuff you always need when you use Maximilian. Don't change it.
@@ -26,10 +28,11 @@ void ofApp::setup(){
     // Now you can put anything you would normally put in maximilian's 'setup' method in here.
     mfft.setup(fftSize, 512, 256); //just a forward FFT
     oct.setup(sampleRate, fftSize/2, nAverages);
-    mfccs = (double*) malloc(sizeof(double) * 13);
+    mfccs = (double*) malloc(sizeof(double) * nMfcc);
     
     //512 bins, 42 filters, 13 coeffs, min/max freq 20/20000
-    mfcc.setup(512, 42, 13, 20, 20000, sampleRate);
+    mfcc.setup(512, 42, nMfcc, 20, 20000, sampleRate);
+    featureWindow.setup(nMfcc, numFrames);
     
     ofxMaxiSettings::setup(sampleRate, 2, initialBufferSize);
     ofSoundStreamSetup(2,2, this, sampleRate, initialBufferSize, 4);// Call this last !
@@ -37,7 +40,7 @@ void ofApp::setup(){
     //Fonts
     smallFont.load(ofToDataPath("Arial.ttf"), 10, true, true);
     smallFont.setLineHeight(12.0f);
-    hugeFont.load(ofToDataPath("Arial.ttf"), 36, true, true);
+    hugeFont.load(ofToDataPath("Arial.ttf"), 30, true, true);
     hugeFont.setLineHeight(38.0f);
     
     //Grt
@@ -45,26 +48,33 @@ void ofApp::setup(){
     predictedClassLabel = 0;
     trainingModeActive = false;
     predictionModeActive = false;
-    trainingInputs = 13; //Number of mfcc's
-    trainingData.setNumDimensions( trainingInputs );
-    Softmax softmax; //Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm;
-    pipeline.setClassifier( softmax );
+    trainingData.setNumDimensions( nMfcc*2 );
+    
+    SVM svm; //Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm;
+    svm.setMaxNumEpochs(10000);
+    pipeline.setClassifier( svm );
     
     //OSC
     // default settings
     oscDestination = DEFAULT_OSC_DESTINATION;
     oscAddress = DEFAULT_OSC_ADDRESS;
     oscPort = DEFAULT_OSC_PORT;
-    sender.setup(oscDestination, oscPort);
-    
+    setupOSC();
     
     //GUI
     bTrain.addListener(this, &ofApp::trainClassifier);
     bSave.addListener(this, &ofApp::save);
     bLoad.addListener(this, &ofApp::load);
     bClear.addListener(this, &ofApp::clear);
+    bOscSettings.addListener(this, &ofApp::changeOscSettings);
+    
+    gOscSettings.setName("OSC settings");
+    gOscSettings.add(gOscDestination.set("IP", oscDestination));
+    gOscSettings.add(gOscPort.set("port", ofToString(oscPort)));
+    gOscSettings.add(gOscAddress.set("message", oscAddress));
     
     gui.setup();
+    gui.setName("AudioClassifier");
     gui.add(sliderClassLabel.setup("Class Label", 1, 1, 9));
     gui.add(tRecord.setup("Record", false));
     gui.add(bTrain.setup("Train"));
@@ -74,10 +84,46 @@ void ofApp::setup(){
     gui.add(tThresholdMode.setup("Threshold Mode", false));
     gui.add(triggerTimerThreshold.setup("Threshold timer (ms)", 10, 1, 1000));
     gui.add(volThreshold.setup("volThreshold", 0.6, 0.0, 10.0));
+    gui.add(gOscSettings);
+    gui.add(bOscSettings.setup("change OSC settings"));
+    gui.setPosition(8,8);
+    gui.loadFromFile(ofToDataPath("settings_audioclassifier.xml"));
     
-    gui.setPosition(10,10);
-    
+    oscDestination = gOscDestination.get();
+    oscAddress = gOscAddress.get();
+    oscPort = ofToInt(gOscPort.get());
+
     startTime = ofGetElapsedTimeMillis();
+}
+
+//--------------------------------------------------------------
+void ofApp::setupOSC() {
+    sender.setup(oscDestination, oscPort);
+}
+
+//--------------------------------------------------------------
+void ofApp::changeOscSettings() {
+    string input = ofSystemTextBoxDialog("Send OSC to what destination IP", oscDestination);
+    bool toSwitchOsc = false;
+    if (input != "" && input != oscDestination) {
+        oscDestination = input;
+        gOscDestination.set(oscDestination);
+        toSwitchOsc = true;
+    }
+    input = ofSystemTextBoxDialog("Send OSC to what destination port", ofToString(oscPort));
+    if (ofToInt(input) > 0 && ofToInt(input) != oscPort) {
+        oscPort = ofToInt(input);
+        gOscPort.set(ofToString(oscPort));
+        toSwitchOsc = true;
+    }
+    input = ofSystemTextBoxDialog("Send OSC with what message address", oscAddress);
+    if (input != "" && input != oscAddress) {
+        oscAddress = input;
+        gOscAddress.set(oscAddress);
+    }
+    if (toSwitchOsc) {
+        setupOSC();
+    }
 }
 
 //--------------------------------------------------------------
@@ -92,32 +138,25 @@ void ofApp::update(){
         singleTrigger = true;
     }
     
-    //Grt
-    VectorFloat trainingSample(trainingInputs);
-    VectorFloat inputVector(trainingInputs);
-    
-    for (int i = 0; i < 13; i++) {
-        trainingSample[i] = mfccs[i];
-    }
-    
-    inputVector = trainingSample;
-    
-    
+    // feature vector
+    featureWindow.update(mfccs);
+    VectorFloat inputVector = featureWindow.getFeatureVector();
+
+    // record
     if( tRecord && !tThresholdMode){
-        trainingData.addSample( sliderClassLabel, trainingSample );
-    } else if (tRecord && tThresholdMode && rms > volThreshold && singleTrigger) {
-        trainingData.addSample( sliderClassLabel, trainingSample );
+        trainingData.addSample( sliderClassLabel, inputVector );
+    }
+    else if (tRecord && tThresholdMode && rms > volThreshold && singleTrigger) {
+        trainingData.addSample( sliderClassLabel, inputVector );
         singleTrigger = false;
         startTime = ofGetElapsedTimeMillis();
     }
-    
     
     //Update the prediction mode if active
     if( predictionModeActive && !tThresholdMode){
         if( pipeline.predict( inputVector ) ){
             predictedClassLabel = pipeline.getPredictedClassLabel();
             predictionPlot.update( pipeline.getClassLikelihoods() );
-            
             sendOSC();
             
         }else{
@@ -141,6 +180,10 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    ofPushMatrix();
+    ofTranslate(220, 10);
+    
+    float logMult = 200.0 / log(11);
     
     //RMS
     ofFill();
@@ -149,65 +192,64 @@ void ofApp::draw(){
     }else {
         ofSetColor(100);
     }
-    ofDrawRectangle(10, 210, ofClamp(20*(rms),0,200), 10);
+    
+    ofDrawRectangle(10, 10, ofClamp(logMult * log(1 + rms), 0, 200), 30);
     ofSetColor(255);
     char rmsString[255]; // an array of chars
     sprintf(rmsString, "RMS: %.2f", rms);
-    smallFont.drawString(rmsString, 10, 240);
+    smallFont.drawString(rmsString, 10, 57);
     
     //Threshold line
     if (tThresholdMode) {
+        float thresh = logMult * log(1 + volThreshold) + 10;
+        ofPushStyle();
         ofSetColor(255,0,0);
         ofSetLineWidth(5);
-        ofDrawLine(volThreshold*20 + 10, 210, volThreshold*20 + 10, 220);
+        ofDrawLine(thresh, 10, thresh, 40);
+        ofPopStyle();
     }
     
     //Draw MFCCs
     ofSetColor(255);
     int mw = 200;
     int mfccGraphH = 20;
-    float bin_w = (float) mw / 13;
-    for (int i = 0; i < 13; i++){
+    float bin_w = (float) mw / nMfcc;
+    for (int i = 0; i < nMfcc; i++){
         float bin_h = -1 * (mfccs[i] * mfccGraphH);
-        ofDrawRectangle(i*bin_w + 10, 285, bin_w, bin_h);
+        ofDrawRectangle(i*bin_w + 10, 122, bin_w, bin_h);
     }
     
-    
-    //Draw the info text
-    int marginX, marginY, graphX, graphY = 10;
-    int graphW = ofGetWidth() - graphX*2;
-    int graphH = 150;
-    float infoX = 10;
-    float infoW = 200;
-    float textX = marginX;
-    float textY = 300;
-    float textSpacer = smallFont.getLineHeight() * 1.5;
+    // boxes
+    ofNoFill();
+    ofDrawRectangle(5, 5, 210, 60);
+    ofDrawRectangle(5, 75, 210, 100);
     
     ofFill();
-    ofSetColor( 255, 255, 255 );
+    ofSetColor(255);
     
-    smallFont.drawString( "MFCCS CLASSIFIER EXAMPLE", textX, textY +20); textY += textSpacer*2;
-    smallFont.drawString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), textX, textY ); textY += textSpacer;
-    textY += textSpacer;
-    smallFont.drawString( "Total input values: "+ofToString(trainingInputs), textX, textY ); textY += textSpacer;
+    smallFont.drawString( "MFCCs", 10, 170);
+    smallFont.drawString( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 10, 200 );
+    //smallFont.drawString( "Total input values: "+ofToString(2*nMfcc), 10, 185 );
     ofSetColor(0,255,0);
-    smallFont.drawString( infoText, textX, textY ); textY += textSpacer;
-    textY += textSpacer;
+    smallFont.drawString( infoText, 10, 225);
+
+    ofPopMatrix();
     
-    //Update the graph position
-    graphX = infoX + infoW + 15;
-    graphW = ofGetWidth() - graphX - 15;
-    
+    ofPushMatrix();
+    ofTranslate(430, 10);
     
     //If the model has been trained, then draw this
     if( pipeline.getTrained() ){
         ofSetLineWidth(1);
-        predictionPlot.draw( graphX, graphY, graphW, graphH ); graphY += graphH * 1.1;
-        std::string txt = "Predicted Class: " + ofToString( predictedClassLabel );
+        predictionPlot.draw( 10, 10, 410, 140 );
+        std::string txt = "Predicted: " + ofToString( predictedClassLabel );
         ofRectangle bounds = hugeFont.getStringBoundingBox( txt, 0, 0 );
         ofSetColor(255, predictionAlpha);
-        hugeFont.drawString( txt, ofGetWidth()/2 - bounds.width*0.5, ofGetHeight() - bounds.height*3 );
+        hugeFont.drawString( txt, 32, 200);
     }
+    
+    ofPopMatrix();
+    
     gui.draw();
 }
 
@@ -249,12 +291,13 @@ void ofApp::audioReceived 	(float * input, int bufferSize, int nChannels){
         
         sum += input[i*2] * input[i*2];
     }
-    rms = sqrt(sum);
+    rms = ofLerp(rms, sqrt(sum), 0.7);
 }
 
 
 //--------------------------------------------------------------
 void ofApp::exit(){
+    gui.saveToFile("settings_audioclassifier.xml");
     ofSoundStreamStop();
 }
 

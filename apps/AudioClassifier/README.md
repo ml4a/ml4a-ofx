@@ -4,7 +4,7 @@ An interface for classifying sounds. The app can be trained to distinguish diffe
 
 A guide can be found [here](http://ml4a.github.io/guides/AudioClassifier/).
 
-A tutorial video can be found [here](https://vimeo.com/212739123/). 
+A (slightly outdated) tutorial video can be found [here](https://vimeo.com/212739123/). 
 
 Addons required:
 - [ofxGrt](https://github.com/nickgillian/ofxGrt)

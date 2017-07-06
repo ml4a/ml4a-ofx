@@ -1,4 +1,0 @@
-ofxGrt
-ofxGui
-ofxMaxim
-ofxOsc

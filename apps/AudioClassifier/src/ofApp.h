@@ -5,6 +5,7 @@
 #include "ofxGrt.h"
 #include "ofxGui.h"
 #include "ofxOsc.h"
+#include "FeatureWindow.h"
 
 // where to send osc messages by default
 #define DEFAULT_OSC_DESTINATION "localhost"
@@ -13,6 +14,9 @@
 
 //State that we want to use the GRT namespace
 using namespace GRT;
+
+
+
 
 class ofApp : public ofBaseApp{
     
@@ -28,7 +32,10 @@ public:
     void load();
     void clear();
     
+    void setupOSC();
     void sendOSC();
+    
+    void changeOscSettings();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -71,11 +78,14 @@ public:
     maxiMFCC mfcc;
     double *mfccs;
     float rms = 0;
-    
+    int nMfcc;
+    int numFrames;
+
     //GRT
     ClassificationData trainingData;
     GestureRecognitionPipeline pipeline;
-    
+    FeatureWindow featureWindow;
+
     bool trainingModeActive;
     bool predictionModeActive;
     
@@ -85,15 +95,16 @@ public:
     ofTrueTypeFont smallFont;
     ofTrueTypeFont hugeFont;
     ofxGrtTimeseriesPlot predictionPlot;
-    int trainingInputs;
     
     //GUI
     ofxPanel gui;
+    ofParameterGroup gOscSettings;
     ofxFloatSlider volThreshold;
     ofxIntSlider triggerTimerThreshold;
     ofxIntSlider sliderClassLabel;
+    ofParameter<string> gOscDestination, gOscAddress, gOscPort;
     
-    ofxButton  bTrain, bSave, bLoad, bClear;
+    ofxButton  bTrain, bSave, bLoad, bClear, bOscSettings;
     ofxToggle tThresholdMode, tRecord; 
     
     //Threshold & triggermode
