@@ -33,6 +33,9 @@ build/
 data/image-net-2012.words
 data/image-net-2012.sqlite3
 data/shape_predictor_68_face_landmarks.dat
+data/animals
+data/mscoco
+data/feature_vectors
 *.weights
 *.dat
 
