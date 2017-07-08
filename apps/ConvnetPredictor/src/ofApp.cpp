@@ -17,6 +17,8 @@ void ofApp::setup() {
     
     ofSetWindowShape(800, 360);
     ofBackground(150);
+    largeFont.load(ofToDataPath("verdana.ttf"), 20, true, true);
+    largeFont.setLineHeight(38.0f);
     
     // ccv
     ccv.setup(ccvPath);
@@ -273,10 +275,17 @@ void ofApp::draw() {
     // draw interface
     ofSetColor(255);
     cam.draw(235, 10);
-    ofDrawBitmapStringHighlight( "Num samples recorded: " + ofToString( numSamples ), 237, 30 + cam.getHeight() );
+    ofDrawBitmapStringHighlight( "Num samples recorded: " + ofToString(numSamples), 237, 30 + cam.getHeight() );
     if (infoText != ""){
         ofDrawBitmapStringHighlight( infoText, 237, 50 + cam.getHeight() );
     }
+    
+    if (learners.size() == 1 && learners[0]->isClassifier() && learners[0]->getTrained() && tPredict) {
+        string txt = "Predicted Class: " + ofToString(((CategoricalThreaded *) learners[0])->slider);
+        ofSetColor(0,255,0);
+        largeFont.drawString(txt, 237, 92 + cam.getHeight());
+    }
+    
     gui.draw();
     guiSliders.draw();
 }
@@ -294,7 +303,7 @@ void ofApp::train() {
     }
 
     infoText = "Training!! please wait.";
-    isTraining = true;    
+    isTraining = true;
     ofLog(OF_LOG_NOTICE, "Done training...");
 }
 

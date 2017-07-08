@@ -17,20 +17,6 @@
 #include "PipelineThreaded.h"
 
 
-// x connect learning parameters to
-// x experiment with different learners,
-// x send osc on manual change
-//----
-// x infoTxt messages
-// x lerp
-// x set camera
-// x how many categories?
-// x dont .predict if not trained
-// if just 1 classifier, use largeFont and plotter (get rid of others)
-// x saving and loading models properly, and having right number of sliders
-//----
-// make README + guide
-
 
 class ofApp : public ofBaseApp {
 public:
@@ -77,8 +63,6 @@ public:
     // draing/ui
     string infoText;
     ofTrueTypeFont largeFont;
-    ofTrueTypeFont smallFont;
-    ofTrueTypeFont hugeFont;
     
     // parameters
     ofParameter<float> lerpAmt;
