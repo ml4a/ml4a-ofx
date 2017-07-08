@@ -1,14 +1,13 @@
 #include "ofApp.h"
 
 
-
 //--------------------------------------------------------------
 void ofApp::setup() {
     
 #ifdef RELEASE
-    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+    string landmarksPath = ofToDataPath("shape_predictor_68_face_landmarks.dat");
 #else
-    string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+    string landmarksPath = ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat");
 #endif
     
     oscDestination = DEFAULT_OSC_DESTINATION;
@@ -20,11 +19,9 @@ void ofApp::setup() {
     largeFont.load(ofToDataPath("verdana.ttf"), 20, true, true);
     largeFont.setLineHeight(38.0f);
     
-    // ccv
-    ccv.setup(ccvPath);
-    if (!ccv.isLoaded()) return;
-    ccv.setEncode(true);
-    ccv.start();
+    // facetracker
+    numInputs = SIZE_INPUT_VECTOR;  //GESTUREINPUTS*gestureBool+ORIENTATIONINPUTS*orientationBool+RAWINPUTS*rawBool; //RAWINPUTS=136, ORIENTATIONINPUTS=9, GESTUREINPUTS=5
+    tracker.setup(landmarksPath);
     
     //GUI
     bTrain.addListener(this, &ofApp::train);
@@ -35,7 +32,7 @@ void ofApp::setup() {
     bAddCategorical.addListener(this, &ofApp::eAddCategorical);
     bOscSettings.addListener(this, &ofApp::eChangeOscSettings);
     bCameraSettings.addListener(this, &ofApp::eChangeCamera);
-
+    
     gTraining.setName("Training");
     //gTraining.add(numHiddenNeurons.set("hidden neurons", 10, 5, 50));
     //gTraining.add(maxEpochs.set("epochs", 100, 20, 1000));
@@ -47,7 +44,7 @@ void ofApp::setup() {
     
     gui.setup();
     gui.setPosition(10,10);
-    gui.setName("Convnet predictor");
+    gui.setName("Face predictor");
     gui.add(gDeviceId.set("deviceId", ofToString(DEFAULT_DEVICE_ID)));
     gui.add(bCameraSettings.setup("change Camera settings"));
     gui.add(gTraining);
@@ -60,7 +57,7 @@ void ofApp::setup() {
     gui.add(lerpAmt.set("Prediction lerp", 0.2, 0.01, 1.0));
     gui.add(gOscSettings);
     gui.add(bOscSettings.setup("change OSC settings"));
-    gui.loadFromFile(ofToDataPath("settings_convnetP.xml"));
+    gui.loadFromFile(ofToDataPath("settings_faceP.xml"));
     
     guiSliders.setup();
     guiSliders.setPosition(580, 10);
@@ -145,9 +142,7 @@ void ofApp::eCategorical(int & v) {
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-    gui.saveToFile(ofToDataPath("settings_convnetP.xml"));
-    ccv.setEncode(false);
-    ccv.stop();
+    gui.saveToFile(ofToDataPath("settings_faceP.xml"));
     for (int p=0; p<learners.size(); p++) {
         learners[p]->stopThread();
     }
@@ -157,7 +152,7 @@ void ofApp::exit() {
 RegressionThreaded * ofApp::addSlider() {
     RegressionThreaded *learner = new RegressionThreaded();
     string name = "y"+ofToString(1+learners.size());
-    learner->setup(name, &guiSliders, SIZE_INPUT_VECTOR);
+    learner->setup(name, &guiSliders, numInputs);
     learner->slider.addListener(this, &ofApp::eSlider);
     learners.push_back(learner);
     return learner;
@@ -180,7 +175,7 @@ void ofApp::eAddCategorical() {
 CategoricalThreaded * ofApp::addCategorical(int numClasses) {
     CategoricalThreaded *learner = new CategoricalThreaded();
     string name = "y"+ofToString(1+learners.size());
-    learner->setup(name, &guiSliders, SIZE_INPUT_VECTOR, numClasses);
+    learner->setup(name, &guiSliders, numInputs, numClasses);
     learner->slider.addListener(this, &ofApp::eCategorical);
     learners.push_back(learner);
     return learner;
@@ -198,10 +193,6 @@ void ofApp::updateParameters() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    // check if ccv loaded
-    if (!ccv.isLoaded()) {
-        return;
-    }
     
     // update training status
     if (isTraining) {
@@ -233,17 +224,23 @@ void ofApp::update() {
     cam.update();
     if (!cam.isFrameNew()) {
         return;
-    } else if (cam.isFrameNew() && ccv.isReady()) {
-        ccv.update(cam, ccv.numLayers()-1);
+    } else if (cam.isFrameNew()) {
+        tracker.update(cam);
     }
     
     // record or predict
-    if ((tRecord||tPredict) && ccv.hasNewResults()) {
-        featureEncoding = ccv.getEncoding();
-        VectorFloat inputVector(featureEncoding.size());
-        for (int i=0; i<featureEncoding.size(); i++) {
-            inputVector[i] = featureEncoding[i];
+    if (tRecord||tPredict) {
+        VectorFloat inputVector(numInputs);
+
+        if (tracker.size()>0) {
+            auto facePoints = tracker.getInstances()[0].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::ALL_FEATURES);
+            for (int i = 0; i<facePoints.size(); i++) {
+                ofPoint p = facePoints.getVertices()[i].getNormalized();
+                inputVector[2*i] = p.x;
+                inputVector[2*i+1] = p.y;
+            }
         }
+
         if( tRecord ) {
             for (int p=0; p<learners.size(); p++) {
                 bool success = learners[p]->addSample(&inputVector);
@@ -266,15 +263,37 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    // check if ccv loaded
-    if (!ccv.isLoaded()) {
-        ofDrawBitmapString("Network file not found! Check your data folder to make sure it exists.", 20, 20);
-        return;
-    }
-    
-    // draw interface
+    ofPushMatrix();
+    ofTranslate(235, 10);
     ofSetColor(255);
-    cam.draw(235, 10);
+    cam.draw(0, 0);
+    for (int i = 0; i<tracker.size(); i ++) {
+        ofPolyline jaw = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::JAW);
+        ofPolyline left_eyebrow = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::LEFT_EYEBROW);
+        ofPolyline right_eyebrow = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::RIGHT_EYEBROW);
+        ofPolyline left_eye_top = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::LEFT_EYE_TOP);
+        ofPolyline right_eye_top = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::RIGHT_EYE_TOP);
+        ofPolyline left_eye = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::LEFT_EYE);
+        ofPolyline right_eye = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::RIGHT_EYE);
+        ofPolyline outher_mouth = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::OUTER_MOUTH);
+        ofPolyline inner_mouth = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::INNER_MOUTH);
+        ofPolyline nose_bridge = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::NOSE_BRIDGE);
+        ofPolyline nose_base = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::NOSE_BASE);
+        
+        jaw.draw();
+        left_eyebrow.draw();
+        right_eyebrow.draw();
+        left_eye_top.draw();
+        right_eye_top.draw();
+        left_eye.draw();
+        right_eye.draw();
+        outher_mouth.draw();
+        inner_mouth.draw();
+        nose_bridge.draw();
+        nose_base.draw();
+    }
+    ofPopMatrix();
+    
     ofDrawBitmapStringHighlight( "Num samples recorded: " + ofToString(numSamples), 237, 30 + cam.getHeight() );
     if (infoText != ""){
         ofDrawBitmapStringHighlight( infoText, 237, 50 + cam.getHeight() );
@@ -295,13 +314,13 @@ void ofApp::train() {
     ofLog(OF_LOG_NOTICE, "Training...");
     tRecord = false;
     tPredict = false;
-
+    
     for (int p=0; p<learners.size(); p++) {
         learners[p]->setupModel(0);
         learners[p]->startTraining();
         learners[p]->startThread();
     }
-
+    
     infoText = "Training!! please wait.";
     isTraining = true;
     ofLog(OF_LOG_NOTICE, "Done training...");
@@ -344,7 +363,7 @@ void ofApp::load(string modelPath) {
     }
 }
 
-//------------------------------w--------------------------------
+//--------------------------------------------------------------
 void ofApp::clear() {
     for (int p=0; p<learners.size(); p++) {
         learners[p]->clear();
