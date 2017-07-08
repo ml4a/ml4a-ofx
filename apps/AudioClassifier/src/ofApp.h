@@ -28,6 +28,8 @@ public:
     void exit();
     
     void trainClassifier();
+    void setupPrediction();
+    
     void save();
     void load();
     void clear();
@@ -87,7 +89,6 @@ public:
     FeatureWindow featureWindow;
 
     bool trainingModeActive;
-    bool predictionModeActive;
     
     UINT trainingClassLabel;
     UINT predictedClassLabel;
@@ -103,6 +104,7 @@ public:
     ofxIntSlider triggerTimerThreshold;
     ofxIntSlider sliderClassLabel;
     ofParameter<string> gOscDestination, gOscAddress, gOscPort;
+    ofParameter<bool> predicting;
     
     ofxButton  bTrain, bSave, bLoad, bClear, bOscSettings;
     ofxToggle tThresholdMode, tRecord; 

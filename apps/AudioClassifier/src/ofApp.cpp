@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetWindowShape(860, 310);
+    ofSetWindowShape(860, 330);
     ofSetWindowTitle("Audio Classifier");
     ofSetFrameRate(60);
     ofBackground(60);
@@ -47,10 +47,11 @@ void ofApp::setup(){
     infoText = "";
     predictedClassLabel = 0;
     trainingModeActive = false;
-    predictionModeActive = false;
+    predicting = false;
     trainingData.setNumDimensions( nMfcc*2 );
     
     SVM svm; //Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm;
+    svm.setMaxNumEpochs(5000);
     svm.setMaxNumEpochs(10000);
     pipeline.setClassifier( svm );
     
@@ -78,6 +79,7 @@ void ofApp::setup(){
     gui.add(sliderClassLabel.setup("Class Label", 1, 1, 9));
     gui.add(tRecord.setup("Record", false));
     gui.add(bTrain.setup("Train"));
+    gui.add(predicting.set("Predicting", false));
     gui.add(bSave.setup("Save"));
     gui.add(bLoad.setup("Load"));
     gui.add(bClear.setup("Clear"));
@@ -94,6 +96,7 @@ void ofApp::setup(){
     oscPort = ofToInt(gOscPort.get());
 
     startTime = ofGetElapsedTimeMillis();
+    predicting = false;
 }
 
 //--------------------------------------------------------------
@@ -153,7 +156,7 @@ void ofApp::update(){
     }
     
     //Update the prediction mode if active
-    if( predictionModeActive && !tThresholdMode){
+    if( predicting && !tThresholdMode){
         if( pipeline.predict( inputVector ) ){
             predictedClassLabel = pipeline.getPredictedClassLabel();
             predictionPlot.update( pipeline.getClassLikelihoods() );
@@ -162,7 +165,7 @@ void ofApp::update(){
         }else{
             infoText = "ERROR: Failed to run prediction!";
         }
-    } else if (predictionModeActive && tThresholdMode && rms > volThreshold && singleTrigger) {
+    } else if (predicting && tThresholdMode && rms > volThreshold && singleTrigger) {
         if( pipeline.predict( inputVector ) ){
             predictedClassLabel = pipeline.getPredictedClassLabel();
             predictionPlot.update( pipeline.getClassLikelihoods() );
@@ -361,47 +364,55 @@ void ofApp::keyPressed(int key){ //Optional key interactions
 //--------------------------------------------------------------
 void ofApp::trainClassifier() {
     ofLog(OF_LOG_NOTICE, "Training...");
-    tRecord = false;
-    if( pipeline.train( trainingData ) ){
-        infoText = "Pipeline Trained";
-        std::cout << "getNumClasses: " << pipeline.getNumClasses() << std::endl;
-        predictionPlot.setup( 500, pipeline.getNumClasses(), "prediction likelihoods" );
-        predictionPlot.setDrawGrid( true );
-        predictionPlot.setDrawInfoText( true );
-        predictionPlot.setFont( smallFont );
-        predictionPlot.setBackgroundColor( ofColor(50,50,50,255));
-        predictionModeActive = true;
-    }else infoText = "WARNING: Failed to train pipeline";
     
+    if( pipeline.train( trainingData ) ){
+        setupPrediction();
+    }
+    else {
+        infoText = "WARNING: Failed to train pipeline";
+    }
     
     ofLog(OF_LOG_NOTICE, "Done training...");
 }
 
 //--------------------------------------------------------------
+void ofApp::setupPrediction() {
+    infoText = "Pipeline Trained";
+    predictionPlot.setup( 500, pipeline.getNumClasses(), "prediction likelihoods" );
+    predictionPlot.setDrawGrid( true );
+    predictionPlot.setDrawInfoText( true );
+    predictionPlot.setFont( smallFont );
+    predictionPlot.setBackgroundColor( ofColor(50,50,50,255));
+    tRecord = false;
+    predicting = true;
+}
+
+//--------------------------------------------------------------
 void ofApp::save() {
-    if( trainingData.save( ofToDataPath("TrainingData.grt") ) ){
-        infoText = "Training data saved to file";
-    }else infoText = "WARNING: Failed to save training data to file";
-    
-    
+    if (pipeline.save(ofToDataPath("model.grt"))) {
+        infoText = "Model saved to file";
+    }
+    else {
+        infoText = "WARNING: Failed to save training data to file";
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::load() {
-    if( trainingData.load( ofToDataPath("TrainingData.grt") ) ){
-        infoText = "Training data loaded from file";
-        trainClassifier();
-    }else infoText = "WARNING: Failed to load training data from file";
-    
+    if (pipeline.load(ofToDataPath("model.grt"))) {
+        setupPrediction();
+    }
+    else {
+        infoText = "WARNING: Failed to load training data from file";
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::clear() {
     trainingData.clear();
     infoText = "Training data cleared";
-    predictionModeActive = false;
+    predicting = false;
 }
-
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
