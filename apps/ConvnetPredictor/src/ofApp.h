@@ -17,14 +17,19 @@
 #include "PipelineThreaded.h"
 
 
-// connect learning parameters to
-// experiment with different learners,
-// send osc on manual change
+// x connect learning parameters to
+// x experiment with different learners,
+// x send osc on manual change
 //----
-// infoTxt messages
-// set camera
-// how many categories?
-// dont .predict if not trained
+// x infoTxt messages
+// x lerp
+// x set camera
+// x how many categories?
+// x dont .predict if not trained
+// if just 1 classifier, use largeFont and plotter (get rid of others)
+// x saving and loading models properly, and having right number of sliders
+//----
+// make README + guide
 
 
 class ofApp : public ofBaseApp {
@@ -35,20 +40,25 @@ public:
     void draw();
     
     void updateParameters();
-    void addSlider();
-    void addCategorical();
+    RegressionThreaded * addSlider();
+    CategoricalThreaded * addCategorical(int numClasses);
     void train();
     
     void setupOSC();
     void sendOSC();
     
-    void save();
-    void load();
+    void save(string modelName);
+    void load(string modelPath);
     void clear();
     
     void eSlider(float & v);
+    void eAddSlider();
+    void eAddCategorical();
     void eCategorical(int & v);
     void eChangeOscSettings();
+    void eChangeCamera();
+    void eSave();
+    void eLoad();
     
     void exit();
     
@@ -62,6 +72,7 @@ public:
     ofxCcvThreaded ccv;
     vector<float> featureEncoding;
     bool isTraining;
+    int numSamples;
     
     // draing/ui
     string infoText;
@@ -77,7 +88,7 @@ public:
     // gui
     ofxPanel gui, guiSliders;
     ofParameterGroup gOscSettings, gTraining;
-    ofxButton bTrain, bSave, bLoad, bClear, bAddSlider, bAddCategorical, bOscSettings;
+    ofxButton bTrain, bSave, bLoad, bClear, bAddSlider, bAddCategorical, bOscSettings, bCameraSettings;
     ofxToggle tRecord, tPredict;
     
     // osc

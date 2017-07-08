@@ -26,16 +26,17 @@ void ofApp::setup() {
     
     //GUI
     bTrain.addListener(this, &ofApp::train);
-    bSave.addListener(this, &ofApp::save);
-    bLoad.addListener(this, &ofApp::load);
+    bSave.addListener(this, &ofApp::eSave);
+    bLoad.addListener(this, &ofApp::eLoad);
     bClear.addListener(this, &ofApp::clear);
-    bAddSlider.addListener(this, &ofApp::addSlider);
-    bAddCategorical.addListener(this, &ofApp::addCategorical);
+    bAddSlider.addListener(this, &ofApp::eAddSlider);
+    bAddCategorical.addListener(this, &ofApp::eAddCategorical);
     bOscSettings.addListener(this, &ofApp::eChangeOscSettings);
-    
+    bCameraSettings.addListener(this, &ofApp::eChangeCamera);
+
     gTraining.setName("Training");
-    gTraining.add(numHiddenNeurons.set("hidden neurons", 10, 5, 50));
-    gTraining.add(maxEpochs.set("epochs", 100, 20, 1000));
+    //gTraining.add(numHiddenNeurons.set("hidden neurons", 10, 5, 50));
+    //gTraining.add(maxEpochs.set("epochs", 100, 20, 1000));
     
     gOscSettings.setName("OSC settings");
     gOscSettings.add(gOscDestination.set("IP", oscDestination));
@@ -46,6 +47,7 @@ void ofApp::setup() {
     gui.setPosition(10,10);
     gui.setName("Convnet predictor");
     gui.add(gDeviceId.set("deviceId", ofToString(DEFAULT_DEVICE_ID)));
+    gui.add(bCameraSettings.setup("change Camera settings"));
     gui.add(gTraining);
     gui.add(tRecord.setup("Record", false));
     gui.add(bClear.setup("Clear training data"));
@@ -57,14 +59,12 @@ void ofApp::setup() {
     gui.add(gOscSettings);
     gui.add(bOscSettings.setup("change OSC settings"));
     gui.loadFromFile(ofToDataPath("settings_convnetP.xml"));
-    tPredict = false;
     
     guiSliders.setup();
     guiSliders.setPosition(580, 10);
     guiSliders.setName("Outputs");
     guiSliders.add(bAddSlider.setup("Add Slider"));
     guiSliders.add(bAddCategorical.setup("Add Categorical"));
-    addSlider();
     
     // osc
     setupOSC();
@@ -80,6 +80,9 @@ void ofApp::setup() {
     
     tRecord = false;
     tPredict = false;
+    numSamples = 0;
+    
+    //addSlider();
 }
 
 //--------------------------------------------------------------
@@ -113,6 +116,22 @@ void ofApp::eChangeOscSettings() {
 }
 
 //--------------------------------------------------------------
+void ofApp::eChangeCamera() {
+    string msg = "Select camera:";
+    int idx = 0;
+    for (auto d : cam.listDevices()) {
+        msg += "\n "+ofToString(idx++)+": "+d.deviceName;
+    }
+    string selection = ofSystemTextBoxDialog(msg);
+    if (selection != "") {
+        int newDeviceId = ofToInt(selection);
+        cam.setDeviceID(newDeviceId);
+        cam.initGrabber(320, 240);
+        gDeviceId.set(ofToString(newDeviceId));
+    }
+}
+
+//--------------------------------------------------------------
 void ofApp::eSlider(float & v) {
     sendOSC();
 }
@@ -133,63 +152,82 @@ void ofApp::exit() {
 }
 
 //--------------------------------------------------------------
-void ofApp::addSlider() {
+RegressionThreaded * ofApp::addSlider() {
     RegressionThreaded *learner = new RegressionThreaded();
     string name = "y"+ofToString(1+learners.size());
     learner->setup(name, &guiSliders, SIZE_INPUT_VECTOR);
+    learner->slider.addListener(this, &ofApp::eSlider);
     learners.push_back(learner);
+    return learner;
 }
 
 //--------------------------------------------------------------
-void ofApp::addCategorical() {
+void ofApp::eAddSlider() {
+    addSlider();
+}
+
+//--------------------------------------------------------------
+void ofApp::eAddCategorical() {
+    string numClasses = ofSystemTextBoxDialog("How many classes?");
+    if (numClasses != "") {
+        addCategorical(ofToInt(numClasses));
+    }
+}
+
+//--------------------------------------------------------------
+CategoricalThreaded * ofApp::addCategorical(int numClasses) {
     CategoricalThreaded *learner = new CategoricalThreaded();
     string name = "y"+ofToString(1+learners.size());
-    learner->setup(name, &guiSliders, SIZE_INPUT_VECTOR);
+    learner->setup(name, &guiSliders, SIZE_INPUT_VECTOR, numClasses);
+    learner->slider.addListener(this, &ofApp::eCategorical);
     learners.push_back(learner);
+    return learner;
 }
 
 //--------------------------------------------------------------
 void ofApp::updateParameters() {
     for (int i=0; i<learners.size(); i++) {
-        learners[i]->update();
+        if (learners[i]->getTrained()) {
+            learners[i]->update(lerpAmt);
+        }
     }
     sendOSC();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
+    // check if ccv loaded
     if (!ccv.isLoaded()) {
-        ofDrawBitmapString("Network file not found! Check your data folder to make sure it exists.", 20, 20);
         return;
     }
     
+    // update training status
     if (isTraining) {
-        
         isTraining = false;
         for (int p=0; p<learners.size(); p++) {
             if (learners[p]->training) {
                 isTraining = true;
             }
         }
-        
         if (!isTraining) {
-            
-            // not for all of them?
-            infoText = learners[0]->success ? "Pipeline trained" : "WARNING: Failed to train pipeline";
+            infoText = "Pipeline trained";
+            for (int p=0; p<learners.size(); p++) {
+                if (!learners[0]->success) {
+                    infoText =  "WARNING: Failed to train pipeline";
+                }
+            }
             ofBackground(150);
         } else if (ofGetFrameNum() % 15 == 0) {
             ofBackground(ofRandom(255),ofRandom(255),ofRandom(255));
         }
-        
     }
     
-    
+    // update parameters
     else if (tPredict) {
         updateParameters();
     }
     
-    
-    
+    // update cam and ccv
     cam.update();
     if (!cam.isFrameNew()) {
         return;
@@ -197,72 +235,48 @@ void ofApp::update() {
         ccv.update(cam, ccv.numLayers()-1);
     }
     
-    
-    
+    // record or predict
     if ((tRecord||tPredict) && ccv.hasNewResults()) {
         featureEncoding = ccv.getEncoding();
         VectorFloat inputVector(featureEncoding.size());
         for (int i=0; i<featureEncoding.size(); i++) {
-            inputVector[i] =  featureEncoding[i];
+            inputVector[i] = featureEncoding[i];
         }
-        
         if( tRecord ) {
-
-            
             for (int p=0; p<learners.size(); p++) {
-                VectorFloat targetVector(1);
-                if( !learners[p]->addSample(&inputVector) ){
-
-                    // this overwrites all of them.... fix this?
+                bool success = learners[p]->addSample(&inputVector);
+                if (!success){
                     infoText = "WARNING: Failed to add training sample to training data!";
                 }
-                
             }
-            
-            
-            
-            
+            numSamples++;
         }
-        else if( tPredict ){
-            
-            
-            
+        else if (tPredict){
             for (int p=0; p<learners.size(); p++) {
-                
-                if (learners[p]->predict(&inputVector)) {
-                    
-                    //targetSliders[p] = learners[p]->getRegressionData()[0];
-                    
-                    //cout << " got to "<<p << " " << targetSliders[p] << endl;
-                    
-                }else{
-                    
-                    // this overwrites all of them.... fix this?
+                bool success = learners[p]->predict(&inputVector);
+                if (!success) {
                     infoText = "ERROR: Failed to run prediction!";
                 }
-            
-                
             }
-            
-
-            
-            
-            
         }
-        
-        
-        
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+    // check if ccv loaded
+    if (!ccv.isLoaded()) {
+        ofDrawBitmapString("Network file not found! Check your data folder to make sure it exists.", 20, 20);
+        return;
+    }
+    
+    // draw interface
     ofSetColor(255);
-    
     cam.draw(235, 10);
-    //ofDrawBitmapStringHighlight( "Num Samples: " + ofToString( trainingData.getNumSamples() ), 237, 30 + cam.getHeight() );
-    ofDrawBitmapStringHighlight( infoText, 237, 50 + cam.getHeight() );
-    
+    ofDrawBitmapStringHighlight( "Num samples recorded: " + ofToString( numSamples ), 237, 30 + cam.getHeight() );
+    if (infoText != ""){
+        ofDrawBitmapStringHighlight( infoText, 237, 50 + cam.getHeight() );
+    }
     gui.draw();
     guiSliders.draw();
 }
@@ -274,32 +288,50 @@ void ofApp::train() {
     tPredict = false;
 
     for (int p=0; p<learners.size(); p++) {
-        learners[p]->setupModel();
+        learners[p]->setupModel(0);
         learners[p]->startTraining();
         learners[p]->startThread();
     }
 
     infoText = "Training!! please wait.";
-    isTraining = true;
-    
+    isTraining = true;    
     ofLog(OF_LOG_NOTICE, "Done training...");
 }
 
 //--------------------------------------------------------------
-void ofApp::save() {
-    // add classifier data
-//    if( trainingData.save( ofToDataPath("TrainingDataConvnetR.grt") ) ){
-//        infoText = "Training data saved to file";
-//    } else infoText = "WARNING: Failed to save training data to file";
+void ofApp::save(string modelName) {
+    ofSystem("mkdir "+ofToDataPath(modelName+"/"));
+    for (int p=0; p<learners.size(); p++) {
+        string modelType = learners[p]->isClassifier() ? "c" : "r";
+        learners[p]->save(ofToDataPath(modelName+"/p"+ofToString(p)+"_"+modelType+".grt"));
+    }
 }
 
 //--------------------------------------------------------------
-void ofApp::load() {
-    // add classifier data
-//    if( trainingData.load( ofToDataPath("TrainingDataConvnetR.grt") ) ){
-//        infoText = "Training data loaded from file";
-//        train();
-//    } else infoText = "WARNING: Failed to load training data from file";
+void ofApp::load(string modelPath) {
+    ofDirectory dir;
+    dir.open(modelPath);
+    int n = dir.listDir();
+    for (int i=0; i<n; i++) {
+        string fullPath = dir.getFile(i).getAbsolutePath();
+        vector<string> path = ofSplitString(dir.getFile(i).getFileName(), "_");
+        if (path.size() < 2) {
+            continue;
+        }
+        string fullName = path[path.size()-1];
+        if (fullName == "r.grt") {
+            RegressionThreaded *learner = addSlider();
+            learner->load(fullPath);
+        }
+        else if (fullName == "c.grt") {
+            CategoricalThreaded * learner = addCategorical(2);
+            learner->load(fullPath);
+            learner->slider.set(learner->slider.getName(), 1, 1, learner->getNumClasses());
+        }
+    }
+    if (n > 0) {
+        numSamples = learners[0]->getNumTrainingSamples();
+    }
 }
 
 //--------------------------------------------------------------
@@ -310,6 +342,7 @@ void ofApp::clear() {
     }
     infoText = "Training data cleared";
     tPredict = false;
+    numSamples = 0;
 }
 
 //--------------------------------------------------------------
@@ -320,4 +353,20 @@ void ofApp::sendOSC() {
         msg.addFloatArg(learners[p]->getValue());
     }
     sender.sendMessage(msg, false);
+}
+
+//--------------------------------------------------------------
+void ofApp::eSave() {
+    string modelName = ofSystemTextBoxDialog("Name the model");
+    if (modelName != "") {
+        save(modelName);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::eLoad() {
+    ofFileDialogResult result = ofSystemLoadDialog("Which model to load?", true);
+    if (result.bSuccess) {
+        load(result.filePath);
+    }
 }

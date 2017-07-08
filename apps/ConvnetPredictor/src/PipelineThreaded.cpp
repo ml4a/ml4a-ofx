@@ -11,46 +11,74 @@ void PipelineThreaded::startTraining() {
     training = true;
 }
 
-void CategoricalThreaded::setup(string name, ofxPanel *panelRef, int inputSize) {
+void CategoricalThreaded::setup(string name, ofxPanel *panelRef, int inputSize, int numClasses) {
     trainingData.setNumDimensions( inputSize );
-    panelRef->add(slider.set(name, 1, 1, 2));
+    panelRef->add(slider.set(name, 1, 1, numClasses));
 }
 
 void RegressionThreaded::setup(string name, ofxPanel *panelRef, int inputSize) {
     trainingData.setInputAndTargetDimensions( inputSize, 1 );
     panelRef->add(slider.set(name, 0.5, 0.0, 1.0));
-    //sliderF.addListener(this, &ofApp::eSlider);
 }
 
-void CategoricalThreaded::setupModel() {
-    KNN knn; /*Other classifiers: AdaBoost adaboost; DecisionTree dtree; KNN knn; GMM gmm; ANBC naiveBayes; MinDist minDist; RandomForests randomForest; Softmax softmax; SVM svm; */
-    setClassifier( knn );
+void CategoricalThreaded::setupModel(const int type) {
+    switch(type) {
+        case SUPPORT_VECTOR_MACHINE:
+            {
+                SVM svm;
+                svm.setMinNumEpochs(500);
+                svm.setMaxNumEpochs(1000);
+                setClassifier(svm);
+            }
+            break;
+        case KNearestNeighbors:
+            {
+                KNN knn;
+                setClassifier(knn);
+            }
+            break;
+        default:
+            return false;
+            break;
+    }
 }
 
-void RegressionThreaded::setupModel() {
-    unsigned int numInputNeurons = 4096; //trainingData.getNumInputDimensions();
-    unsigned int numOutputNeurons = 1; //1 as we are using multidimensional regression
-    
-    //Initialize the MLP
-    int maxEpochs = 10;
-    int numHiddenNeurons = 10;
-    
-    MLP mlp;
-    mlp.init(numInputNeurons, numHiddenNeurons, numOutputNeurons, Neuron::LINEAR, Neuron::SIGMOID, Neuron::SIGMOID );
-    
-    //Set the training settings
-    mlp.setMaxNumEpochs( maxEpochs ); //This sets the maximum number of epochs (1 epoch is 1 complete iteration of the training data) that are allowed
-    mlp.setMinChange( 1.0e-10 ); //This sets the minimum change allowed in training error between any two epochs
-    mlp.setLearningRate( 0.01 ); //This sets the rate at which the learning algorithm updates the weights of the neural network
-    mlp.setNumRandomTrainingIterations( 1 ); //This sets the number of times the MLP will be trained, each training iteration starts with new random values
-    mlp.setUseValidationSet( true ); //This sets aside a small portiion of the training data to be used as a validation set to mitigate overfitting
-    mlp.setValidationSetSize( 15 ); //Use 20% of the training data for validation during the training phase
-    mlp.setRandomiseTrainingOrder( true ); //Randomize the order of the training data so that the training algorithm does not bias the training
-    
-    //The MLP generally works much better if the training and prediction data is first scaled to a common range (i.e. [0.0 1.0])
-    mlp.enableScaling( true );
-    
-    *this << MultidimensionalRegression(mlp,true);
+void RegressionThreaded::setupModel(const int type) {
+    switch(type) {
+        case LOGISTIC_REGRESSION:
+            {
+                LogisticRegression logisticRegression;
+                logisticRegression.setMinNumEpochs(500);
+                logisticRegression.setMaxNumEpochs(1000);
+                logisticRegression.setMinChange(1.0e-8);
+                logisticRegression.setLearningRate(0.01);
+                logisticRegression.setUseValidationSet(true);
+                logisticRegression.setValidationSetSize(15);
+                logisticRegression.setRandomiseTrainingOrder(true);
+                logisticRegression.enableScaling(true);
+                *this << MultidimensionalRegression(logisticRegression, true);
+            }
+            break;
+        case NEURAL_NET:
+            {
+                MLP mlp;
+                mlp.init(4096, 20, 1, Neuron::LINEAR, Neuron::SIGMOID, Neuron::SIGMOID );
+                mlp.setMinNumEpochs(500);
+                mlp.setMaxNumEpochs(1000);
+                mlp.setMinChange(1.0e-8);
+                mlp.setLearningRate(0.01);
+                mlp.setNumRandomTrainingIterations(1);
+                mlp.setUseValidationSet(true);
+                mlp.setValidationSetSize(15);
+                mlp.setRandomiseTrainingOrder(true);
+                mlp.enableScaling( true );
+                *this << MultidimensionalRegression(mlp,true);
+            }
+            break;
+        default:
+            return false;
+            break;
+    }
 }
 
 void CategoricalThreaded::clear() {
@@ -69,7 +97,7 @@ bool CategoricalThreaded::addSample(VectorFloat *inputVector) {
 
 bool RegressionThreaded::addSample(VectorFloat *inputVector) {
     VectorFloat targetVector(1);
-    targetVector[0] = slider;
+    targetVector[0] = (float) slider;
     return trainingData.addSample(*inputVector, targetVector);
 }
 
@@ -89,10 +117,9 @@ bool RegressionThreaded::predict(VectorFloat *inputVector) {
     return success;
 }
 
-void CategoricalThreaded::update() { }
+void CategoricalThreaded::update(float lerpAmt) { }
 
-void RegressionThreaded::update() {
-    float lerpAmt = 0.5;
+void RegressionThreaded::update(float lerpAmt) {
     slider = ofLerp(slider, target, lerpAmt);
 }
 
