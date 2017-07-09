@@ -7,6 +7,9 @@
 #define OSC_DESTINATION_DEFAULT "localhost"
 #define OSC_ADDRESS_ROOT_DEFAULT "/wek/inputs"
 #define OSC_PORT_DEFAULT 6448
+#define DEVICE_ID_DEFAULT 0
+
+//#define RELEASE
 
 class ofApp : public ofBaseApp {
 public:
@@ -33,6 +36,7 @@ public:
     
     string oscDestination, oscAddressRoot;
     int oscPort;
+    int deviceId;
     
     ofParameter<bool> sending;
     

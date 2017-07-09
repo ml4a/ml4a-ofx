@@ -4,16 +4,20 @@
 void ofApp::setup() {
     ofSetWindowShape(540, 360);
     ofSetWindowTitle("ConvnetOSC");
-    cam.initGrabber(320, 240);
     
-    ccv.setup("../../../../data/image-net-2012.sqlite3");
-//    ccv.setup("image-net-2012.sqlite3") ;
+#ifdef RELEASE
+    ccv.setup(ofToDataPath("image-net-2012.sqlite3"));
+#else
+    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
+#endif
+    
     if (!ccv.isLoaded()) return;
     
     // default settings
     oscDestination = OSC_DESTINATION_DEFAULT;
     oscAddressRoot = OSC_ADDRESS_ROOT_DEFAULT;
     oscPort = OSC_PORT_DEFAULT;
+    deviceId = DEVICE_ID_DEFAULT;
     
     // load settings from file
     ofXml xml;
@@ -23,6 +27,10 @@ void ofApp::setup() {
     oscPort = ofToInt(xml.getValue("port"));
     oscAddressRoot = xml.getValue("address");
     bool sendClassificationsByDefault = (xml.getValue("sendClassificationsByDefault") == "1");
+    deviceId = ofToInt(xml.getValue("deviceId"));
+    
+    cam.setDeviceID(deviceId);
+    cam.initGrabber(320, 240);
     
     // setup osc
     osc.setup(oscDestination, oscPort);
@@ -36,6 +44,7 @@ void ofApp::setup() {
 }
 
 void ofApp::update() {
+    if (!ccv.isLoaded()) return;
     cam.update();
     if (cam.isFrameNew() && sending) {
         sendOsc();
