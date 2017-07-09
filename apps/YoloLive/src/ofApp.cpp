@@ -4,14 +4,16 @@ void ofApp::setup()
 {
     ofSetWindowShape(1280, 800);
     
+#ifdef RELEASE
+    string cfgfile = ofToDataPath("darknet/yolo9000.cfg");
+    string weightfile = ofToDataPath("darknet/yolo9000.weights");
+    string nameslist = ofToDataPath("darknet/9k.names");
+#else
     string cfgfile = ofToDataPath("../../../../data/darknet/yolo9000.cfg");
     string weightfile = ofToDataPath("../../../../data/darknet/yolo9000.weights");
     string nameslist = ofToDataPath("../../../../data/darknet/9k.names");
+#endif
     
-//    string cfgfile = ofToDataPath("darknet/yolo9000.cfg");
-//    string weightfile = ofToDataPath("darknet/yolo9000.weights");
-//    string nameslist = ofToDataPath("darknet/9k.names");
-
     darknet.init( cfgfile, weightfile, nameslist );
    
     tWebcam.addListener(this, &ofApp::useWebcam);
