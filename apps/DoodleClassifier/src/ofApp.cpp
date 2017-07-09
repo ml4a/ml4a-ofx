@@ -274,13 +274,13 @@ void ofApp::setTrainingLabel(int & label_) {
 
 //--------------------------------------------------------------
 void ofApp::save() {
-    trainingData.save(ofToDataPath("doodleclassifier_model.grt"));
+    pipeline.save(ofToDataPath("doodleclassifier_model.grt"));
 }
 
 //--------------------------------------------------------------
 void ofApp::load() {
-    trainingData.load(ofToDataPath("doodleclassifier_model.grt"));
-    trainClassifier();
+    pipeline.load(ofToDataPath("doodleclassifier_model.grt"));
+    isTrained = true;
 }
 
 //--------------------------------------------------------------
