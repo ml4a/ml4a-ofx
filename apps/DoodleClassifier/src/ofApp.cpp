@@ -16,11 +16,15 @@ void ofApp::setup(){
     width = 640;
     height = 480;
     
+#ifdef RELEASE
+    ccv.setup(ofToDataPath("image-net-2012.sqlite3"));
+#else
+    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
+#endif
+
     cam.setDeviceID(0);
     cam.setup(width, height);
-    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
-//    ccv.setup(ofToDataPath("image-net-2012.sqlite3"));
-    
+
     bAdd.addListener(this, &ofApp::addSamplesToTrainingSetNext);
     bTrain.addListener(this, &ofApp::trainClassifier);
     bClassify.addListener(this, &ofApp::classifyNext);

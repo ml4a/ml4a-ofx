@@ -11,6 +11,8 @@
 using namespace ofxCv;
 using namespace cv;
 
+//#define RELEASE
+
 
 // where to send osc messages by default
 #define DEFAULT_OSC_DESTINATION "localhost"
