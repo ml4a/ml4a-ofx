@@ -8,6 +8,8 @@
 #include "ofxJSON.h"
 
 #define THUMB_SIZE 256
+//#define RELEASE
+
 
 struct ImageThumb {
 public:

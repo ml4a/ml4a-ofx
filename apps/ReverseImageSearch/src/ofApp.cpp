@@ -6,28 +6,9 @@ void ofApp::setup(){
     thumbHeight = ofGetHeight() * 0.25;
     margin = 5;
     zoom = 1.25;
-    lookupFile = "lookup.json";
 
-    fullWidth = 0;
-    ofxJSONElement result;
-    parsingSuccessful = result.open(lookupFile);
-    for (int i=0; i<result.size(); i++) {
-        string path = result[i]["path"].asString();
-        ImageThumb thumb;
-        thumb.image.load(path);
-        thumb.image.resize(thumbHeight * thumb.image.getWidth() / thumb.image.getHeight(), thumbHeight);
-        for (int j=0; j<result[i]["lookup"].size(); j++) {
-            int c = result[i]["lookup"][j].asInt();
-            thumb.closest.push_back(c);
-        }
-        thumbs.push_back(thumb);
-        order.push_back(i);
-        fullWidth += (thumb.image.getWidth() + 5);
-    }
-    random_shuffle(order.begin(), order.end());
-    
-    mx = fullWidth / 2.0;
-    highlighted = -1;
+    lookupFile = "lookup.json";
+    load(lookupFile);
 }
 
 //--------------------------------------------------------------
@@ -39,7 +20,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     if (!parsingSuccessful) {
-        ofDrawBitmapString("Can't find lookup file: "+lookupFile+"\nSee instructions for how to create one.", 50, 50);
+        ofDrawBitmapString("Can't find lookup file: "+lookupFile+"\nSee instructions for how to create one. Or press 'l' to find lookup file.", 50, 50);
         return;
     }
 
@@ -94,10 +75,44 @@ void ofApp::draw(){
     
     ofSetColor(255);
     ofDrawBitmapString("Drag mouse to scroll images", 4, 12);
+    ofDrawBitmapString("Press 'l' to find new lookup file", ofGetWidth()-300, 12);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if (key=='l') {
+        ofFileDialogResult result = ofSystemLoadDialog("Which xml file to load?", true);
+        if (result.bSuccess) {
+            load(result.filePath);
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::load(string lookupFile){
+    this->lookupFile = lookupFile;
+    fullWidth = 0;
+    ofxJSONElement result;
+    parsingSuccessful = result.open(lookupFile);
+    order.clear();
+    thumbs.clear();
+    for (int i=0; i<result.size(); i++) {
+        string path = result[i]["path"].asString();
+        ImageThumb thumb;
+        thumb.image.load(path);
+        thumb.image.resize(thumbHeight * thumb.image.getWidth() / thumb.image.getHeight(), thumbHeight);
+        for (int j=0; j<result[i]["lookup"].size(); j++) {
+            int c = result[i]["lookup"][j].asInt();
+            thumb.closest.push_back(c);
+        }
+        thumbs.push_back(thumb);
+        order.push_back(i);
+        fullWidth += (thumb.image.getWidth() + 5);
+    }
+    random_shuffle(order.begin(), order.end());
+    
+    mx = fullWidth / 2.0;
+    highlighted = -1;
 }
 
 //--------------------------------------------------------------

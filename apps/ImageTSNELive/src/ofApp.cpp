@@ -23,9 +23,12 @@ void ofApp::scanDirectoryRecursive(ofDirectory dir) {
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
-//    ccvPath = ofToDataPath("image-net-2012.sqlite3");
-    
+#ifdef RELEASE
+    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+#else
+    string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+#endif
+
     // listen for scroll events, and save screenshot button press
     ofAddListener(ofEvents().mouseScrolled, this, &ofApp::mouseScrolled);
     bSaveScreenshot.addListener(this, &ofApp::eSaveScreenshot);

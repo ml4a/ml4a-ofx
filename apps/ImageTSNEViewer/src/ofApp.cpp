@@ -46,7 +46,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackgroundGradient(ofColor(0), ofColor(100));
     if (!parsingSuccessful) {
-        ofDrawBitmapString("Could not find file "+tsnePath+"\nSee the instructions for how to create one.", 50, 50);
+        ofDrawBitmapString("Could not find file "+tsnePath+"\nSee the instructions for how to create one.w", 50, 50);
         return;
     }
     
