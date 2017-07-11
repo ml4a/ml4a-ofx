@@ -16,8 +16,6 @@
 using namespace GRT;
 
 
-
-
 class ofApp : public ofBaseApp{
     
 public:
@@ -30,8 +28,10 @@ public:
     void trainClassifier();
     void setupPrediction();
     
-    void save();
-    void load();
+    void eSave();
+    void eLoad();
+    void save(string modelName);
+    void load(string modelName);
     void clear();
     
     void setupOSC();

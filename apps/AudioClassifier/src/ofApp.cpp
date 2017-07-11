@@ -60,12 +60,11 @@ void ofApp::setup(){
     oscDestination = DEFAULT_OSC_DESTINATION;
     oscAddress = DEFAULT_OSC_ADDRESS;
     oscPort = DEFAULT_OSC_PORT;
-    setupOSC();
     
     //GUI
     bTrain.addListener(this, &ofApp::trainClassifier);
-    bSave.addListener(this, &ofApp::save);
-    bLoad.addListener(this, &ofApp::load);
+    bSave.addListener(this, &ofApp::eSave);
+    bLoad.addListener(this, &ofApp::eLoad);
     bClear.addListener(this, &ofApp::clear);
     bOscSettings.addListener(this, &ofApp::changeOscSettings);
     
@@ -80,8 +79,8 @@ void ofApp::setup(){
     gui.add(tRecord.setup("Record", false));
     gui.add(bTrain.setup("Train"));
     gui.add(predicting.set("Predicting", false));
-    gui.add(bSave.setup("Save"));
-    gui.add(bLoad.setup("Load"));
+    gui.add(bSave.setup("Save model"));
+    gui.add(bLoad.setup("Load model"));
     gui.add(bClear.setup("Clear"));
     gui.add(tThresholdMode.setup("Threshold Mode", false));
     gui.add(triggerTimerThreshold.setup("Threshold timer (ms)", 10, 1, 1000));
@@ -94,7 +93,8 @@ void ofApp::setup(){
     oscDestination = gOscDestination.get();
     oscAddress = gOscAddress.get();
     oscPort = ofToInt(gOscPort.get());
-
+    setupOSC();
+    
     startTime = ofGetElapsedTimeMillis();
     predicting = false;
 }
@@ -285,7 +285,7 @@ void ofApp::audioRequested 	(float * output, int bufferSize, int nChannels){
 }
 
 //--------------------------------------------------------------
-void ofApp::audioReceived 	(float * input, int bufferSize, int nChannels){
+void ofApp::audioReceived(float * input, int bufferSize, int nChannels){
     float sum = 0;
     for (int i = 0; i < bufferSize; i++){
         
@@ -336,12 +336,11 @@ void ofApp::keyPressed(int key){ //Optional key interactions
         case '9':
             sliderClassLabel = 9;
             break;
-            
         case 's':
-            save();
+            eSave();
             break;
         case 'l':
-            load();
+            eLoad();
             break;
         case 't':
             trainClassifier();
@@ -388,9 +387,26 @@ void ofApp::setupPrediction() {
 }
 
 //--------------------------------------------------------------
-void ofApp::save() {
-    if (pipeline.save(ofToDataPath("model.grt"))) {
-        infoText = "Model saved to file";
+void ofApp::eSave() {
+    string modelName = ofSystemTextBoxDialog("Name the model");
+    if (modelName != "") {
+        save(modelName);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::eLoad() {
+    ofFileDialogResult result = ofSystemLoadDialog("Which model to load?", true);
+    if (result.bSuccess) {
+        load(result.filePath);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::save(string modelName) {
+    if (pipeline.save(ofToDataPath("models/"+modelName+".grt"))) {
+        infoText = "Model saved to file: "+ofToDataPath(modelName);
+        gui.saveToFile(ofToDataPath("models/"+modelName+".grt_settings.xml"));
     }
     else {
         infoText = "WARNING: Failed to save training data to file";
@@ -398,9 +414,14 @@ void ofApp::save() {
 }
 
 //--------------------------------------------------------------
-void ofApp::load() {
-    if (pipeline.load(ofToDataPath("model.grt"))) {
+void ofApp::load(string modelPath) {
+    if (pipeline.load(modelPath)) {
         setupPrediction();
+        gui.loadFromFile(ofToDataPath(modelPath+"_settings.xml"));
+        oscDestination = gOscDestination.get();
+        oscAddress = gOscAddress.get();
+        oscPort = ofToInt(gOscPort.get());
+        setupOSC();
     }
     else {
         infoText = "WARNING: Failed to load training data from file";
