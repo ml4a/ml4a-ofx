@@ -17,7 +17,6 @@
 #include "PipelineThreaded.h"
 
 
-
 class ofApp : public ofBaseApp {
 public:
     

@@ -66,6 +66,9 @@ void ofApp::setup() {
     guiSliders.add(bAddCategorical.setup("Add Categorical"));
     
     // osc
+    oscDestination = gOscDestination.get();
+    oscAddress = gOscAddress.get();
+    oscPort = ofToInt(gOscPort.get());
     setupOSC();
     
     // camera
@@ -224,7 +227,8 @@ void ofApp::update() {
     cam.update();
     if (!cam.isFrameNew()) {
         return;
-    } else if (cam.isFrameNew()) {
+    }
+    else if (cam.isFrameNew()) {
         tracker.update(cam);
     }
     
@@ -265,8 +269,10 @@ void ofApp::update() {
 void ofApp::draw() {
     ofPushMatrix();
     ofTranslate(235, 10);
+    
     ofSetColor(255);
     cam.draw(0, 0);
+    
     for (int i = 0; i<tracker.size(); i ++) {
         ofPolyline jaw = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::JAW);
         ofPolyline left_eyebrow = tracker.getInstances()[i].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::LEFT_EYEBROW);
@@ -295,6 +301,7 @@ void ofApp::draw() {
     ofPopMatrix();
     
     ofDrawBitmapStringHighlight( "Num samples recorded: " + ofToString(numSamples), 237, 30 + cam.getHeight() );
+    
     if (infoText != ""){
         ofDrawBitmapStringHighlight( infoText, 237, 50 + cam.getHeight() );
     }
@@ -333,6 +340,7 @@ void ofApp::save(string modelName) {
         string modelType = learners[p]->isClassifier() ? "c" : "r";
         learners[p]->save(ofToDataPath(modelName+"/p"+ofToString(p)+"_"+modelType+".grt"));
     }
+    gui.saveToFile(ofToDataPath(modelName+"/settings.xml"));
 }
 
 //--------------------------------------------------------------
@@ -361,6 +369,12 @@ void ofApp::load(string modelPath) {
         tPredict = true;
         numSamples = learners[0]->getNumTrainingSamples();
     }
+    gui.loadFromFile(modelPath+"/settings.xml");
+    
+    oscDestination = gOscDestination.get();
+    oscAddress = gOscAddress.get();
+    oscPort = ofToInt(gOscPort.get());
+    setupOSC();
 }
 
 //--------------------------------------------------------------

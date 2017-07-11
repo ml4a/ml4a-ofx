@@ -69,6 +69,9 @@ void ofApp::setup() {
     guiSliders.add(bAddCategorical.setup("Add Categorical"));
     
     // osc
+    oscDestination = gOscDestination.get();
+    oscAddress = gOscAddress.get();
+    oscPort = ofToInt(gOscPort.get());
     setupOSC();
     
     // camera
@@ -219,7 +222,8 @@ void ofApp::update() {
                 }
             }
             ofBackground(150);
-        } else if (ofGetFrameNum() % 15 == 0) {
+        }
+        else if (ofGetFrameNum() % 15 == 0) {
             ofBackground(ofRandom(255),ofRandom(255),ofRandom(255));
         }
     }
@@ -233,7 +237,8 @@ void ofApp::update() {
     cam.update();
     if (!cam.isFrameNew()) {
         return;
-    } else if (cam.isFrameNew() && ccv.isReady()) {
+    }
+    else if (cam.isFrameNew() && ccv.isReady()) {
         ccv.update(cam, ccv.numLayers()-1);
     }
     
@@ -244,7 +249,7 @@ void ofApp::update() {
         for (int i=0; i<featureEncoding.size(); i++) {
             inputVector[i] = featureEncoding[i];
         }
-        if( tRecord ) {
+        if(tRecord) {
             for (int p=0; p<learners.size(); p++) {
                 bool success = learners[p]->addSample(&inputVector);
                 if (!success){
@@ -275,6 +280,7 @@ void ofApp::draw() {
     // draw interface
     ofSetColor(255);
     cam.draw(235, 10);
+    
     ofDrawBitmapStringHighlight( "Num samples recorded: " + ofToString(numSamples), 237, 30 + cam.getHeight() );
     if (infoText != ""){
         ofDrawBitmapStringHighlight( infoText, 237, 50 + cam.getHeight() );
@@ -314,6 +320,7 @@ void ofApp::save(string modelName) {
         string modelType = learners[p]->isClassifier() ? "c" : "r";
         learners[p]->save(ofToDataPath(modelName+"/p"+ofToString(p)+"_"+modelType+".grt"));
     }
+    gui.saveToFile(ofToDataPath(modelName+"/settings.xml"));
 }
 
 //--------------------------------------------------------------
@@ -342,9 +349,15 @@ void ofApp::load(string modelPath) {
         tPredict = true;
         numSamples = learners[0]->getNumTrainingSamples();
     }
+    gui.loadFromFile(modelPath+"/settings.xml");
+
+    oscDestination = gOscDestination.get();
+    oscAddress = gOscAddress.get();
+    oscPort = ofToInt(gOscPort.get());
+    setupOSC();
 }
 
-//------------------------------w--------------------------------
+//--------------------------------------------------------------
 void ofApp::clear() {
     for (int p=0; p<learners.size(); p++) {
         learners[p]->clear();
