@@ -5,17 +5,34 @@
 void ofApp::setup(){
     
     // this should point to the json file containing your audio files and tsne coordinates
-    // follow instructions in ml4a.github.io/guides/AudioTSNEViewer/ 
+    // follow instructions in ml4a.github.io/guides/AudioTSNEViewer/
     tsnePath = ofToDataPath("audiotsne.json");
     
+    bLoad.addListener(this, &ofApp::eLoad);
     gui.setup();
     gui.setName("Audio t-SNE");
     gui.add(maxDuration.set("maxDuration", 1.0, 0.1, 2.0));
     gui.add(mouseRadius.set("mouseRadius", 250, 100, 500));
     gui.add(pauseLength.set("pauseLength", 2.0, 0.2, 5.0));
-    
+    gui.add(bLoad.setup("Load model"));
+
+    load(tsnePath);
+}
+
+//--------------------------------------------------------------
+void ofApp::eLoad() {
+    ofFileDialogResult result = ofSystemLoadDialog("Which xml file to load?", true);
+    if (result.bSuccess) {
+        load(result.filePath);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::load(string filename) {
+    tsnePath = filename;
     ofxJSONElement result;
     parsingSuccessful = result.open(tsnePath);
+    sounds.clear();
     for (int i=0; i<result.size(); i++) {
         string path = result[i]["path"].asString();
         float x = result[i]["point"][0].asFloat();

@@ -18,6 +18,9 @@ public:
     void update();
     void draw();
     
+    void eLoad();
+    void load(string file);
+    
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y );
@@ -35,6 +38,7 @@ public:
     ofParameter<float> maxDuration;
     ofParameter<float> mouseRadius;
     ofParameter<float> pauseLength;
+    ofxButton bLoad;
     ofxPanel gui;
     
     string tsnePath;
