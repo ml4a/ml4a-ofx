@@ -2,7 +2,7 @@
 
 
 void ofApp::setup(){
-    ofSetWindowShape(280, 180);
+    ofSetWindowShape(320, 180);
     oscPort = OSC_PORT;
     oscAddressRoot = OSC_ADDRESS_ROOT;
     fadeStep = 255 / stayOnScreenFrames;
@@ -159,8 +159,7 @@ void ofApp::draw(){
     
     ofDrawCircle(30, 120, 5);
     ofSetColor(255, 255, 255);
-    ofDrawBitmapString("Receiving OSC", 50, 124);
-    
+    ofDrawBitmapString("Receiving OSC on port "+ofToString(oscPort)+",\naddress: "+oscAddressRoot, 50, 124);
     
     if (oscId > -1) {
         
