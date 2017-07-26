@@ -15,11 +15,11 @@
 				a <osc-id> tag with the osc value that will trigger the key.
 		-->
 		<input>
-			<key>UP</key>
+			<key>PASS</key>
 			<osc-id>1</osc-id>
 		</input>
 		<input>
-			<key>DOWN</key>
+			<key>LEFT</key>
 			<osc-id>2</osc-id>
 		</input>
 		<input>
@@ -27,7 +27,7 @@
 			<osc-id>3</osc-id>
 		</input>
 		<input>
-			<key>DOWN</key>
+			<key>SPACE</key>
 			<osc-id>4</osc-id>
 		</input>
 	</keys>

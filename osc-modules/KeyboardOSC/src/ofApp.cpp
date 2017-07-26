@@ -73,7 +73,6 @@ void ofApp::update(){
     while (receiver.hasWaitingMessages()) {
         
         receiver.getNextMessage(oscMessage );
-        
         if (canPressKey) {
             if (oscMessage.getAddress() == oscAddressEnable) {
                 allowVirtualKeystrokes = true;
@@ -82,14 +81,19 @@ void ofApp::update(){
             if (oscMessage.getAddress() == oscAddressDisable) {
                 allowVirtualKeystrokes = false;
             }
-            
+        
             if (oscMessage.getAddress() == oscAddressRoot) {
                 receivingOSC = true;
                 frameCounter = 0;
                 
                 if (allowVirtualKeystrokes) {
-//                    oscId = (int) oscMessage.getArgAsFloat();
-                    oscId = oscMessage.getArgAsInt(0);
+                    if (oscMessage.getArgType(0) == OFXOSC_TYPE_INT32 ||
+                        oscMessage.getArgType(0) == OFXOSC_TYPE_INT64) {
+                        oscId = (int) oscMessage.getArgAsInt(0);
+                    } else if (oscMessage.getArgType(0) == OFXOSC_TYPE_FLOAT) {
+                        oscId = (int) oscMessage.getArgAsFloat(0);
+                    }
+                    
                     int keyCode;
                     for (int i = 0; i < totalKeyInputs; i++) {
                         if (keyInputs[i].oscId == oscId) {
