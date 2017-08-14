@@ -22,8 +22,8 @@ def process_arguments(args):
 def get_audio_files(path, extension):
 	files = []
 	for root, dirnames, filenames in os.walk(path):
-	    for filename in fnmatch.filter(filenames, '*.'+extension):
-	        files.append(os.path.join(root, filename))
+		for filename in fnmatch.filter(filenames, '*.'+extension):
+			files.append(os.path.join(root, filename))
 	return files
 
 def get_features(y, sr):
@@ -76,7 +76,7 @@ def run_tSNE(feature_vectors, tsne_path, tsne_dimensions, tsne_perplexity=30):
 	tsne = TSNE(n_components=tsne_dimensions, learning_rate=200, perplexity=tsne_perplexity, verbose=2, angle=0.1).fit_transform([f["features"] for f in feature_vectors])
 	data = []
 	for i,f in enumerate(feature_vectors):
-		point = [ (tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k])) for k in range(tsne_dimensions) ]
+		point = [ float(tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k])) for k in range(tsne_dimensions) ]
 		data.append({"path":os.path.abspath(f["file"]), "point":point})
 	with open(tsne_path, 'w') as outfile:
 		json.dump(data, outfile)
