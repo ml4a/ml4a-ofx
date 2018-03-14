@@ -29,13 +29,28 @@ def get_image(path, input_shape):
     x = preprocess_input(x)
     return x
 
+def find_candidate_images(images_path):
+    """
+    Finds all candidate images in the given folder and its sub-folders.
+
+    Returns:
+        images: a list of absolute paths to the discovered images.
+    """
+    images = []
+    for root, dirs, files in os.walk(images_path):
+        for name in files:
+            file_path = os.path.abspath(os.path.join(root, name))
+            if ((os.path.splitext(name)[1]).lower() in ['.jpg','.png','.jpeg']):
+                images.append(file_path)
+    return images
+
 def analyze_images(images_path):
     # make feature_extractor
     model = keras.applications.VGG16(weights='imagenet', include_top=True)
     feat_extractor = Model(inputs=model.input, outputs=model.get_layer("fc2").output)
     input_shape = model.input_shape[1:3]
     # get images
-    candidate_images = [f for f in os.listdir(images_path) if os.path.splitext(f)[1].lower() in ['.jpg','.png','.jpeg']]
+    candidate_images = find_candidate_images(images_path)
     # analyze images and grab activations
     activations = []
     images = []
