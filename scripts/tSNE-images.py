@@ -63,7 +63,7 @@ def run_tsne(images_path, output_path, tsne_dimensions, tsne_perplexity, tsne_le
     # save data to json
     data = []
     for i,f in enumerate(images):
-        point = [ (tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k])) for k in range(tsne_dimensions) ]
+        point = [float((tsne[i,k] - np.min(tsne[:,k]))/(np.max(tsne[:,k]) - np.min(tsne[:,k]))) for k in range(tsne_dimensions) ]
         data.append({"path":os.path.abspath(join(images_path,images[i])), "point":point})
     with open(output_path, 'w') as outfile:
         json.dump(data, outfile)
