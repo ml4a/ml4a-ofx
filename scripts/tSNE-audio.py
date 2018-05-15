@@ -28,19 +28,11 @@ def get_audio_files(path, extension):
 
 def get_features(y, sr):
 	y = y[0:sr] 	# analyze just first second
-	#S = librosa.feature.melspectrogram(y, sr=sr, n_mels=128)
-	#S = librosa.feature.mfcc(y, sr=sr)
-	#log_S = librosa.logamplitude(S, ref_power=np.max)
 	S = librosa.feature.melspectrogram(y, sr=sr, n_mels=128)
-	log_S = librosa.logamplitude(S, ref_power=np.max)
+   	log_S = librosa.amplitude_to_db(S, ref=np.max)
 	mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=13)
-	delta_mfcc = librosa.feature.delta(mfcc)
-	delta2_mfcc = librosa.feature.delta(mfcc, order=2)
-	#mean_mfcc = np.mean(S, 1)
-	#mean_mfcc = (mean_mfcc-np.mean(mean_mfcc))/np.std(mean_mfcc)
-	#var_mfcc = np.var(S, 1)
-	#var_mfcc = (var_mfcc-np.mean(var_mfcc))/np.std(var_mfcc)
-	#feature_vector = np.concatenate((mean_mfcc, var_mfcc))
+	delta_mfcc = librosa.feature.delta(mfcc, mode='nearest')
+	delta2_mfcc = librosa.feature.delta(mfcc, order=2, mode='nearest')
 	feature_vector = np.concatenate((np.mean(mfcc,1), np.mean(delta_mfcc,1), np.mean(delta2_mfcc,1)))
 	feature_vector = (feature_vector-np.mean(feature_vector)) / np.std(feature_vector)
 	return feature_vector
