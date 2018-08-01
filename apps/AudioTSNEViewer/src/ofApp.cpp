@@ -30,19 +30,33 @@ void ofApp::eLoad() {
 //--------------------------------------------------------------
 void ofApp::load(string filename) {
     tsnePath = filename;
-    ofxJSONElement result;
-    parsingSuccessful = result.open(tsnePath);
-    sounds.clear();
-    for (int i=0; i<result.size(); i++) {
-        string path = result[i]["path"].asString();
-        float x = result[i]["point"][0].asFloat();
-        float y = result[i]["point"][1].asFloat();
-        AudioClip newSound;
-        newSound.sound.load(path);
-        newSound.point.set(x, y);
-        newSound.t = 0;
-        sounds.push_back(newSound);
+
+    ofJson js;
+    ofFile file(tsnePath);
+    parsingSuccessful = file.exists();
+    
+    if (!parsingSuccessful) {
+        ofLog(OF_LOG_ERROR) << "parsing not successful";
+        return;
     }
+
+    sounds.clear();
+
+    file >> js;
+    for (auto & entry: js) {
+        if(!entry.empty()) {
+            string path = entry["path"];
+            float x = entry["point"][0];
+            float y = entry["point"][1];
+            
+            AudioClip newSound;
+            newSound.sound.load(path);
+            newSound.point.set(x, y);
+            newSound.t = 0;
+            sounds.push_back(newSound);
+        }
+    }
+
 }
 
 //--------------------------------------------------------------

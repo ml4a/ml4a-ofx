@@ -11,6 +11,8 @@
 #define DEFAULT_OSC_ADDRESS "/classification"
 #define DEFAULT_OSC_PORT 8000
 
+//#define RELEASE
+
 class ofApp : public ofBaseApp {
 public:
     

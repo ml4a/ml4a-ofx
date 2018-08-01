@@ -5,9 +5,12 @@ const ofColor backgroundPlotColor = ofColor(50,50,50,255);
 //--------------------------------------------------------------
 void ofApp::setup() {
     
+#ifdef RELEASE
+    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+#else
     string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
-//    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
-    
+#endif
+
     ofSetWindowShape(640, 480);
     cam.initGrabber(320, 240);
     

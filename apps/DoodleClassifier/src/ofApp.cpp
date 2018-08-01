@@ -22,9 +22,6 @@ void ofApp::setup(){
     ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
 #endif
 
-    cam.setDeviceID(0);
-    cam.setup(width, height);
-
     bAdd.addListener(this, &ofApp::addSamplesToTrainingSetNext);
     bTrain.addListener(this, &ofApp::trainClassifier);
     bClassify.addListener(this, &ofApp::classifyNext);
@@ -32,38 +29,24 @@ void ofApp::setup(){
     bLoad.addListener(this, &ofApp::load);
     trainingLabel.addListener(this, &ofApp::setTrainingLabel);
     
-    // default settings
-    oscDestination = DEFAULT_OSC_DESTINATION;
-    oscAddress = DEFAULT_OSC_ADDRESS;
-    oscPort = DEFAULT_OSC_PORT;
-    
     // load settings from file
-    ofXml xml;
-    xml.load(ofToDataPath("settings_doodleclassifier.xml"));
-    xml.setTo("DoodleOSC");
-    oscDestination = xml.getValue("ip");
-    oscPort = ofToInt(xml.getValue("port"));
-    oscAddress = xml.getValue("address");
-    if (xml.exists("classes") && xml.setTo("classes") && xml.exists("class[0]")) {
-        xml.setTo("class[0]");
-        classNames.clear();
-        do {
-            string newClass = xml.getValue();
-            classNames.push_back(newClass);
-        }
-        while(xml.setToSibling());
-    }
-
-    sender.setup(oscDestination, oscPort);
-    
     gui.setup();
     gui.setName("DoodleClassifier");
-    ofParameterGroup gCv;
+
     gCv.setName("CV initial");
     gCv.add(minArea.set("Min area", 10, 1, 100));
     gCv.add(maxArea.set("Max area", 200, 1, 500));
     gCv.add(threshold.set("Threshold", 128, 0, 255));
     gCv.add(nDilate.set("Dilations", 1, 0, 8));
+    
+    bSettings.addListener(this, &ofApp::eChangeSettings);
+    gSettings.setName("User Settings");
+    gSettings.add(gOscDestination.set("IP", DEFAULT_OSC_DESTINATION));
+    gSettings.add(gOscPort.set("port", ofToString(DEFAULT_OSC_PORT)));
+    gSettings.add(gOscAddress.set("message", DEFAULT_OSC_ADDRESS));
+    gSettings.add(gDeviceId.set("camera ID", ofToString(DEFAULT_CAM_DEVICE_ID)));
+    gSettings.add(gClassesStr.set("classes", classNamesStr));
+
     gui.add(trainingLabel.set("Training Label", 0, 0, classNames.size()-1));
     gui.add(bAdd.setup("Add samples"));
     gui.add(bTrain.setup("Train"));
@@ -72,8 +55,10 @@ void ofApp::setup(){
     gui.add(bSave.setup("Save"));
     gui.add(bLoad.setup("Load"));
     gui.add(gCv);
+    gui.add(gSettings);
+    gui.add(bSettings.setup("change settings"));
     gui.setPosition(0, 400);
-    gui.loadFromFile("settings_doodleclassifier_cv.xml");
+    gui.loadFromFile("settings_doodleclassifier.xml");
     
     fbo.allocate(width, height);
     colorImage.allocate(width, height);
@@ -87,6 +72,74 @@ void ofApp::setup(){
     adaboost.enableNullRejection(false);
     adaboost.setNullRejectionCoeff(3);
     pipeline.setClassifier(adaboost);
+    
+    setupCamera();
+    setupOSC();
+    setupClasses();
+}
+
+//--------------------------------------------------------------
+void ofApp::setupCamera() {
+    cam.close();
+    cam.setDeviceID(ofToInt(gDeviceId.get()));
+    cam.setup(width, height);
+}
+
+//--------------------------------------------------------------
+void ofApp::setupClasses() {
+    vector<string> newClasses = ofSplitString(gClassesStr, ",");
+    classNames.clear();
+    for (int i=0; i<newClasses.size(); i++) {
+        classNames.push_back(newClasses[i]);
+    }
+    trainingLabel.set("Training Label", 0, 0, classNames.size()-1);
+}
+
+//--------------------------------------------------------------
+void ofApp::setupOSC() {
+    sender.setup(gOscDestination, ofToInt(gOscPort));
+}
+
+//--------------------------------------------------------------
+void ofApp::eChangeSettings() {
+    string input = ofSystemTextBoxDialog("Send OSC to what destination IP", gOscDestination.get());
+    bool toSwitchOsc = false;
+    bool toSwitchCamera = false;
+    bool toSwitchClasses = false;
+    
+    if (input != "" && input != gOscDestination.get()) {
+        gOscDestination.set(input);
+        toSwitchOsc = true;
+    }
+    input = ofSystemTextBoxDialog("Send OSC to what destination port", ofToString(gOscPort.get()));
+    if (ofToInt(input) > 0 && ofToInt(input) != ofToInt(gOscPort.get())) {
+        gOscPort.set(input);
+        toSwitchOsc = true;
+    }
+    input = ofSystemTextBoxDialog("Send OSC with what message address", gOscAddress.get());
+    if (input != "" && input != gOscAddress.get()) {
+        gOscAddress.set(input);
+    }
+    input = ofSystemTextBoxDialog("Comma-separated list of classnames", gClassesStr);
+    if (input != "" && input != gClassesStr.get()) {
+        gClassesStr.set(input);
+        toSwitchClasses = ofSplitString(input, ",").size()>0;
+    }
+    input = ofSystemTextBoxDialog("Id of camera to use", gDeviceId.get());
+    if (input != "" && input != gDeviceId.get()) {
+        gDeviceId.set(input);
+        toSwitchCamera = true;
+    }
+
+    if (toSwitchCamera) {
+        setupCamera();
+    }
+    if (toSwitchClasses) {
+        setupClasses();
+    }
+    if (toSwitchOsc) {
+        setupOSC();
+    }
 }
 
 //--------------------------------------------------------------
@@ -207,7 +260,7 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-    gui.saveToFile(ofToDataPath("settings_doodleclassifier_cv.xml"));
+    gui.saveToFile(ofToDataPath("settings_doodleclassifier.xml"));
 }
 
 //--------------------------------------------------------------
@@ -264,7 +317,7 @@ void ofApp::classifyCurrentSamples() {
 
             // send over OSC
             ofxOscMessage m;
-            m.setAddress(oscAddress);
+            m.setAddress(gOscAddress.get());
             m.addStringArg(foundSquares[i].label);
             sender.sendMessage(m, false);
         }

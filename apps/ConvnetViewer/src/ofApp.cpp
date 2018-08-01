@@ -3,8 +3,14 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetWindowShape(1280, 800);
-    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
-//    ccv.setup(ofToDataPath("image-net-2012.sqlite3"));
+    
+#ifdef RELEASE
+    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+#else
+    string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+#endif
+    
+    ccv.setup(ccvPath);
 
     if (ccv.isLoaded()) {
         grab.initGrabber(640, 480);

@@ -18,7 +18,7 @@ using namespace cv;
 #define DEFAULT_OSC_DESTINATION "localhost"
 #define DEFAULT_OSC_ADDRESS "/classification"
 #define DEFAULT_OSC_PORT 5000
-
+#define DEFAULT_CAM_DEVICE_ID 0
 
 struct FoundSquare {
     ofImage img;
@@ -35,12 +35,8 @@ class ofApp : public ofBaseApp
 public:
 
     // default class names if none found in settings_doodleclassifier.xml
-    vector<string> classNames =
-    {
-        "circle",
-        "star",
-        "arrow"
-    };
+    string classNamesStr = "circle,star,arrow";
+    vector<string> classNames = {"circle", "star", "arrow"};
 
     void setup();
     void update();
@@ -56,6 +52,11 @@ public:
     void addSamplesToTrainingSetNext();
     void classifyNext();
     
+    void setupCamera();
+    void setupClasses();
+    void setupOSC();
+    void eChangeSettings();
+    
     void save();
     void load();
     
@@ -68,12 +69,13 @@ public:
     ofxCvColorImage colorImage;
     
     ofxOscSender sender;
-    string oscDestination, oscAddress;
-    int oscPort;
     
     ofxPanel gui;
+    ofParameterGroup gSettings, gCv;
     ofxToggle bRunning;
+    ofxButton bSettings, bClasses;
     ofxButton bAdd, bTrain, bClassify, bSave, bLoad;
+    ofParameter<string> gOscDestination, gOscAddress, gOscPort, gClassesStr, gDeviceId;
     ofParameter<float> minArea, maxArea, threshold;
     ofParameter<int> nDilate;
     ofParameter<int> trainingLabel;

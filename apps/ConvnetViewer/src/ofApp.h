@@ -3,6 +3,10 @@
 #include "ofMain.h"
 #include "ofxCcvThreaded.h"
 
+
+//#define RELEASE
+
+
 class ofApp : public ofBaseApp{
 
 	public:
