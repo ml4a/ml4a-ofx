@@ -8,6 +8,8 @@
 
 using namespace GRT;
 
+//#define RELEASE
+
 #define PRE_RECORDING_COUNTDOWN_TIME 500
 #define RECORDING_TIME 2000
 

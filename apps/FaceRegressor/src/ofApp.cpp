@@ -16,6 +16,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+#ifdef RELEASE
+    string landmarksPath = ofToDataPath("shape_predictor_68_face_landmarks.dat");
+#else
+    string landmarksPath = ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat");
+#endif
+
     ofSetVerticalSync(true);
     
     largeFont.load(ofToDataPath("verdana.ttf"), 12, true, true);
@@ -43,7 +49,7 @@ void ofApp::setup(){
     setRegressifier( LINEAR_REGRESSION );
     
     grabber.setup(1280,720);
-    tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));
+    tracker.setup(landmarksPath);
 //    tracker.setup(ofToDataPath("shape_predictor_68_face_landmarks.dat"));
 
 
@@ -93,7 +99,7 @@ void ofApp::update(){
             auto facePoints = tracker.getInstances()[0].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::ALL_FEATURES);
             
             for (int i = 0; i<facePoints.size(); i++) {
-                ofPoint p = facePoints.getVertices()[i].getNormalized();
+                ofPoint p = ((ofVec3f)facePoints.getVertices()[i]).getNormalized();
                 trainingSample[i] = p.x;
                 trainingSample[i + facePoints.size()] = p.y; //Not that elegant...
             }
@@ -370,7 +376,8 @@ float ofApp:: getGesture (Gesture gesture){
     }
     
     //Normalized
-    return (gestureMultiplier*abs(abs(tracker.getInstances()[0].getLandmarks().getImagePoint(start).getNormalized().y - tracker.getInstances()[0].getLandmarks().getImagePoint(end).getNormalized().y)));
+    return (gestureMultiplier*abs(abs(((ofVec3f)tracker.getInstances()[0].getLandmarks().getImagePoint(start)).getNormalized().y -
+                                      ((ofVec3f)tracker.getInstances()[0].getLandmarks().getImagePoint(end)).getNormalized().y)));
 }
 
 

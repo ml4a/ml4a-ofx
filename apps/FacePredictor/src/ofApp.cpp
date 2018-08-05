@@ -37,7 +37,7 @@ void ofApp::setup() {
     //gTraining.add(numHiddenNeurons.set("hidden neurons", 10, 5, 50));
     //gTraining.add(maxEpochs.set("epochs", 100, 20, 1000));
     
-    gOscSettings.setName("OSC settings");
+    gOscSettings.setName("OSC settings"); 
     gOscSettings.add(gOscDestination.set("IP", oscDestination));
     gOscSettings.add(gOscPort.set("port", ofToString(oscPort)));
     gOscSettings.add(gOscAddress.set("message", oscAddress));
@@ -239,7 +239,7 @@ void ofApp::update() {
         if (tracker.size()>0) {
             auto facePoints = tracker.getInstances()[0].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::ALL_FEATURES);
             for (int i = 0; i<facePoints.size(); i++) {
-                ofPoint p = facePoints.getVertices()[i].getNormalized();
+                ofPoint p = ((ofVec3f)facePoints.getVertices()[i]).normalize();
                 inputVector[2*i] = p.x;
                 inputVector[2*i+1] = p.y;
             }

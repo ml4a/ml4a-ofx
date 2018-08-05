@@ -4,6 +4,12 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+#ifdef RELEASE
+    string landmarksPath = ofToDataPath("shape_predictor_68_face_landmarks.dat");
+#else
+    string landmarksPath = ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat");
+#endif
+
     ofSetFrameRate( FRAME_RATE );
 
     //Load the resources
@@ -58,10 +64,10 @@ void ofApp::setup(){
     
     
     //What to draw
-    drawNumbers = false;
+    drawNumbers = true;
     drawFace = true;
-    drawPose = false;
-    drawVideo = false;
+    drawPose = true;
+    drawVideo = true;
     
     
     // Setup grabber
@@ -69,7 +75,7 @@ void ofApp::setup(){
     //grabber.setup(960,540);
     
     // Setup tracker
-    tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));
+    tracker.setup(landmarksPath);
 //    tracker.setup(ofToDataPath("shape_predictor_68_face_landmarks.dat"));
     
 }
@@ -106,7 +112,7 @@ void ofApp::update(){
             auto facePoints = tracker.getInstances()[0].getLandmarks().getImageFeature(ofxFaceTracker2Landmarks::ALL_FEATURES);
             
             for (int i = 0; i<facePoints.size(); i++) {
-                ofPoint p = facePoints.getVertices()[i].getNormalized(); //only values from 0-1. Experiment with this, and try to send non-normalized as well
+                ofPoint p = ((ofVec3f)facePoints.getVertices()[i]).getNormalized(); //only values from 0-1. Experiment with this, and try to send non-normalized as well
                 
                 trainingSample[i] = p.x;
                 trainingSample[i + facePoints.size()] = p.y; //Not that elegant...
@@ -651,7 +657,8 @@ float ofApp:: getGesture (Gesture gesture){
     
     
     //Normalized
-    return (gestureMultiplier*abs(abs(tracker.getInstances()[0].getLandmarks().getImagePoint(start).getNormalized().y - tracker.getInstances()[0].getLandmarks().getImagePoint(end).getNormalized().y)));
+    return (gestureMultiplier*abs(abs(((ofVec3f)tracker.getInstances()[0].getLandmarks().getImagePoint(start)).getNormalized().y -
+                                      ((ofVec3f)tracker.getInstances()[0].getLandmarks().getImagePoint(end)).getNormalized().y)));
     
     
 }
