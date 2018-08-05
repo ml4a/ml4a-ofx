@@ -11,8 +11,8 @@ curl -L -o data/image-net-2012.sqlite3 --progress-bar https://raw.githubusercont
 curl -L -o data/image-net-2012.words --progress-bar https://raw.githubusercontent.com/liuliu/ccv/unstable/samples/image-net-2012.words
 
 echo "Downloading darknet files"
-curl -L -o data/darknet.cfg --progress-bar https://github.com/pjreddie/darknet/blob/master/cfg/darknet.cfg
-curl -L -o data/imagenet.shortnames.list --progress-bar https://github.com/pjreddie/darknet/blob/master/cfg/imagenet.shortnames.list
-curl -L -o data/darknet.weights --progress-bar http://pjreddie.com/media/files/darknet.weights
+curl -L -o data/darknet/darknet.cfg --progress-bar https://github.com/pjreddie/darknet/blob/master/cfg/darknet.cfg
+curl -L -o data/darknet/imagenet.shortnames.list --progress-bar https://github.com/pjreddie/darknet/blob/master/cfg/imagenet.shortnames.list
+curl -L -o data/darknet/darknet.weights --progress-bar http://pjreddie.com/media/files/darknet.weights
 
 echo "Done"
