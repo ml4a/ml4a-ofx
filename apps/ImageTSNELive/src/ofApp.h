@@ -5,7 +5,6 @@
 #include "ofxTSNE.h"
 #include "ofxAssignment.h"
 #include "ofxGui.h"
-#include "ofxJSON.h"
 
 #define THUMB_SIZE 256
 //#define RELEASE

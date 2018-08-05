@@ -17,23 +17,36 @@ void ofApp::setup(){
     gui.add(imageSize.set("imageSize", 1.0, 0.0, 2.0));
     gui.add(save.setup("save screenshot"));
     
-    ofxJSONElement result;
-    parsingSuccessful = result.open(tsnePath);
-    for (int i=0; i<result.size(); i++) {
-        string path = result[i]["path"].asString();
-        float x = result[i]["point"][0].asFloat();
-        float y = result[i]["point"][1].asFloat();
-        ImageThumb thumb;
-        thumb.point.set(x, y);
-        thumb.image.load(path);
-        if (thumb.image.getWidth() > thumb.image.getHeight()) {
-            thumb.image.resize(maxDim, maxDim * thumb.image.getHeight() / thumb.image.getWidth());
-        } else {
-            thumb.image.resize(maxDim * thumb.image.getWidth() / thumb.image.getHeight(), maxDim);
-        }
-        thumbs.push_back(thumb);
+    ofJson js;
+    ofFile file(tsnePath);
+    parsingSuccessful = file.exists();
+    
+    if (!parsingSuccessful) {
+        ofLog(OF_LOG_ERROR) << "parsing not successful";
+        return;
     }
     
+    thumbs.clear();
+    
+    file >> js;
+    for (auto & entry: js) {
+        if(!entry.empty()) {
+            string path = entry["path"];
+            float x = entry["point"][0];
+            float y = entry["point"][1];
+            
+            ImageThumb thumb;
+            thumb.point.set(x, y);
+            thumb.image.load(path);
+            if (thumb.image.getWidth() > thumb.image.getHeight()) {
+                thumb.image.resize(maxDim, maxDim * thumb.image.getHeight() / thumb.image.getWidth());
+            } else {
+                thumb.image.resize(maxDim * thumb.image.getWidth() / thumb.image.getHeight(), maxDim);
+            }
+            thumbs.push_back(thumb);
+        }
+    }
+
     position.set(-0.5 * ofGetWidth(), -0.5 * ofGetHeight());
 }
 
@@ -46,7 +59,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackgroundGradient(ofColor(0), ofColor(100));
     if (!parsingSuccessful) {
-        ofDrawBitmapString("Could not find file "+tsnePath+"\nSee the instructions for how to create one.w", 50, 50);
+        ofDrawBitmapString("Could not find file "+tsnePath+"\nSee the instructions for how to create one.", 50, 50);
         return;
     }
     

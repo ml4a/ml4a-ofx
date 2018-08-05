@@ -81,7 +81,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key=='l') {
-        ofFileDialogResult result = ofSystemLoadDialog("Which xml file to load?", true);
+        ofFileDialogResult result = ofSystemLoadDialog("Which json file to load?", true);
         if (result.bSuccess) {
             load(result.filePath);
         }
@@ -92,22 +92,36 @@ void ofApp::keyPressed(int key){
 void ofApp::load(string lookupFile){
     this->lookupFile = lookupFile;
     fullWidth = 0;
-    ofxJSONElement result;
-    parsingSuccessful = result.open(lookupFile);
-    order.clear();
+    
+    ofJson js;
+    ofFile file(lookupFile);
+    parsingSuccessful = file.exists();
+    
+    if (!parsingSuccessful) {
+        ofLog(OF_LOG_ERROR) << "parsing not successful";
+        return;
+    }
+    
     thumbs.clear();
-    for (int i=0; i<result.size(); i++) {
-        string path = result[i]["path"].asString();
-        ImageThumb thumb;
-        thumb.image.load(path);
-        thumb.image.resize(thumbHeight * thumb.image.getWidth() / thumb.image.getHeight(), thumbHeight);
-        for (int j=0; j<result[i]["lookup"].size(); j++) {
-            int c = result[i]["lookup"][j].asInt();
-            thumb.closest.push_back(c);
+    order.clear();
+
+    int idx = 0;
+    file >> js;
+    for (auto & entry: js) {
+        if(!entry.empty()) {
+            string path = entry["path"];
+            ImageThumb thumb;
+            thumb.image.load(path);
+            thumb.image.resize(thumbHeight * thumb.image.getWidth() / thumb.image.getHeight(), thumbHeight);
+            for (int j=0; j<entry["lookup"].size(); j++) {
+                int c = entry["lookup"][j];
+                thumb.closest.push_back(c);
+            }
+            thumbs.push_back(thumb);
+            order.push_back(idx);
+            fullWidth += (thumb.image.getWidth() + 5);
+            idx++;
         }
-        thumbs.push_back(thumb);
-        order.push_back(i);
-        fullWidth += (thumb.image.getWidth() + 5);
     }
     random_shuffle(order.begin(), order.end());
     

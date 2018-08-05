@@ -237,31 +237,48 @@ void ofApp::solveToGrid() {
 
 //--------------------------------------------------------------
 void ofApp::loadJSON(string jsonPath) {
-    ofxJSONElement result;
-    bool parsingSuccessful = result.open(jsonPath);
-    for (int i=0; i<result.size(); i++) {
-        string path = result[i]["path"].asString();
-        float x = result[i]["point"][0].asFloat();
-        float y = result[i]["point"][1].asFloat();
-        ImageThumb thumb;
-        thumb.point.set(x, y);
-        thumb.idx = i;
-        thumb.path = path;
-        thumb.image.load(path);
-        // resize thumb
-        if (thumb.image.getWidth() > thumb.image.getHeight()) {
-            thumb.image.crop((thumb.image.getWidth()-thumb.image.getHeight()) * 0.5, 0, thumb.image.getHeight(), thumb.image.getHeight());
-        } else if (thumb.image.getHeight() > thumb.image.getWidth()) {
-            thumb.image.crop(0, (thumb.image.getHeight()-thumb.image.getWidth()) * 0.5, thumb.image.getWidth(), thumb.image.getWidth());
+    ofJson js;
+    ofFile file(jsonPath);
+    bool parsingSuccessful = file.exists();
+    
+    if (!parsingSuccessful) {
+        ofLog(OF_LOG_ERROR) << "parsing not successful";
+        return;
+    }
+    
+    thumbs.clear();
+
+    int idx = 0;
+    file >> js;
+    for (auto & entry: js) {
+        if(!entry.empty()) {
+            string path = entry["path"];
+            float x = entry["point"][0];
+            float y = entry["point"][1];
+            
+            ImageThumb thumb;
+            thumb.point.set(x, y);
+            thumb.idx = idx;
+            thumb.path = path;
+            thumb.image.load(path);
+            // resize thumb
+            if (thumb.image.getWidth() > thumb.image.getHeight()) {
+                thumb.image.crop((thumb.image.getWidth()-thumb.image.getHeight()) * 0.5, 0, thumb.image.getHeight(), thumb.image.getHeight());
+            } else if (thumb.image.getHeight() > thumb.image.getWidth()) {
+                thumb.image.crop(0, (thumb.image.getHeight()-thumb.image.getWidth()) * 0.5, thumb.image.getWidth(), thumb.image.getWidth());
+            }
+            thumb.image.resize(THUMB_SIZE, THUMB_SIZE);
+            thumbs.push_back(thumb);
+            idx++;
         }
-        thumb.image.resize(THUMB_SIZE, THUMB_SIZE);
-        thumbs.push_back(thumb);
     }
     //resizeThumbs(THUMB_SIZE, THUMB_SIZE);
 }
 
 //--------------------------------------------------------------
 void ofApp::saveJSON(string jsonPath) {
+    ofSystemAlertDialog("Oops! Saving JSON not implemented yet! Pleae remind Gene to fix this :)");
+    /*
     ofxJSONElement result;
     for (int i=0; i<thumbs.size(); i++) {
         string path = thumbs[i].path;
@@ -274,6 +291,7 @@ void ofApp::saveJSON(string jsonPath) {
         result.append(entry);
     }
     bool saveSuccessful = result.save(jsonPath);
+     */
 }
 
 //--------------------------------------------------------------
