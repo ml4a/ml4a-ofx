@@ -4,7 +4,7 @@
 #include "ofxCcvThreaded.h"
 
 
-//#define RELEASE
+#define RELEASE
 
 
 class ofApp : public ofBaseApp{

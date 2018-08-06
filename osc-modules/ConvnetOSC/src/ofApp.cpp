@@ -22,12 +22,12 @@ void ofApp::setup() {
     // load settings from file
     ofXml xml;
     xml.load("settings_convnet.xml");
-    xml.setTo("ConvnetOSC");
-    oscDestination = xml.getValue("ip");
-    oscPort = ofToInt(xml.getValue("port"));
-    oscAddressRoot = xml.getValue("address");
-    bool sendClassificationsByDefault = (xml.getValue("sendClassificationsByDefault") == "1");
-    deviceId = ofToInt(xml.getValue("deviceId"));
+    
+    oscDestination = xml.getChild("ConvnetOSC").getChild("ip").getValue();
+    oscPort = ofToInt(xml.getChild("ConvnetOSC").getChild("port").getValue());
+    oscAddressRoot = xml.getChild("ConvnetOSC").getChild("address").getValue();
+    bool sendClassificationsByDefault = (xml.getChild("ConvnetOSC").getChild("sendClassificationsByDefault").getValue() == "1");
+    deviceId = ofToInt(xml.getChild("ConvnetOSC").getChild("deviceId").getValue());
     
     cam.setDeviceID(deviceId);
     cam.initGrabber(320, 240);

@@ -11,7 +11,7 @@
 using namespace ofxCv;
 using namespace cv;
 
-//#define RELEASE
+#define RELEASE
 
 
 // where to send osc messages by default

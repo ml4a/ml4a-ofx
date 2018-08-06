@@ -19,7 +19,7 @@
 #include "ofxFaceTracker2.h"
 #include <stdio.h>
 
-//#define RELEASE
+#define RELEASE
 
 //State that we want to use the GRT namespace
 using namespace GRT;

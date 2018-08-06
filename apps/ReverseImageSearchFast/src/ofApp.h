@@ -9,6 +9,7 @@
 
 #include "ofMain.h"
 
+#define RELEASE
 
 class ofApp : public ofBaseApp{
 public:

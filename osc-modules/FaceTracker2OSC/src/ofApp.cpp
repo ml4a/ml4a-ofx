@@ -14,11 +14,17 @@ void ofApp::setup(){
     // load settings from file
     ofXml xml;
     xml.load("settings_facetracker2.xml");
-    xml.setTo("FaceTracker2OSC");
-    oscDestination = xml.getValue("ip");
-    oscPort = ofToInt(xml.getValue("port"));
-    oscAddress = xml.getValue("address");
+//    xml.setTo("FaceTracker2OSC");
+//    oscDestination = xml.getValue("ip");
+//    oscPort = ofToInt(xml.getValue("port"));
+//    oscAddress = xml.getValue("address");
 
+    
+    oscDestination = xml.getChild("FaceTracker2OSC").getChild("ip").getValue();
+    oscPort = ofToInt(xml.getChild("FaceTracker2OSC").getChild("port").getValue());
+    oscAddress = xml.getChild("FaceTracker2OSC").getChild("address").getValue();
+
+    
     // setup tracker and cam
     grabber.setup(640, 480);
     tracker.setup(ofToDataPath("../../../../data/shape_predictor_68_face_landmarks.dat"));

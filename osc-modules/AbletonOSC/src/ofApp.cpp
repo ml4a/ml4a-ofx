@@ -17,9 +17,10 @@ void ofApp::setupGui() {
     
     ofXml xml;
     xml.load("settings_ableton.xml");
-    xml.setTo("AbletonOSC");
-    portIn = ofToInt(xml.getValue("port"));
-    addressRoot = xml.getValue("address");
+    
+    xml.getChild("AbletonOSC");
+    portIn = ofToInt(xml.getChild("port").getValue());
+    addressRoot = xml.getChild("address").getValue();
     
     gui.setup(&live, addressRoot, portIn);
 }

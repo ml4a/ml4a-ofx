@@ -9,7 +9,7 @@
 #define OSC_PORT_DEFAULT 6448
 #define DEVICE_ID_DEFAULT 0
 
-//#define RELEASE
+#define RELEASE
 
 class ofApp : public ofBaseApp {
 public:

@@ -7,7 +7,7 @@
 #include "ofxGui.h"
 
 #define THUMB_SIZE 256
-//#define RELEASE
+#define RELEASE
 
 
 struct ImageThumb {

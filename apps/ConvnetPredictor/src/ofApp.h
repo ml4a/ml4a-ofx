@@ -7,7 +7,7 @@
 #define DEFAULT_DEVICE_ID 0
 #define SIZE_INPUT_VECTOR 4096
 
-//#define RELEASE
+#define RELEASE
 
 #include "ofMain.h"
 #include "ofxGrt.h"

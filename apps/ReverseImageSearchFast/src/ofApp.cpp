@@ -38,7 +38,14 @@ void ofApp::setup(){
     guiView.add(tRetina.set(" > MacBook Retina?", true));
 
     screen.setup(ofGetWidth()-17, ofGetHeight()-10, tRetina);
-    ccv.setup(ofToDataPath("../../../../data/image-net-2012.sqlite3"));
+    
+#ifdef RELEASE
+    string ccvPath = ofToDataPath("image-net-2012.sqlite3");
+#else
+    string ccvPath = ofToDataPath("../../../../data/image-net-2012.sqlite3");
+#endif
+
+    ccv.setup(ccvPath);
 //    ccv.setup(ofToDataPath("image-net-2012.sqlite3"));
     
 //    baseDir = ofToDataPath("../../../../data/mscoco");
@@ -247,7 +254,7 @@ void ofApp::extractFeaturesForDirectory(string directory) {
         if (imageMap.count(imagePath)) {
             continue;
         }
-        bool success = activeImage.load(candidateFiles[i]);
+        bool success = activeImage.load(candidateFiles[i].getAbsolutePath());
         if (success) {
             Image image;
             image.filename = imagePath;

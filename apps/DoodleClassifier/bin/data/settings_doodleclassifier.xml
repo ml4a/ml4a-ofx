@@ -1,10 +1,18 @@
-<DoodleOSC>
-	<ip>127.0.0.1</ip>
-	<port>5000</port>
-	<address>/classification</address>
-    <classes>
-        <class>circle</class>
-        <class>star</class>
-        <class>arrow</class>
-    </classes>
-</DoodleOSC>
+<?xml version="1.0"?>
+<DoodleClassifier>
+	<circle>0</circle>
+	<Run>0</Run>
+	<CV_initial>
+		<Min_area>10</Min_area>
+		<Max_area>200</Max_area>
+		<Threshold>128</Threshold>
+		<Dilations>1</Dilations>
+	</CV_initial>
+	<User_Settings>
+		<IP>localhost</IP>
+		<port>8000</port>
+		<message>/classification</message>
+		<camera_ID>0</camera_ID>
+		<classes>circle,star,arrow</classes>
+	</User_Settings>
+</DoodleClassifier>

@@ -162,7 +162,7 @@ void AbletonGui::parseMessage(ofxOscMessage & msg)
 {
     string address = msg.getAddress();
     if (address == addressRoot) {
-        for (int idx = 0; idx < min((int)sliders.size(), msg.getNumArgs()); idx++) {
+        for (int idx = 0; idx < min((int)sliders.size(), (int)msg.getNumArgs()); idx++) {
             sliders[idx]->setValue(msg.getArgAsFloat(idx));
         }
     }
