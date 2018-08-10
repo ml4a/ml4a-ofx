@@ -29,7 +29,7 @@ def get_audio_files(path, extension):
 def get_features(y, sr):
 	y = y[0:sr] 	# analyze just first second
 	S = librosa.feature.melspectrogram(y, sr=sr, n_mels=128)
-   	log_S = librosa.amplitude_to_db(S, ref=np.max)
+	log_S = librosa.amplitude_to_db(S, ref=np.max)
 	mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=13)
 	delta_mfcc = librosa.feature.delta(mfcc, mode='nearest')
 	delta2_mfcc = librosa.feature.delta(mfcc, order=2, mode='nearest')
