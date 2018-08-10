@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Disabling Mac translocation"
+/usr/bin/xattr -cr .
+
 echo "Downloading shape_predictor_68_face_landmarks.dat"
 curl -L -o data/shape_predictor_68_face_landmarks.dat.bz2 --progress-bar https://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2
 
