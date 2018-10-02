@@ -6,7 +6,7 @@ To compile it from source, you need the addons [ofxAbletonLive](https://github.c
 
 #### Instructions
 
-1) Install and activate [LiveOSC](http://livecontrol.q3f.org/ableton-liveapi/liveosc/) in Ableton. Follow the instructions there, or:
+1) Install and activate [LiveOSC](http://livecontrol.q3f.org/ableton-liveapi/liveosc/) in Ableton. Note the link is dead so just download it [from here](https://github.com/genekogan/ofxAbletonLive/releases/download/v1.0/LiveOSC.zip):
    - Place the "LiveOSC" folder (inside "trunk") into the Midi Remote Scripts folder in your Live App.
    - On OSX, go to your applications folder, right click Ableton and select "show package contents", then navigate to Contents/App-Resources/MIDI Remote Scripts and paste there.
    - On Windows, paste into \path\to\ableton\Live x.x.x\Resources\MIDI\Remote Scripts
