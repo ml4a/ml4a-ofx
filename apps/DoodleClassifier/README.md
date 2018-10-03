@@ -12,3 +12,5 @@ This application requires the following addons:
 An interface for classifying doodles/drawings. The app lets you define a series of doodle categories, examples drawn under a webcam, and then learns to classify new doodles.
 
 The settings file `settings_doodleclassifier.xml` contains settings which you may wish to modify.  You may edit or add to the defined classes inside the `<classes>` tag. The settings file also contains the OSC info. By default, OSC is set to send to localhost, through port 5000, to address "/classification".
+	
+The precise order of the values in the OSC message it sends for each detected object is: class (string), x-position (float), y-position (float), width of rectangle (float), and height of rectangle (float).

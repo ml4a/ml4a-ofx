@@ -319,6 +319,10 @@ void ofApp::classifyCurrentSamples() {
             ofxOscMessage m;
             m.setAddress(gOscAddress.get());
             m.addStringArg(foundSquares[i].label);
+            m.addFloatArg(foundSquares[i].rect.x);
+            m.addFloatArg(foundSquares[i].rect.y);
+            m.addFloatArg(foundSquares[i].rect.width);
+            m.addFloatArg(foundSquares[i].rect.height);
             sender.sendMessage(m, false);
         }
     }
