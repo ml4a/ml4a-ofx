@@ -305,6 +305,13 @@ void ofApp::trainClassifier() {
 void ofApp::classifyCurrentSamples() {
     ofLog(OF_LOG_NOTICE, "Classifiying on frame "+ofToString(ofGetFrameNum()));
     gatherFoundSquares();
+
+    // send warning signal that classification beginning now
+    ofxOscMessage m0;
+    m0.setAddress(gOscAddress.get());
+    m0.addStringArg("beginClassification");
+    sender.sendMessage(m0, false);
+    
     for (int i=0; i<foundSquares.size(); i++) {
         vector<float> encoding = ccv.encode(foundSquares[i].img, ccv.numLayers()-1);
         VectorFloat inputVector(encoding.size());
@@ -326,6 +333,13 @@ void ofApp::classifyCurrentSamples() {
             sender.sendMessage(m, false);
         }
     }
+    
+    // send warning signal that classification ends now
+    ofxOscMessage m1;
+    m1.setAddress(gOscAddress.get());
+    m1.addStringArg("endClassification");
+    sender.sendMessage(m1, false);
+
 }
 
 //--------------------------------------------------------------
