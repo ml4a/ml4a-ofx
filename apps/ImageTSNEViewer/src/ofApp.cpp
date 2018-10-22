@@ -29,11 +29,17 @@ void ofApp::setup(){
     thumbs.clear();
     
     file >> js;
+    ofVec2f minPoint(1e8, 1e8);
+    ofVec2f maxPoint(-1e8, -1e8);
     for (auto & entry: js) {
         if(!entry.empty()) {
             string path = entry["path"];
             float x = entry["point"][0];
             float y = entry["point"][1];
+            minPoint.x = min(minPoint.x, x);
+            minPoint.y = min(minPoint.y, y);
+            maxPoint.x = max(maxPoint.x, x);
+            maxPoint.y = max(maxPoint.y, y);
             
             ImageThumb thumb;
             thumb.point.set(x, y);
@@ -45,6 +51,11 @@ void ofApp::setup(){
             }
             thumbs.push_back(thumb);
         }
+    }
+
+    for (int i=0; i<thumbs.size(); i++) {
+        thumbs[i].point.set(ofMap(thumbs[i].point.x, minPoint.x, maxPoint.x, 0, 1),
+                            ofMap(thumbs[i].point.y, minPoint.y, maxPoint.y, 0, 1));
     }
 
     position.set(-0.5 * ofGetWidth(), -0.5 * ofGetHeight());

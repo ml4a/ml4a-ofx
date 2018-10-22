@@ -43,12 +43,18 @@ void ofApp::load(string filename) {
     sounds.clear();
 
     file >> js;
+    
+    ofVec2f minPoint(1e8, 1e8);
+    ofVec2f maxPoint(-1e8, -1e8);
     for (auto & entry: js) {
         if(!entry.empty()) {
             string path = entry["path"];
             float x = entry["point"][0];
             float y = entry["point"][1];
-            
+            minPoint.x = min(minPoint.x, x);
+            minPoint.y = min(minPoint.y, y);
+            maxPoint.x = max(maxPoint.x, x);
+            maxPoint.y = max(maxPoint.y, y);
             AudioClip newSound;
             newSound.sound.load(path);
             newSound.point.set(x, y);
@@ -56,7 +62,12 @@ void ofApp::load(string filename) {
             sounds.push_back(newSound);
         }
     }
-
+    
+    // normalize the points
+    for (int i=0; i<sounds.size(); i++) {
+        sounds[i].point.set(ofMap(sounds[i].point.x, minPoint.x, maxPoint.x, 0, 1),
+                            ofMap(sounds[i].point.y, minPoint.y, maxPoint.y, 0, 1));
+    }
 }
 
 //--------------------------------------------------------------
@@ -88,7 +99,6 @@ void ofApp::draw(){
             ofSetColor(255, 180);
         }
         ofDrawCircle(ofGetWidth() * sounds[i].point.x, ofGetHeight() * sounds[i].point.y, 4);
-
     }
     gui.draw();
 }
