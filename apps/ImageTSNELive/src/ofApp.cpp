@@ -277,21 +277,18 @@ void ofApp::loadJSON(string jsonPath) {
 
 //--------------------------------------------------------------
 void ofApp::saveJSON(string jsonPath) {
-    ofSystemAlertDialog("Oops! Saving JSON not implemented yet! Pleae remind Gene to fix this :)");
-    /*
-    ofxJSONElement result;
+    ofJson json;
     for (int i=0; i<thumbs.size(); i++) {
         string path = thumbs[i].path;
         float x = thumbs[i].point.x;
         float y = thumbs[i].point.y;
-        ofxJSONElement entry;
+        ofJson entry;
         entry["path"] = path;
         entry["point"][0] = x;
         entry["point"][1] = y;
-        result.append(entry);
+        json.push_back(entry);
     }
-    bool saveSuccessful = result.save(jsonPath);
-     */
+    bool saveSuccessful = ofSaveJson(jsonPath, json);
 }
 
 //--------------------------------------------------------------
