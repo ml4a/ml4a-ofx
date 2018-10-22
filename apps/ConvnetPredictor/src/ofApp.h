@@ -7,7 +7,7 @@
 #define DEFAULT_DEVICE_ID 0
 #define SIZE_INPUT_VECTOR 4096
 
-#define RELEASE
+//#define RELEASE
 
 #include "ofMain.h"
 #include "ofxGrt.h"
@@ -29,6 +29,9 @@ public:
     CategoricalThreaded * addCategorical(int numClasses);
     void train();
     
+    void addNextSampleFromDirectory();
+    void scanDirectoryRecursive(ofDirectory dir);
+
     void setupOSC();
     void sendOSC();
     
@@ -39,6 +42,7 @@ public:
     void eSlider(float & v);
     void eAddSlider();
     void eAddCategorical();
+    void eAddFromDir();
     void eCategorical(int & v);
     void eChangeOscSettings();
     void eChangeCamera();
@@ -57,7 +61,9 @@ public:
     ofxCcvThreaded ccv;
     vector<float> featureEncoding;
     bool isTraining;
+    bool toRecordFromDir;
     int numSamples;
+    vector<ofFile> imageFiles;
     
     // draing/ui
     string infoText;
@@ -71,7 +77,7 @@ public:
     // gui
     ofxPanel gui, guiSliders;
     ofParameterGroup gOscSettings, gTraining;
-    ofxButton bTrain, bSave, bLoad, bClear, bAddSlider, bAddCategorical, bOscSettings, bCameraSettings;
+    ofxButton bAddFromDir, bTrain, bSave, bLoad, bClear, bAddSlider, bAddCategorical, bOscSettings, bCameraSettings;
     ofxToggle tRecord, tPredict;
     
     // osc

@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-
+const string allowed_ext[] = {"jpg", "png", "gif", "jpeg"};
 
 //--------------------------------------------------------------
 void ofApp::setup() {
@@ -35,7 +35,8 @@ void ofApp::setup() {
     bAddCategorical.addListener(this, &ofApp::eAddCategorical);
     bOscSettings.addListener(this, &ofApp::eChangeOscSettings);
     bCameraSettings.addListener(this, &ofApp::eChangeCamera);
-
+    bAddFromDir.addListener(this, &ofApp::eAddFromDir);
+    
     gTraining.setName("Training");
     //gTraining.add(numHiddenNeurons.set("hidden neurons", 10, 5, 50));
     //gTraining.add(maxEpochs.set("epochs", 100, 20, 1000));
@@ -52,6 +53,7 @@ void ofApp::setup() {
     gui.add(bCameraSettings.setup("change Camera settings"));
     gui.add(gTraining);
     gui.add(tRecord.setup("Record", false));
+    gui.add(bAddFromDir.setup("Add samples from folder"));
     gui.add(bClear.setup("Clear training data"));
     gui.add(bTrain.setup("Train"));
     gui.add(tPredict.setup("Predict", false));
@@ -85,6 +87,7 @@ void ofApp::setup() {
     
     tRecord = false;
     tPredict = false;
+    toRecordFromDir = false;
     numSamples = 0;
     
     //addSlider();
@@ -254,9 +257,10 @@ void ofApp::update() {
                 bool success = learners[p]->addSample(&inputVector);
                 if (!success){
                     infoText = "WARNING: Failed to add training sample to training data!";
+                } else {
+                    numSamples++;
                 }
             }
-            numSamples++;
         }
         else if (tPredict){
             for (int p=0; p<learners.size(); p++) {
@@ -266,6 +270,10 @@ void ofApp::update() {
                 }
             }
         }
+    }
+    
+    if (toRecordFromDir) {
+        addNextSampleFromDirectory();
     }
 }
 
@@ -392,4 +400,62 @@ void ofApp::eLoad() {
     if (result.bSuccess) {
         load(result.filePath);
     }
+}
+
+//--------------------------------------------------------------
+void ofApp::eAddFromDir() {
+    ofFileDialogResult result = ofSystemLoadDialog("Analyze a directory of image", true);
+    if (result.bSuccess) {
+        ofDirectory dir(result.getPath());
+        scanDirectoryRecursive(dir);
+        toRecordFromDir = true;
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::addNextSampleFromDirectory() {
+    if (ccv.hasNewResults()) {
+        featureEncoding = ccv.getEncoding();
+        VectorFloat inputVector(featureEncoding.size());
+        for (int f=0; f<featureEncoding.size(); f++) {
+            inputVector[f] = featureEncoding[f];
+        }
+        for (int p=0; p<learners.size(); p++) {
+            bool success = learners[p]->addSample(&inputVector);
+            if (!success){
+                infoText = "WARNING: Failed to add training sample to training data!";
+            } else {
+                numSamples++;
+            }
+        }
+        imageFiles.erase(imageFiles.begin());
+    }
+    if (imageFiles.size() == 0) {
+        toRecordFromDir = false;
+    }
+    if (toRecordFromDir && ccv.isReady()) {
+        ofImage img;
+        img.load(imageFiles[0].getAbsolutePath());
+        ccv.update(img, ccv.numLayers()-1);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::scanDirectoryRecursive(ofDirectory dir) {
+    ofDirectory new_dir;
+    int size = dir.listDir();
+    for (int i = 0; i < size; i++){
+        if (dir.getFile(i).isDirectory()){
+            new_dir = ofDirectory(dir.getFile(i).getAbsolutePath());
+            new_dir.listDir();
+            new_dir.sort();
+            scanDirectoryRecursive(new_dir);
+        }
+        else if (find(begin(allowed_ext),
+                      end(allowed_ext),
+                      ofToLower(dir.getFile(i).getExtension())) != end(allowed_ext)) {
+            imageFiles.push_back(dir.getFile(i));
+        }
+    }
+    return imageFiles;
 }
