@@ -81,14 +81,14 @@ void RegressionThreaded::setupModel(const int type) {
     }
 }
 
-void CategoricalThreaded::clear() {
+bool CategoricalThreaded::clear() {
     trainingData.clear();
-    PipelineThreaded::clear();
+    return PipelineThreaded::clear();
 }
 
-void RegressionThreaded::clear() {
+bool RegressionThreaded::clear() {
     trainingData.clear();
-    PipelineThreaded::clear();
+    return PipelineThreaded::clear();
 }
 
 bool CategoricalThreaded::addSample(VectorFloat *inputVector) {

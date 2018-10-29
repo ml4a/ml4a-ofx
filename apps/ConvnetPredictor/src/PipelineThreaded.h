@@ -16,7 +16,7 @@ public:
     
     virtual void setup(string name, ofxPanel *panelRef, int inputSize) {}
     virtual void setupModel(const int type) {}
-    virtual void clear() {}
+    virtual bool clear() {}
     
     virtual bool addSample(VectorFloat *inputVector) {return false;}
     virtual bool predict(VectorFloat *inputVector) {}
@@ -38,7 +38,7 @@ public:
     
     void setup(string name, ofxPanel *panelRef, int inputSize, int numClasses);
     void setupModel(const int type);
-    void clear();
+    bool clear();
 
     bool addSample(VectorFloat *inputVector);
     bool predict(VectorFloat *inputVector);
@@ -56,7 +56,7 @@ class RegressionThreaded : public PipelineThreaded {
 public:
     void setup(string name, ofxPanel *panelRef, int inputSize);
     void setupModel(const int type);
-    void clear();
+    bool clear();
     
     bool addSample(VectorFloat *inputVector);
     bool predict(VectorFloat *inputVector);
