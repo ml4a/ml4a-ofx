@@ -45,9 +45,12 @@ void ofApp::exit(){
 void ofApp::update(){
     leap.update();
     
+    if (!leap.hasFoundLeftHand() && !leap.hasFoundRightHand()) {
+        return;
+    }
+    
     ofxOscMessage msg;
     msg.setAddress(oscAddress);
-    
     if (sendLeft) {
         // get data left
         ofPoint lhp = leap.getLeftHandPosition();
