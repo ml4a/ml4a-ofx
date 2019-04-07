@@ -12,7 +12,7 @@ void ofApp::setup(){
     oscPort = OSC_PORT_DEFAULT;
 
     // load settings from file
-    ofXml xml;
+    ofxXmlSettings xml;
     xml.load("settings_facetracker2.xml");
 //    xml.setTo("FaceTracker2OSC");
 //    oscDestination = xml.getValue("ip");
@@ -20,9 +20,9 @@ void ofApp::setup(){
 //    oscAddress = xml.getValue("address");
 
     
-    oscDestination = xml.getChild("FaceTracker2OSC").getChild("ip").getValue();
-    oscPort = ofToInt(xml.getChild("FaceTracker2OSC").getChild("port").getValue());
-    oscAddress = xml.getChild("FaceTracker2OSC").getChild("address").getValue();
+    oscDestination = xml.getValue("FaceTracker2OSC:ip", OSC_DESTINATION_DEFAULT);
+    oscPort = xml.getValue("FaceTracker2OSC:port", OSC_PORT_DEFAULT);
+    oscAddress = xml.getValue("FaceTracker2OSC:address", OSC_ADDRESS_ROOT_DEFAULT);
 
     
     // setup tracker and cam
@@ -33,9 +33,10 @@ void ofApp::setup(){
     osc.setup(oscDestination, oscPort);
     
     // setup gui
-    gui.setName("FaceTracker2OSC");
+    gui.setup();
     gui.setPosition(12, 60);
-    gui.addToggle("normalize", &normalize);
+    gui.setName("FaceTracker2OSC");
+    gui.add(normalize.set("normalize", true));
 }
 
 //--------------------------------------------------------------
@@ -53,7 +54,7 @@ void ofApp::update(){
     }
 
     ofxFaceTracker2Landmarks landmarks = instances[0].getLandmarks();
-    vector<ofVec2f> points = landmarks.getImagePoints();
+    vector<glm::vec2> points = landmarks.getImagePoints();
     ofRectangle bb = instances[0].getBoundingBox();
     
     ofxOscMessage msg;
@@ -85,4 +86,6 @@ void ofApp::draw(){
     
     ofSetColor(255);
     ofDrawBitmapStringHighlight(oscMessageString, 15, ofGetHeight() - 4);
+    
+    gui.draw();
 }

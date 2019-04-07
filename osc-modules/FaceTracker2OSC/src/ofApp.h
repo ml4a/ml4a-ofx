@@ -3,7 +3,8 @@
 #include "ofMain.h"
 #include "ofxFaceTracker2.h"
 #include "ofxOsc.h"
-#include "ofxControl.h"
+#include "ofxXmlSettings.h"
+#include "ofxGui.h"
 
 #define OSC_DESTINATION_DEFAULT "localhost"
 #define OSC_ADDRESS_ROOT_DEFAULT "/wek/inputs"
@@ -24,6 +25,7 @@ public:
     int oscPort;
     string oscMessageString;
     
-    bool normalize;
-    ofxControlWidget gui;
+    ofParameter<bool> normalize;
+    
+    ofxPanel gui;
 };
