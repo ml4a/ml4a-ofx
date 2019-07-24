@@ -1,6 +1,6 @@
 ## Gobot
 
-[A complete guide to this application can be found here](http://ml4a.github.io/guides/GoBot/)
+[A complete guide to this application can be found here](http://ml4a.github.io/guides/Gobot/)
 
 To build from source, the following addons are required:
 - [ofxDarknet](https://github.com/mrzl/ofxDarknet)
