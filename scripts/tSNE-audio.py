@@ -4,6 +4,7 @@ import fnmatch
 import os
 import numpy as np
 import librosa
+import soundfile
 from sklearn.manifold import TSNE
 import json
 
@@ -50,7 +51,7 @@ def segment_analyze_audio_file(source_audio, save_path_audio, hop_length=512):
 		feat = get_features(y_, sr)
 		file_path = '%s/onset_%d.wav' % (save_path_audio, i)
 		feature_vectors.append({"file":file_path, "features":feat})
-		librosa.output.write_wav(file_path, y_, sr)
+		soundfile.write(file_path, y_, sr)
 		print("analyzed %d/%d = %s"%(i, len(onsets)-1, file_path))
 	return feature_vectors
 
